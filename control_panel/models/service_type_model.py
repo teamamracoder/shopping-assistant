@@ -11,7 +11,7 @@ class ServiceTypeModel(models.Model):
     updated_by = models.ForeignKey('UserModel', on_delete=models.CASCADE, blank=True, null=True, related_name='fk_update_service_type_user_id')
 
     class Meta:
-        db_table = 'service_type'    
+        db_table = 'service_types'    
 
     def __str__(self):
         return f"ID: {self.id}, Created at: {self.created_at}, Active: {self.is_active}"
