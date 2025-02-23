@@ -55,11 +55,11 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'shopping_assistant',
-        'USER': 'postgres',
-        'PASSWORD': 'Sql@2024',
-        'HOST': 'localhost',
-        'PORT': 5432,
+        'NAME': env('PGSQL_NAME'),
+        'USER': env('PGSQL_USER'),
+        'PASSWORD': env('PGSQL_PASSWORD'),
+        'HOST': env('PGSQL_HOST'),
+        'PORT': env('PGSQL_PORT'),
     }
 }
 

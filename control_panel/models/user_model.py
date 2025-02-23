@@ -1,19 +1,15 @@
 from django.db import models
-from ...constants.enums import Role,Gender
-from django.db import models
+from constants.enums import Role,Gender
 from django.contrib.postgres.fields import ArrayField
 
-class User(models.Model):
+class UserModel(models.Model):
     id = models.AutoField(primary_key=True)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
-    gender = ArrayField(
-        models.IntegerField(
-            choices=[(type.value, type.name) for type in Gender],
-            db_default=Gender.END_USER.value,
-            blank=True
-        ),
-        blank=True
+    gender = models.IntegerField(
+        choices=[(gender.value, gender.name) for gender in Gender],
+        blank=True,
+        null=True
     )
     dob = models.DateField(blank=True,null=True)
     email = models.EmailField(unique=True)
@@ -42,12 +38,13 @@ class User(models.Model):
     is_active = models.BooleanField(db_default=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True, blank=True)
-    created_by = models.ForeignKey('User', on_delete=models.CASCADE, blank=True, null=True, related_name='fk_create_users_users_id')
-    updated_by = models.ForeignKey('User', on_delete=models.CASCADE, blank=True, null=True, related_name='fk_update_users_users_id')
+    created_by = models.ForeignKey('UserModel', on_delete=models.CASCADE, blank=True, null=True, related_name='fk_create_users_users_id')
+    updated_by = models.ForeignKey('UserModel', on_delete=models.CASCADE, blank=True, null=True, related_name='fk_update_users_users_id')
 
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
 
     class Meta:
-        db_table = 'users'
-
-        def __str__(self):
-            return f"ID: {self.id}, Created at: {self.created_at}, Active: {self.is_active}"
+        db_table = 'users'    
+    def _str_(self):
+        return f"ID: {self.id}, Created at: {self.created_at}, Active: {self.is_active}"
