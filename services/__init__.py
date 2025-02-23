@@ -1,5 +1,7 @@
 # import services here
 from services.user_service import UserService
+from services.service_type_service import ServiceTypeService
+from services.service_service import ServiceService
 
 
 class Service:
@@ -14,5 +16,17 @@ class Service:
         # create instance of services
         self.user_service=UserService()
 
+    def __init__(self) -> None:
+        # create instance of services
+        self.service_type_service=ServiceTypeService()
+
+    def __init__(self) -> None:
+        # create instance of services
+        self.service_service=ServiceService()
+
 # create service instance
 services = Service()
+
+
+
+
