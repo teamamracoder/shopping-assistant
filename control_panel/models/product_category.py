@@ -13,6 +13,8 @@ class ProductCategoryModel(models.Model):
         blank=True, null=True, 
         related_name='fk_create_product_categories_user_id')
     updated_by = models.ForeignKey('UserModel', on_delete=models.CASCADE, blank=True, null=True, related_name='fk_update_product_categories_user_id')
-
+    
+    class Meta:
+        db_table = 'products_categories'
     def __str__(self):
         return self.name
