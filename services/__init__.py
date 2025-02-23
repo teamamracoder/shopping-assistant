@@ -1,8 +1,8 @@
 # import services here
 from services.user_service import UserService
-from services.service_type_service import ServiceTypeService
+from services.service_type_service import ServiceTypeModelService
 from services.service_service import ServiceService
-from services.service_booking_service import ServiceBookingService
+from services.service_booking_service import ServiceBookingModelService
 
 
 class Service:
@@ -19,7 +19,7 @@ class Service:
 
     def __init__(self) -> None:
         # create instance of services
-        self.service_type_service=ServiceTypeService()
+        self.service_type_service=ServiceTypeModelService()
 
     def __init__(self) -> None:
         # create instance of services
@@ -27,7 +27,7 @@ class Service:
 
     def __init__(self) -> None:
         # create instance of services
-        self.service_booking_service=ServiceBookingService()
+        self.service_booking_service=ServiceBookingModelService()
 
 # create service instance
 services = Service()

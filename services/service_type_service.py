@@ -1,32 +1,32 @@
 from django.db import IntegrityError
 from django.forms import ValidationError
-from control_panel.models import ServiceType
+from control_panel.models import ServiceTypeModel
 
-class ServiceTypeService:
-    def get_all_servicetypes(self):
+class ServiceTypeModelService:
+    def get_all_ServiceTypeModels(self):
         """
         Fetch all service types from the database.
-        :return: Queryset of all ServiceType instances.
+        :return: Queryset of all ServiceTypeModel instances.
         """
-        return ServiceType.objects.all()
+        return ServiceTypeModel.objects.all()
 
     def get_user_by_id(self,pk):
         """
         Fetch a service type by its primary key (ID).
         :param pk: Primary key (ID) of the service type.
-        :return: ServiceType instance if found, None otherwise.
+        :return: ServiceTypeModel instance if found, None otherwise.
         """
         try:
-            return ServiceType.objects.get(pk=pk)
-        except ServiceType.DoesNotExist:
+            return ServiceTypeModel.objects.get(pk=pk)
+        except ServiceTypeModel.DoesNotExist:
             return None
 
     def update_service_type(self, service_type, validated_data):
         """
         Update an existing service type with new validated data.
-        :param service_type: ServiceType instance to be updated.
+        :param service_type: ServiceTypeModel instance to be updated.
         :param validated_data: A dictionary of data to update the service type with.
-        :return: Updated ServiceType instance.
+        :return: Updated ServiceTypeModel instance.
         :raises ValidationError: If the updated data fails validation.
         """
         try:
@@ -43,7 +43,7 @@ class ServiceTypeService:
     def delete_service_type(self, service_type):
         """
         Delete a service type.
-        :param service_type: ServiceType instance to be deleted.
+        :param service_type: ServiceTypeModel instance to be deleted.
         :return: None
         :raises ValidationError: If deletion fails.
         """
@@ -55,8 +55,8 @@ class ServiceTypeService:
     def activate_service_type(self, service_type):
         """
         Activate a service type.
-        :param service_type: ServiceType instance to be activated.
-        :return: Activated ServiceType instance.
+        :param service_type: ServiceTypeModel instance to be activated.
+        :return: Activated ServiceTypeModel instance.
         """
         service_type.is_active = True
         service_type.save()
@@ -65,8 +65,8 @@ class ServiceTypeService:
     def deactivate_service_type(self, service_type):
         """
         Deactivate a service type.
-        :param service_type: ServiceType instance to be deactivated.
-        :return: Deactivated ServiceType instance.
+        :param service_type: ServiceTypeModel instance to be deactivated.
+        :return: Deactivated ServiceTypeModel instance.
         """
         service_type.is_active = False
         service_type.save()

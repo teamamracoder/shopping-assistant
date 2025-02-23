@@ -1,7 +1,7 @@
 from rest_framework import serializers
-from control_panel.models import ServiceType
+from control_panel.models import ServiceTypeModel
 
-class ServiceTypeSerializer(serializers.Serializer):
+class ServiceTypeModelSerializer(serializers.Serializer):
     # Define the fields for serialization
     id = serializers.IntegerField(read_only=True)
     service_name = serializers.CharField(max_length=100, required=True)
@@ -18,6 +18,6 @@ class ServiceTypeSerializer(serializers.Serializer):
     
         # Create method to handle creating a new user
     def create(self, validated_data):
-        return ServiceType.objects.create(**validated_data)
+        return ServiceTypeModel.objects.create(**validated_data)
 
 

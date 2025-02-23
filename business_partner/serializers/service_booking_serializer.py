@@ -1,20 +1,20 @@
 from rest_framework import serializers
-from control_panel.models.service_booking_model import ServiceBooking
+from control_panel.models.service_booking_model import ServiceBookingModel
 
-class ServiceBookingSerializer(serializers.Serializer):
+class ServiceBookingModelSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
-    service = serializers.PrimaryKeyRelatedField(queryset=ServiceBooking.objects.all())
-    service_provider = serializers.PrimaryKeyRelatedField(queryset=ServiceBooking.objects.all())
-    user = serializers.PrimaryKeyRelatedField(queryset=ServiceBooking.objects.all())
+    service = serializers.PrimaryKeyRelatedField(queryset=ServiceBookingModel.objects.all())
+    service_provider = serializers.PrimaryKeyRelatedField(queryset=ServiceBookingModel.objects.all())
+    user = serializers.PrimaryKeyRelatedField(queryset=ServiceBookingModel.objects.all())
     booking_charge = serializers.FloatField()
     booking_time = serializers.DateTimeField()
     created_at = serializers.DateTimeField(read_only=True)
     updated_at = serializers.DateTimeField(read_only=True)
-    created_by = serializers.PrimaryKeyRelatedField(queryset=ServiceBooking.objects.all(), allow_null=True)
-    updated_by = serializers.PrimaryKeyRelatedField(queryset=ServiceBooking.objects.all(), allow_null=True)
+    created_by = serializers.PrimaryKeyRelatedField(queryset=ServiceBookingModel.objects.all(), allow_null=True)
+    updated_by = serializers.PrimaryKeyRelatedField(queryset=ServiceBookingModel.objects.all(), allow_null=True)
 
     def create(self, validated_data):
-        return ServiceBooking.objects.create(**validated_data)
+        return ServiceBookingModel.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
         instance.service = validated_data.get('service', instance.service)

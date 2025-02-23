@@ -4,7 +4,7 @@ class ServiceModel(models.Model):
     id = models.AutoField(primary_key=True)
     # service_name = models.CharField(max_length=100)
 
-    service_type = models.ForeignKey('ServiceType', on_delete=models.CASCADE,related_name='fk_services_service_type_id')
+    service_type = models.ForeignKey('ServiceTypeModel', on_delete=models.CASCADE,related_name='fk_services_service_type_id')
 
     service_provider = models.ForeignKey('UserModel', on_delete=models.CASCADE,related_name='fk_services_service_provider_id')
 

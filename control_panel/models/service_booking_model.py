@@ -1,6 +1,6 @@
 from django.db import models
 
-class ServiceBooking(models.Model):
+class ServiceBookingModel(models.Model):
     id = models.AutoField(primary_key=True)
     service = models.ForeignKey('ServiceModel', on_delete=models.CASCADE, related_name='fk_service_booking_service_id')
     service_provider = models.ForeignKey('UserModel', on_delete=models.CASCADE, related_name='fk_service_booking_service_provider_id')
