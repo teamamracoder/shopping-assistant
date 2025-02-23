@@ -15,6 +15,6 @@ class ProductCategoryModel(models.Model):
     updated_by = models.ForeignKey('UserModel', on_delete=models.CASCADE, blank=True, null=True, related_name='fk_update_product_categories_user_id')
     
     class Meta:
-        db_table = 'products_categories'
+        db_table = 'product_categories'
     def __str__(self):
         return self.name
