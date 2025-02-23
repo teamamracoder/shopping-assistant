@@ -5,19 +5,19 @@ class EmailTrackModel(models.Model):
     template = models.ForeignKey(
         'TemplateModel', 
         on_delete=models.CASCADE, 
-        related_name='email_tracks_template_id'
+        related_name='fk_email_tracks_template_id'
     )
     msg_subject = models.CharField(max_length=255)
     msg_body = models.TextField()
     receiver = models.ForeignKey(
         'UserModel', 
         on_delete=models.CASCADE, 
-        related_name='received_email_user_id'
+        related_name='fk_received_email_user_id'
     )
     sender = models.ForeignKey(
         'UserModel', 
         on_delete=models.CASCADE, 
-        related_name='sent_email_user_id'
+        related_name='fk_sent_email_user_id'
     )
     sent_at = models.DateTimeField(auto_now_add=True)
 
