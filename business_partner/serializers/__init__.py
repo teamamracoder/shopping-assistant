@@ -1,3 +1,4 @@
 from .user_serializer import UserSerializer
 from .service_serializer import ServiceSerializer
 from .service_type_serializer import ServiceTypeSerializer
+from .service_booking_serializer import ServiceBookingSerializer

@@ -43,7 +43,7 @@ class UserModel(models.Model):
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
-
+ 
     class Meta:
         db_table = 'users'    
     def _str_(self):

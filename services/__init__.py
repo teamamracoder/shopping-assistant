@@ -2,6 +2,7 @@
 from services.user_service import UserService
 from services.service_type_service import ServiceTypeService
 from services.service_service import ServiceService
+from services.service_booking_service import ServiceBookingService
 
 
 class Service:
@@ -23,6 +24,10 @@ class Service:
     def __init__(self) -> None:
         # create instance of services
         self.service_service=ServiceService()
+
+    def __init__(self) -> None:
+        # create instance of services
+        self.service_booking_service=ServiceBookingService()
 
 # create service instance
 services = Service()
