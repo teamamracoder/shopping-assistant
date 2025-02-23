@@ -3,7 +3,7 @@ from env_config import env
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = env('SECRET_KEY')
-DEBUG = env('DEBUG', default=False, cast=bool)
+DEBUG = env('DEBUG', default=True, cast=bool)
 ALLOWED_HOSTS = env('ALLOWED_HOSTS')
 
 INSTALLED_APPS = [
