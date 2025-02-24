@@ -15,7 +15,7 @@ class ServiceBookingModel(models.Model):
     updated_by = models.ForeignKey('UserModel', on_delete=models.CASCADE, blank=True, null=True, related_name='fk_update_service_booking_user_id')
 
     class Meta:
-        db_table = 'service_booking'
+        db_table = 'service_bookings'
     
     def __str__(self):
         return f"Booking {self.id}: Service {self.service.id} by User {self.user.id}"
