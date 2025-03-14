@@ -1,4 +1,4 @@
-from rest_framework import serializers
+from rest_framework import serializers # type: ignore
 from control_panel.models import UserModel
 from constants.enums import Role, Gender
 from django.contrib.postgres.fields import ArrayField
