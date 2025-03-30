@@ -1,3 +1,4 @@
 # from .demo_view import DemoView
 from .home_view import IndexView
-from .home_view import AdminView
+from .manage_dashboard_view import ManageDashboardView
+from .manage_user_view import ManageUserView
