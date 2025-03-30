@@ -4,24 +4,68 @@
 {% load static %}
 
 <style>
-    .circle-btn {
-    width: 50px;
-    height: 50px;
+    /* Floating Button Styling */
+    .floating-btn {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: blue;
+        color: white;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        cursor: pointer;
+        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+        transition: background-color 0.3s ease, transform 0.2s ease;
+        z-index: 1000;
+    }
+
+    .floating-btn:hover {
+        background-color: darkblue;
+        transform: scale(1.1);
+    }
+    /* Common styles for icons */
+/* Common button styles */
+.icon-btn {
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
-    background-color: blue;
-    color: white;
     border: none;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 24px;
+    font-size: 20px;
     cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 0 5px;
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-    transition: background-color 0.3s ease;
 }
 
-.circle-btn:hover {
+/* Edit button (red) */
+.edit-btn {
+    background-color: red;
+    color: white;
+}
+
+.edit-btn:hover {
+    background-color: darkred;
+    transform: scale(1.1);
+}
+
+/* View button (blue) */
+.view-btn {
+    background-color: blue;
+    color: white;
+}
+
+.view-btn:hover {
     background-color: darkblue;
+    transform: scale(1.1);
 }
 
 </style>
@@ -30,15 +74,11 @@
 
         <!-- Page Heading -->
         <h1 class="h3 mb-2 text-gray-800">Tables</h1>
-        <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
-            For more information about DataTables, please visit the <a target="_blank"
-                href="https://datatables.net">official DataTables documentation</a>.</p>
+        
 
         <!-- DataTales Example -->
         <div class="card shadow mb-4">
-            <button class="circle-btn">
-                <i class="bi bi-plus-lg text-light"></i>
-            </button>
+           
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
             </div>
@@ -65,19 +105,32 @@
                                 <td>61</td>
                                 <td>2011/04/25</td>
                                 <td>$320,800</td>
-                                <td><i class="bi bi-pencil-square"></i> <i class="bi bi-eye"></i></td>
+                                <td style="display: flex;">
+                                    <button class="icon-btn edit-btn">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </button>
+                                    <button class="icon-btn view-btn">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                    
+                                </td>
                             </tr>
+                           
+                            
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
+<!-- Floating Plus Button -->
 
     </div>
     <!-- /.container-fluid -->
 
 
 
-    
+    <button class="floating-btn">
+        <i class="bi bi-plus-lg"></i>
+    </button>
 
 {% endblock %}
