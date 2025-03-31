@@ -6,19 +6,19 @@
 <style>
     /* Floating Button Styling */
     .floating-btn {
-        position: fixed;
+            position: fixed;
         bottom: 20px;
         right: 20px;
         width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        background-color: blue;
-        color: white;
-        border: none;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 28px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: blue;
+            color: white;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
         cursor: pointer;
         box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
         transition: background-color 0.3s ease, transform 0.2s ease;
@@ -40,11 +40,11 @@
     align-items: center;
     justify-content: center;
     font-size: 20px;
-    cursor: pointer;
-    transition: all 0.3s ease;
+        cursor: pointer;
+        transition: all 0.3s ease;
     margin: 0 5px;
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-}
+    }
 
 /* Edit button (red) */
 .edit-btn {
@@ -61,71 +61,130 @@
 .view-btn {
     background-color: blue;
     color: white;
-}
+    }
 
-.view-btn:hover {
-    background-color: darkblue;
-    transform: scale(1.1);
+    .view-btn:hover {
+        background-color: darkblue;
+        transform: scale(1.1);
 }
-
 </style>
-    <!-- Begin Page Content -->
-    <div class="container-fluid">
+<!-- Begin Page Content -->
+<div class="container-fluid">
 
-        <!-- Page Heading -->
-        <h1 class="h3 mb-2 text-gray-800">Tables</h1>
-        
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">Tables</h1>
+    <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
+        For more information about DataTables, please visit the <a target="_blank"
+            href="https://datatables.net">official DataTables documentation</a>.</p>
 
-        <!-- DataTales Example -->
-        <div class="card shadow mb-4">
-           
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
-            </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Position</th>
-                                <th>Office</th>
-                                <th>Age</th>
-                                <th>Start date</th>
-                                <th>Salary</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                       
-                        <tbody>
-                            <tr>
-                                <td>Tiger Nixon</td>
-                                <td>System Architect</td>
-                                <td>Edinburgh</td>
-                                <td>61</td>
-                                <td>2011/04/25</td>
-                                <td>$320,800</td>
-                                <td style="display: flex;">
-                                    <button class="icon-btn edit-btn">
-                                        <i class="bi bi-pencil-square"></i>
-                                    </button>
-                                    <button class="icon-btn view-btn">
-                                        <i class="bi bi-eye"></i>
-                                    </button>
-                                    
-                                </td>
-                            </tr>
-                           
-                            
-                        </tbody>
-                    </table>
+    <!-- Bootstrap Modal -->
+    <div class="modal fade " id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl"> <!-- Added modal-xl for wider modal -->
+            <div class="modal-content ">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addUserModalLabel">Add New User</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- User Form -->
+                    <form id="addUserForm">
+                        
+                        <div class="row">
+                            <div class="form-group col-md-6  mb-3">
+                                <label for="firstName" class="form-label">First Name</label>
+                                <input type="text" class="form-control" id="firstName" placeholder="Enter first name">
+                            </div>
+                            <div class="form-group col-md-6  mb-3">
+                                <label for="lastName" class="form-label">Last Name</label>
+                            <input type="text" class="form-control" id="lastName" placeholder="Enter last name">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-6  mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" placeholder="Enter your email">
+                            </div>
+                            <div class="form-group col-md-6  mb-3">
+                                <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="password" placeholder="Enter password">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group col-md-6  mb-3">
+                                <label for="dob" class="form-label">Date Of Birth</label>
+                                <input type="date" class="form-control" id="dob" placeholder="Enter your DOB">
+                            </div>
+                            <div class="form-group col-md-6  mb-3">
+                                <label for="gender" class="form-label">Gender</label>
+                            <input type="text" class="form-control" id="gender" placeholder="Enter your gender">
+                            </div>
+                        </div>
+
+
+
+                        <div class="row">
+                            <div class="form-group col-md-6  mb-3">
+                                <label for="contact" class="form-label">Contact</label>
+                                <input type="number" class="form-control" id="contact" placeholder="Enter your number">
+                            </div>
+                            <div class="form-group col-md-6  mb-3">
+                                <label for="address" class="form-label">Address</label>
+                            <input type="text" class="form-control" id="address" placeholder="Enter your address">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
-<!-- Floating Plus Button -->
-
     </div>
-    <!-- /.container-fluid -->
+
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <!-- add button + -->
+        <button class="circle-btn" data-bs-toggle="modal" data-bs-target="#addUserModal">
+            <i class="bi bi-plus-lg text-light"></i>
+        </button>
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Position</th>
+                            <th>Office</th>
+                            <th>Age</th>
+                            <th>Start date</th>
+                            <th>Salary</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr>
+                            <td>Tiger Nixon</td>
+                            <td>System Architect</td>
+                            <td>Edinburgh</td>
+                            <td>61</td>
+                            <td>2011/04/25</td>
+                            <td>$320,800</td>
+                            <td><i class="bi bi-pencil-square"></i> <i class="bi bi-eye"></i></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!-- /.container-fluid -->
 
 
 
