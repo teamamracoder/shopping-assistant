@@ -4,6 +4,8 @@ from django.contrib import messages
 from django.contrib.auth.models import AnonymousUser
 from ..models import ProductCategoryModel
 from ..forms import ManageProductCategoryForm
+from django.http import JsonResponse
+
 
 class ManageProductCategoryListView(View):
     def get(self, request):
@@ -28,3 +30,14 @@ class ManageProductCategoryCreateView(View):
 
         messages.error(request, "Please correct the errors below.")
         return render(request, "admin/manage_product_category.html", {"form": form})
+    
+    
+class ManageProductCategoryDeleteView(View):
+    """Handles product category deletion."""
+
+    def post(self, request, pk, *args, **kwargs):
+        """Deletes a product category and redirects to the category list."""
+        category = get_object_or_404(ProductCategoryModel, pk=pk)
+        category.delete()
+        messages.success(request, "Product category deleted successfully!")
+        return redirect("manage_product_category_list")  # Ensure this is the correct URL name
