@@ -19,7 +19,7 @@ urlpatterns = [
     # path("products/delete/<int:pk>/", ManageProductDeleteView.as_view(), name="manage_product_delete"),
 
 
-    # Product URLs
+    # Product Category URLs
     path('product_categories/', ManageProductCategoryListView.as_view(), name='manage_product_category_list'),
     path("product_categories/create/", ManageProductCategoryCreateView.as_view(), name="manage_product_category_create"),
     # path("product_categories/edit/<int:pk>/", ManageProductCategoryEditView.as_view(), name="manage_product_category_edit"),
