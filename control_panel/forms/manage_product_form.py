@@ -24,5 +24,5 @@ class ManageProductForm(forms.ModelForm):
             'category': forms.Select(attrs={'class': 'form-control'}),
             'sub_category': forms.Select(attrs={'class': 'form-control'}),
             'others_category': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter other category'}),
-            'is_active': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            # 'is_active': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }

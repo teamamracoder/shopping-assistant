@@ -171,7 +171,7 @@
                             <th>Price</th>
                             <th>Discount (%)</th>
                             <th>Quantity</th>
-                            <th>Active</th>  
+                            {% comment %} <th>Active</th>   {% endcomment %}
                             <th>Actions</th>                      
                         </tr>
                     </thead>
@@ -183,13 +183,13 @@
                                 <td>${{ product.price }}</td>
                                 <td>{{ product.discount_per }}%</td>
                                 <td>{{ product.quantity }}</td>
-                                <td>
+                                {% comment %} <td>
                                     {% if product.is_active %}
                                         <span class="badge bg-success">Active</span>
                                     {% else %}
                                         <span class="badge bg-danger">Inactive</span>
                                     {% endif %}
-                                </td>
+                                </td> {% endcomment %}
                                 <td>
                                     <a href="{#% url 'manage_product_edit' product.id %#}" class="text-primary">
                                         <i class="bi bi-pencil-square"></i>
