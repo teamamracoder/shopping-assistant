@@ -1,9 +1,8 @@
 {% extends "../index.html" %}
-{% block title %} Product Sub Categories {% endblock %}
+{% block title %} Product Categories {% endblock %}
 {% block content %}
 
 <style>
-    /* Modal Header Styling */
     .modal-header {
         background-color: #007bff;
         color: white;
@@ -12,7 +11,6 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        position: relative;
     }
 
     .modal-title {
@@ -20,8 +18,6 @@
         flex-grow: 1;
         text-align: center;
     }
-
-
 
     .circle-btn {
         width: 50px;
@@ -35,8 +31,6 @@
         justify-content: center;
         font-size: 24px;
         cursor: pointer;
-        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-        transition: background-color 0.3s ease;
         position: fixed;
         bottom: 20px;
         right: 20px;
@@ -46,7 +40,6 @@
         background-color: darkblue;
     }
 
-    
     /*Modal Widht*/
     @media (min-width: 1200px) {
         .modal-dialog {
@@ -65,67 +58,59 @@
     .modal-title {
         flex-grow: 1;
         text-align: center;
-        color: black;
     }
 </style>
 
-<!-- Begin Page Content -->
 <div class="container-fluid">
+    <h1 class="h3 mb-2 text-gray-800">Product Categories</h1>
+    <p class="mb-4">Manage product categories in the system.</p>
 
-    <h1 class="h3 mb-2 text-gray-800">Product Sub Categories</h1>
-    <p class="mb-4">Manage product sub categories in the system.</p>
-
-    <!-- Add Button (Opens Modal) -->
-    <button class="circle-btn" data-bs-toggle="modal" data-bs-target="#addProductSubCategoryModal">
+    <!-- Add Button -->
+    <button class="circle-btn" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
         <i class="bi bi-plus-lg text-light"></i>
     </button>
 
     <!-- Bootstrap Modal -->
-    <div class="modal fade" id="addProductSubCategoryModal" tabindex="-1" aria-labelledby="addProductSubCategoryModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
+    <div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addProductSubCategoryModalLabel">Add Product Sub Category</h5>
+                    <h5 class="modal-title" id="addCategoryModalLabel">Add Product Category</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <!-- Django Form -->
-                    <form id="addProductSubCategoryForm" method="post" action="{% url 'manage_product_sub_category_create' %}" class="fw-bold">
+                    <form id="addCategoryForm" method="post" action="{% url 'manage_product_category_create' %}" class="fw-bold">
                         {% csrf_token %}
                         
                         <div class="row">
                             <div class="form-group col-md-6 mb-3">
-                                {{ form.category.label_tag }}
-                                {{ form.category }}
-                            </div>
-                            <div class="form-group col-md-6 mb-3">
                                 {{ form.name.label_tag }}
                                 {{ form.name }}
                             </div>
+                            <div class="form-group col-md-6 mb-3">
+                                {{ form.description.label_tag }}
+                                {{ form.description }}
+                            </div>
                         </div>
-                        <div class="form-group col-md-12 mb-3">
-                            {{ form.description.label_tag }}
-                            {{ form.description }}
-                        </div>
+                        {% comment %} <div class="form-group form-check col-md-12 mb-3">
+                            {{ form.is_active }}
+                            <label class="form-check-label" for="{{ form.is_active.id_for_label }}">Active</label>
+                        </div> {% endcomment %}
                         
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary">Save</button>
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         </div>
                     </form>
-                    
                 </div>
             </div>
         </div>
     </div>
 
-
-
- <!-- Product Sub Category Table -->
+    <!-- Product Category Table -->
     <div class="card shadow mb-4">
-
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Product Sub Categories</h6>
+            <h6 class="m-0 font-weight-bold text-primary">Product Categories</h6>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -133,30 +118,38 @@
                     <thead>
                         <tr>
                             <th>Name</th>
-                            <th>Category</th>
                             <th>Description</th>
-                            <th>Active</th>                        
+                            <th>Active</th>  
+                            <th>Actions</th>                      
                         </tr>
                     </thead>
                     <tbody>
-                        {% for subcategory in subcategories %}
+                        {% for category in categories %}
                             <tr>
-                                <td>{{ subcategory.name }}</td>
-                                <td>{{ subcategory.category }}</td>
-                                <td>{{ subcategory.description }}</td>
+                                <td>{{ category.name }}</td>
+                                <td>{{ category.description }}</td>
                                 <td>
-                                    <i class="bi bi-pencil-square"></i>
-                                    <i class="bi bi-trash text-danger"></i>
+                                    {% if category.is_active %}
+                                        <span class="badge bg-success">Active</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">Inactive</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{#% url 'manage_product_category_edit' category.id %#}" class="text-primary">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                    <a href="{#% url 'manage_product_category_delete' category.id %#}" class="text-danger">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
                                 </td>
                             </tr>
-                        {% endfor %} 
-                    </tbody>
-                    
+                        {% endfor %}
+                    </tbody>                   
                 </table>
             </div>
         </div>
     </div>
 </div>
-<!-- /.container-fluid -->
 
 {% endblock %}
