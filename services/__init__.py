@@ -3,7 +3,7 @@ from services.user_service import UserService
 from services.service_type_service import ServiceTypeModelService
 from services.service_service import ServiceService
 from services.service_booking_service import ServiceBookingModelService
-
+from services.manage_store_service import *
 
 class Service:
     _instance = None
