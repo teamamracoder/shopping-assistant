@@ -2,4 +2,4 @@
 from .home_view import IndexView
 from .manage_dashboard_view import ManageDashboardView
 from .manage_user_view import ManageUserView
-from .manage_product_sub_category_view import ManageProductSubCategoryListView
+from .manage_product_sub_category_view import ManageProductSubCategoryListView,ManageProductSubCategoryCreateView
