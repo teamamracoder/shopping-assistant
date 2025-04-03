@@ -17,5 +17,5 @@ urlpatterns = [
     path('store-category/create/', ManageCreateStoreCategoryView.as_view(), name='manage_create_store_category'),
     path("store-category/delete/<int:category_id>/", ManageDeleteStoreCategoryView.as_view(), name="delete_store_category"),
     path('toggle-store-category-status/<int:category_id>/', ToggleStoreCategoryStatus.as_view(), name='toggle_store_cetegory_status'),
-  
+    path('stores/category/update/<int:pk>/',ManageCategoryUpdateStoreView.as_view(), name='manage_update_store_category'),
 ]
