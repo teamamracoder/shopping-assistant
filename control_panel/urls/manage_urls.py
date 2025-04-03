@@ -1,6 +1,6 @@
 from django.urls import path
 
-from control_panel.views import IndexView,ManageDashboardView,ManageUserView,ManageProductSubCategoryListView,ManageProductSubCategoryCreateView,ManageProductSubCategoryDeleteView,ManageProductListView,ManageProductCreateView,ManageProductEditView,ManageProductDeleteView,ManageProductCategoryListView,ManageProductCategoryCreateView,ManageProductCategoryDeleteView
+from control_panel.views import IndexView,ManageDashboardView,ManageUserView,ManageProductSubCategoryListView,ManageProductSubCategoryCreateView,ManageProductSubCategoryDeleteView,ManageProductListView,ManageProductCreateView,ManageProductDeleteView,ManageProductCategoryListView,ManageProductCategoryCreateView,ManageProductCategoryDeleteView
 from control_panel.views import *
 
 urlpatterns = [
@@ -15,7 +15,7 @@ urlpatterns = [
     # Product URLs
     path('products/', ManageProductListView.as_view(), name='manage_product_list'),
     path("products/create/", ManageProductCreateView.as_view(), name="manage_product_create"),
-    path("products/edit/<int:pk>/", ManageProductEditView.as_view(), name="manage_product_edit"),
+    # path("products/edit/<int:pk>/", ManageProductEditView.as_view(), name="manage_product_edit"),
     path("products/delete/<int:pk>/", ManageProductDeleteView.as_view(), name="manage_product_delete"),
 
     # Product Category URLs

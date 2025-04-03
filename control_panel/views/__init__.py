@@ -5,5 +5,5 @@ from .manage_user_view import ManageUserView
 from .manage_store_view import *
 
 from .manage_product_sub_category_view import ManageProductSubCategoryListView,ManageProductSubCategoryCreateView,ManageProductSubCategoryDeleteView
-from .manage_product_view import ManageProductListView, ManageProductCreateView,ManageProductEditView,ManageProductDeleteView
+from .manage_product_view import ManageProductListView, ManageProductCreateView,ManageProductDeleteView
 from .manage_product_category_view import ManageProductCategoryListView, ManageProductCategoryCreateView,ManageProductCategoryDeleteView

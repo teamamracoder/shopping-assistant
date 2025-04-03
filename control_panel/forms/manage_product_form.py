@@ -1,15 +1,22 @@
 from django import forms
 from ..models import ProductsModel, ProductCategoryModel, ProductSubCategoryModel
+# from django.core.validators import MinLengthValidator, MaxLengthValidator, RegexValidator, MinValueValidator, MaxValueValidator
+
 
 class ManageProductForm(forms.ModelForm):
     """Form for updating a product"""
 
+    # class Meta:
+    #     model = ProductsModel
+    #     fields = [
+    #         'name', 'product_code', 'description', 'price', 'discount_per', 'quantity', 
+    #         'maf_date', 'exp_date', 'image_urls', 'category', 'sub_category', 'others_category', 'is_active'
+    #     ]
+    
     class Meta:
         model = ProductsModel
-        fields = [
-            'name', 'product_code', 'description', 'price', 'discount_per', 'quantity', 
-            'maf_date', 'exp_date', 'image_urls', 'category', 'sub_category', 'others_category', 'is_active'
-        ]
+        fields = '__all__'  # Ensure all fields are included
+
 
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter product name'}),
