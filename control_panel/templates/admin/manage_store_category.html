@@ -1,0 +1,343 @@
+{% extends "../index.html" %} {% block title %} Store Category {% endblock %} {%
+block content %} {% load static %}
+
+<link
+  href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+  rel="stylesheet"
+/>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<meta name="csrf-token" content="{{ csrf_token }}" />
+<script>
+  function toggleStoreStatus(storeId, btnElement) {
+    // Send AJAX POST request to toggle store status
+    fetch(`/toggle-store-status/${storeId}/`, {
+      method: "POST",
+      headers: {
+        "X-CSRFToken": getCookie("csrftoken"), // Ensure CSRF token is included
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        const iconElement = btnElement.querySelector("i");
+        if (data.is_active) {
+          iconElement.classList.remove("bi-eye-slash-fill");
+          iconElement.classList.add("bi-eye");
+        } else {
+          iconElement.classList.remove("bi-eye");
+          iconElement.classList.add("bi-eye-slash-fill");
+        }
+      })
+      .catch((error) => console.error("Error:", error));
+  }
+
+  // Function to retrieve CSRF token from cookies
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+      const cookies = document.cookie.split(";");
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        // Check if this cookie string begins with the desired name
+        if (cookie.substring(0, name.length + 1) === name + "=") {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+</script>
+
+<style>
+  /* Floating Button Styling */
+  .floating-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: blue;
+    color: white;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    cursor: pointer;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    z-index: 1000;
+  }
+
+  .floating-btn:hover {
+    background-color: darkblue;
+    transform: scale(1.1);
+  }
+  /* Common styles for icons */
+  /* Common button styles */
+  .icon-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 0 5px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Edit button (red) */
+  .edit-btn {
+    background-color: red;
+    color: white;
+  }
+
+  .edit-btn:hover {
+    background-color: darkred;
+    transform: scale(1.1);
+  }
+
+  /* View button (blue) */
+  .view-btn {
+    background-color: blue;
+    color: white;
+  }
+
+  .view-btn:hover {
+    background-color: darkblue;
+    transform: scale(1.1);
+  }
+</style>
+<!-- Bootstrap XXL Modal (Using Custom CSS) -->
+<!-- Bootstrap XXL Modal (Using Custom CSS) -->
+
+<!-- Custom CSS for Larger Modal -->
+<style>
+  .custom-modal-xxl {
+    max-width: 95%;
+  }
+  /* Modal Header */
+  .modal-header {
+    background-color: #cecfd1;
+    color: white;
+    border-bottom: 2px solid #c0c0c0;
+    padding: 15px;
+  }
+
+  /* Modal Title */
+  .modal-title {
+    font-weight: bold;
+  }
+
+  /* Modal Body */
+  .modal-body {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 5px;
+  }
+
+  /* Labels Styling */
+  .modal-body label {
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px;
+    display: block;
+  }
+
+  /* Input Fields */
+  .modal-body input,
+  .modal-body select,
+  .modal-body textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    transition: 0.3s ease-in-out;
+  }
+
+  /* Input Fields Focus */
+  .modal-body input:focus,
+  .modal-body select:focus,
+  .modal-body textarea:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  }
+
+  /* Button Styling */
+  .btn-primary {
+    background-color: #007bff;
+    border: none;
+    padding: 10px 15px;
+    font-weight: bold;
+    transition: 0.3s ease-in-out;
+  }
+
+  .btn-primary:hover {
+    background-color: #0056b3;
+  }
+
+  .btn-secondary {
+    padding: 10px 15px;
+    font-weight: bold;
+    transition: 0.3s ease-in-out;
+  }
+
+  /* Responsive Form Elements */
+  @media (max-width: 768px) {
+    .modal-body .row .col-md-4 {
+      flex: 0 0 100%;
+      max-width: 100%;
+      margin-bottom: 10px;
+    }
+  }
+</style>
+
+<div
+  class="modal fade"
+  id="storeModal"
+  tabindex="-1"
+  aria-labelledby="storeModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-xl custom-modal-xxl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="storeModalLabel">Add New Store Category</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form
+          method="POST"
+          action="{% url 'manage_create_store_category' %}"
+          id="storeCategoryForm"
+        >
+          {% csrf_token %}
+          <div class="row">
+            <div class="col-md-6">
+              <label for="id_name">Category Name</label>
+              {{ form.name }}
+            </div>
+          </div>
+          <div class="mt-3 text-end">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button type="submit" class="btn btn-primary">Save Category</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% if form.errors %}
+<div class="alert alert-danger">
+  <strong>Please correct the errors below:</strong>
+  <ul>
+    {% for field, errors in form.errors.items %} {% for error in errors %}
+    <li>{{ field|capfirst }}: {{ error }}</li>
+    {% endfor %} {% endfor %}
+  </ul>
+</div>
+{% endif %}
+
+<!-- Begin Page Content -->
+<div class="container-fluid">
+  <!-- Page Heading -->
+  <h1 class="h3 mb-2 text-gray-800">Tables</h1>
+
+  <!-- DataTales Example -->
+  <div class="card shadow mb-4">
+    <div class="card-header py-3">
+      <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table
+          class="table table-bordered"
+          id="dataTable"
+          width="100%"
+          cellspacing="0"
+        >
+          <thead>
+            <tr>
+              <th>Name</th>
+
+              <th>Action</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {% for category in store_category %}
+
+            <tr>
+              <td>{{ category.name }}</td>
+
+              <td style="display: flex">
+                <button
+                  class="icon-btn edit-btn"
+                  data-bs-toggle="modal"
+                  data-bs-target="#editModal{{ category.id }}"
+                >
+                  <i class="bi bi-pencil-square"></i>
+                </button>
+
+                <form
+                  method="post"
+                  action="{% url 'toggle_store_cetegory_status' category.id %}"
+                  style="display: inline"
+                >
+                  {% csrf_token %}
+                  <button type="submit" class="icon-btn view-btn">
+                    <i
+                      class="bi {% if category.is_active %}bi-eye{% else %}bi-eye-slash-fill{% endif %}"
+                    ></i>
+                  </button>
+                </form>
+
+                <a href="{% url 'delete_store_category' category.id %}"
+                  class="icon-btn delete-btn"
+                  onclick="return confirm('Are you sure you want to delete this category?');">
+                  <i class="bi bi-trash3"></i>
+                </a>
+              </td>
+            </tr>
+
+            <!-- Edit Store Modal -->
+
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <!-- Floating Plus Button -->
+</div>
+<!-- /.container-fluid -->
+
+<button
+  class="floating-btn"
+  type="button"
+  data-bs-toggle="modal"
+  data-bs-target="#storeModal"
+>
+  <i class="bi bi-plus-lg"></i>
+</button>
+
+{% endblock %}
