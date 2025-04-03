@@ -1,8 +1,9 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from ..forms import ManageProductSubCategoryForm
 from ..models import ProductSubCategoryModel  # Import the ProductSubCategory model
 from django.contrib import messages
+from django.http import JsonResponse
 
 
 class ManageProductSubCategoryListView(View):
@@ -35,3 +36,14 @@ class ManageProductSubCategoryCreateView(View):
             "form": form,
             "subcategories": subcategories
         })
+
+
+
+class ManageProductSubCategoryDeleteView(View):
+    """Handles product subcategory deletion."""
+
+    def post(self, request, pk, *args, **kwargs):
+        subcategories = get_object_or_404(ProductSubCategoryModel, pk=pk)
+        subcategories.delete()
+        messages.success(request, "Product Sub Category deleted successfully!")
+        return redirect("manage_product_sub_category_list")  # Ensure this URL name is correct

@@ -145,8 +145,23 @@
                                 <td>{{ subcategory.category }}</td>
                                 <td>{{ subcategory.description }}</td>
                                 <td>
-                                    <i class="bi bi-pencil-square"></i>
-                                    <i class="bi bi-trash text-danger"></i>
+                                    <td>
+                                        <a href="{#% url 'manage_product_sub_category_edit' subcategory.id %#}" class="text-primary">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </a>
+                                        
+                                        <form method="post" action="{% url 'manage_product_sub_category_delete' subcategory.id %}" style="display:inline;">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn text-danger btn-sm"
+                                                onclick="return confirm('Are you sure you want to delete this sub-category?');">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                        <a href="#" class="text-primary">
+                                            <i class="bi bi-eye-slash"></i>                                    
+                                        </a>  
+                                    </td>
+                                    
                                 </td>
                             </tr>
                         {% endfor %} 
