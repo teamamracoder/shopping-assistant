@@ -1,7 +1,9 @@
 from django.urls import path
 from control_panel.views import IndexView,ManageDashboardView,ManageUserCreateView,ManageUserListView,ManageUserDeleteView,ManageUserUpdateView
 
+from control_panel.views import IndexView,ManageDashboardView,ManageUserView,ManageProductSubCategoryListView,ManageProductSubCategoryCreateView,ManageProductCategoryEditView,ManageProductSubCategoryDeleteView,ManageProductListView,ManageProductCreateView,ManageProductDeleteView,ManageProductCategoryListView,ManageProductCategoryCreateView,ManageProductCategoryDeleteView
 from control_panel.views import *
+
 urlpatterns = [
     path('', IndexView.as_view(), name='home'),
     path('dashboard/', ManageDashboardView.as_view(), name='manage_dashboard'),
@@ -21,5 +23,6 @@ urlpatterns = [
     path('store-category/create/', ManageCreateStoreCategoryView.as_view(), name='manage_create_store_category'),
     path("store-category/delete/<int:category_id>/", ManageDeleteStoreCategoryView.as_view(), name="delete_store_category"),
     path('toggle-store-category-status/<int:category_id>/', ToggleStoreCategoryStatus.as_view(), name='toggle_store_cetegory_status'),
-    
+  
+
 ]
