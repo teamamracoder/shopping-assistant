@@ -10,6 +10,10 @@
     <meta name="author" content="">
 
     <title>SB Admin 2 - Dashboard</title>
+
+    <!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <!-- Custom fonts for this template-->
     <link rel="stylesheet" href="{% static 'control_panel/vendor/fontawesome-free/css/all.min.css' %}">
     <link
@@ -28,6 +32,8 @@
 
  <!-- /table css -->
 
+<!-- modal link-->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
      <!-- Bootstrap core JavaScript-->
      <script src="{% static 'control_panel/vendor/jquery/jquery.min.js' %}"></script>
@@ -51,6 +57,8 @@
      <script src="{% static 'control_panel/vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
      <script src="{% static 'control_panel/js/demo/datatables-demo.js' %}"></script>
      
+     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 
 </head>
 
@@ -111,16 +119,14 @@
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
                     aria-expanded="true" aria-controls="collapseUtilities">
                     <i class="fas fa-fw fa-wrench"></i>
-                    <span>Utilities</span>
+                    <span>Stores</span>
                 </a>
                 <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Custom Utilities:</h6>
-                        <a class="collapse-item" href="utilities-color.html">Colors</a>
-                        <a class="collapse-item" href="utilities-border.html">Borders</a>
-                        <a class="collapse-item" href="utilities-animation.html">Animations</a>
-                        <a class="collapse-item" href="utilities-other.html">Other</a>
+                        <a class="collapse-item" href="/control-panel/stores/">Store List</a>
+                        <a class="collapse-item" href="/control-panel/stores/category/">Store Category</a>
                     </div>
                 </div>
             </li>
@@ -138,14 +144,14 @@
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
                     aria-expanded="true" aria-controls="collapsePages">
                     <i class="fas fa-fw fa-folder"></i>
-                    <span>Pages</span>
+                    <span>Products</span>
                 </a>
                 <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Login Screens:</h6>
-                        <a class="collapse-item" href="login.html">Login</a>
-                        <a class="collapse-item" href="register.html">Register</a>
-                        <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
+                        <a class="collapse-item" href="/control-panel/">Porduct List</a>
+                        <a class="collapse-item" href="/control-panel/">Product Category List</a>
+                        <a class="collapse-item" href="/control-panel/">Product SubCategory List</a>
                         <div class="collapse-divider"></div>
                         <h6 class="collapse-header">Other Pages:</h6>
                         <a class="collapse-item" href="404.html">404 Page</a>
@@ -400,6 +406,7 @@
                     <!-- Main  -->
                     {% endblock %}
                 </div>
+
                 <!-- /.container-fluid -->
 
             </div>
@@ -446,7 +453,9 @@
         </div>
     </div>
 
-   
+   <!-- Bootstrap JS (for modal functionality) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 
 </html>

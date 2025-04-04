@@ -1,4 +1,4 @@
-from rest_framework import serializers
+from rest_framework import serializers # type: ignore
 from control_panel.models.service_booking_model import ServiceBookingModel
 
 class ServiceBookingModelSerializer(serializers.Serializer):
