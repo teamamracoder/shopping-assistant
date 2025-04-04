@@ -8,13 +8,14 @@ from django.urls import reverse_lazy
 from django.views.generic import UpdateView
 
 
+#List
 class ManageProductSubCategoryListView(View):
     def get(self, request):
         subcategories = ProductSubCategoryModel.objects.all()
         form = ManageProductSubCategoryForm()
         return render(request, 'admin/manage_product_sub_category.html', {"subcategories": subcategories, "form": form})
 
-
+#Create
 class ManageProductSubCategoryCreateView(View):
     def get(self, request):
         """Handle GET request before data retrieval."""
@@ -40,6 +41,7 @@ class ManageProductSubCategoryCreateView(View):
         })
 
 
+#Update
 class ManageProductSubCategoryEditView(UpdateView):
     model = ProductSubCategoryModel
     form_class = ManageProductSubCategoryForm
@@ -51,7 +53,7 @@ class ManageProductSubCategoryEditView(UpdateView):
         return super().post(request, *args, **kwargs)
 
 
-
+#Delete
 class ManageProductSubCategoryDeleteView(View):
     """Handles product subcategory deletion."""
 
