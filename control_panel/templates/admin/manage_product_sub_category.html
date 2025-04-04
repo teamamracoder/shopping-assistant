@@ -69,6 +69,44 @@
     }
 </style>
 
+
+
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const editButtons = document.querySelectorAll(".edit-btn");
+        const form = document.getElementById("addProductSubCategoryForm");
+    
+        editButtons.forEach(button => {
+            button.addEventListener("click", () => {
+                const id = button.getAttribute("data-id");
+                const name = button.getAttribute("data-name");
+                const description = button.getAttribute("data-description");
+                const category = button.getAttribute("data-category");
+    
+                // Fill form fields
+                document.getElementById("id_name").value = name;
+                document.getElementById("id_description").value = description;
+                document.getElementById("id_category").value = category;
+                document.getElementById("subcategory_id").value = id;
+    
+                // Change form action to update view
+                form.action = `/subcategories/${id}/edit/`;
+            });
+        });
+    
+        // Reset modal for "Add" button
+        document.querySelector(".circle-btn").addEventListener("click", () => {
+            form.reset();
+            form.action = `{% url 'manage_product_sub_category_create' %}`;
+            document.getElementById("subcategory_id").value = "";
+        });
+    });
+    </script>
+    
+
+
 <!-- Begin Page Content -->
 <div class="container-fluid">
 
@@ -120,7 +158,6 @@
     </div>
 
 
-
  <!-- Product Sub Category Table -->
     <div class="card shadow mb-4">
 
@@ -144,10 +181,11 @@
                                 <td>{{ subcategory.name }}</td>
                                 <td>{{ subcategory.category }}</td>
                                 <td>{{ subcategory.description }}</td>
-                                <td>
                                     <td>
-                                        <a href="{#% url 'manage_product_sub_category_edit' subcategory.id %#}" class="text-primary">
-                                            <i class="bi bi-pencil-square"></i>
+                                        <a href="#" class="text-primary edit-btn" data-id="{{ subcategory.id }}" data-name="{{ subcategory.name }}" data-description="{{ subcategory.description }}" data-category="{{ subcategory.category.id }}"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#addProductSubCategoryModal">
+                                        <i class="bi bi-pencil-square"></i>
                                         </a>
                                         
                                         <form method="post" action="{% url 'manage_product_sub_category_delete' subcategory.id %}" style="display:inline;">
@@ -162,7 +200,6 @@
                                         </a>  
                                     </td>
                                     
-                                </td>
                             </tr>
                         {% endfor %} 
                     </tbody>

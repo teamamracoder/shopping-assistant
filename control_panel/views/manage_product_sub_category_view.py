@@ -4,6 +4,8 @@ from ..forms import ManageProductSubCategoryForm
 from ..models import ProductSubCategoryModel  # Import the ProductSubCategory model
 from django.contrib import messages
 from django.http import JsonResponse
+from django.urls import reverse_lazy
+from django.views.generic import UpdateView
 
 
 class ManageProductSubCategoryListView(View):
@@ -36,6 +38,17 @@ class ManageProductSubCategoryCreateView(View):
             "form": form,
             "subcategories": subcategories
         })
+
+
+class ManageProductSubCategoryEditView(UpdateView):
+    model = ProductSubCategoryModel
+    form_class = ManageProductSubCategoryForm
+    template_name = 'your_template.html'
+    success_url = reverse_lazy('manage_product_sub_category_list')
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super().post(request, *args, **kwargs)
 
 
 
