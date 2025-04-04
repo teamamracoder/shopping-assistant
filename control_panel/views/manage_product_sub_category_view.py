@@ -41,18 +41,46 @@ class ManageProductSubCategoryCreateView(View):
         })
 
 
-#Update
-class ManageProductSubCategoryEditView(UpdateView):
-    model = ProductSubCategoryModel
-    form_class = ManageProductSubCategoryForm
-    template_name = 'your_template.html'
-    success_url = reverse_lazy('manage_product_sub_category_list')
+# class ManageProductSubCategoryEditView(View):
+#     def post(self, request, *args, **kwargs):
+#         subcategory_id = request.POST.get('subcategory_id')  # Corrected key name
+#         instance = None
 
+#         if subcategory_id:
+#             instance = get_object_or_404(ProductSubCategoryModel, pk=subcategory_id)
+
+#         form = ManageProductSubCategoryForm(request.POST, instance=instance)
+
+#         if form.is_valid():
+#             form.save()
+#             return redirect('manage_product_sub_category_list')
+#         else:
+#             return render(request, 'control_panel/product_subcategory_list.html', {
+#                 'form': form,
+#                 'subcategories': ProductSubCategoryModel.objects.all(),
+#                 'errors': form.errors
+#             })
+
+
+class ManageProductSubCategoryEditView(View):
     def post(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        return super().post(request, *args, **kwargs)
+        subcategory_id = kwargs.get('pk') or request.POST.get('subcategory_id')
+        instance = None
 
+        if subcategory_id:
+            instance = get_object_or_404(ProductSubCategoryModel, pk=subcategory_id)
 
+        form = ManageProductSubCategoryForm(request.POST, instance=instance)
+
+        if form.is_valid():
+            form.save()
+            return redirect('manage_product_sub_category_list')
+        else:
+            return render(request, 'control_panel/product_subcategory_list.html', {
+                'form': form,
+                'subcategories': ProductSubCategoryModel.objects.all(),
+                'errors': form.errors
+            })
 #Delete
 class ManageProductSubCategoryDeleteView(View):
     """Handles product subcategory deletion."""
