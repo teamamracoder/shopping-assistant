@@ -1,10 +1,9 @@
 {% extends "../index.html" %}
 {% block title %} Users {% endblock %}
 {% block content %}
-{% load static %}
 
 <style>
-    .modal-header {
+    /* .modal-header {
         background-color: #007bff;
         color: white;
         border-top-left-radius: 5px;
@@ -12,13 +11,8 @@
         display: flex;
         justify-content: center;
         align-items: center;
-    }
-
-    .modal-title {
-        font-weight: bold;
-        flex-grow: 1;
-        text-align: center;
-    }
+        position: relative;
+    } */
 
     .circle-btn {
         width: 50px;
@@ -32,6 +26,8 @@
         justify-content: center;
         font-size: 24px;
         cursor: pointer;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        transition: background-color 0.3s ease;
         position: fixed;
         bottom: 20px;
         right: 20px;
@@ -41,8 +37,7 @@
         background-color: darkblue;
     }
 
-
-    /*Modal Widht*/
+    /* Modal Width */
     @media (min-width: 1200px) {
         .modal-dialog {
             max-width: 90%; /* Adjust width */
@@ -61,93 +56,144 @@
         flex-grow: 1;
         text-align: center;
     }
+    
 </style>
-
-
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        document.querySelectorAll('.edit-user-btn').forEach(button => {
-            button.addEventListener('click', function () {
-                const userId = this.dataset.id;
+    const editButtons = document.querySelectorAll('.edit-btn');
+    const addButton = document.querySelector('.circle-btn'); // Add button
+    const form = document.getElementById('addUserForm');
+    const modalLabel = document.getElementById('addUserModalLabel');
+    
+    // Clear form fields when clicking the "Add" button
+    addButton.addEventListener('click', function () {
+        form.reset();  // Reset the form fields
+        modalLabel.textContent = "Add User";  // Change modal title to "Add User"
+        form.action = "{% url 'manage_user_create' %}";  // Set form action to create (or reset the action URL)
+    });
+    
+    // Edit button functionality
+    editButtons.forEach(btn => {
+        btn.addEventListener('click', function () {
+            form.action = this.getAttribute('data-action-url');  // Set form action for edit
+            
+            modalLabel.textContent = "Edit User";  // Change modal title to "Edit User"
 
-                fetch(`/get-user/${userId}/`)
-                    .then(response => response.json())
-                    .then(data => {
-                        // Fill the form
-                        for (const field in data) {
-                            const input = document.querySelector(`#addUserForm [name="${field}"]`);
-                            if (input) {
-                                input.value = data[field];
-                            }
-                        }
+            // Set form field values with the user's existing data
+            form.elements['first_name'].value = this.getAttribute('data-first-name');
+            form.elements['last_name'].value = this.getAttribute('data-last-name');
+            form.elements['email'].value = this.getAttribute('data-email');
+            form.elements['dob'].value = this.getAttribute('data-dob');
+            form.elements['gender'].value = this.getAttribute('data-gender');
+            form.elements['phone'].value = this.getAttribute('data-phone');
+            form.elements['address'].value = this.getAttribute('data-address');
+            form.elements['location'].value = this.getAttribute('data-location');
+            form.elements['city'].value = this.getAttribute('data-city');
+            form.elements['district'].value = this.getAttribute('data-district');
+            form.elements['state'].value = this.getAttribute('data-state');
+            form.elements['pincode'].value = this.getAttribute('data-pincode');
 
-                        // Update form action to point to update route
-                        document.querySelector('#addUserForm').action = `/update-user/${userId}/`;
-
-                        // Show the modal
-                        const modal = new bootstrap.Modal(document.getElementById('addUserModal'));
-                        modal.show();
-                    });
-            });
+            // Show modal
+            new bootstrap.Modal(document.getElementById('addUserModal')).show();
         });
     });
+});
+
 </script>
 
-
-<!-- Begin Page Content -->
 <div class="container-fluid">
 
-    <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">Tables</h1>
-    <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
-        For more information about DataTables, please visit the <a target="_blank"
-            href="https://datatables.net">official DataTables documentation</a>.</p>
+    <h1 class="h3 mb-2 text-gray-800">Users</h1>
+    <p class="mb-4">Manage users in the system.</p>
+
+    <!-- Add Button (Opens Modal) -->
+    <button class="circle-btn" data-bs-toggle="modal" data-bs-target="#addUserModal">
+        <i class="bi bi-plus-lg text-light"></i>
+    </button>
 
     <!-- Bootstrap Modal -->
-     <!-- user create -->
     <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addUserModalLabel">Add User</h5>
+                    <h5 class="modal-title fw-bold" id="addUserModalLabel">Add User</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <!-- Django Form -->
-                    <form id="addUserForm" method="post">
+                    <form id="addUserForm" method="post" action="{% url 'manage_user_create' %}" class="fw-bold">
                         {% csrf_token %}
                         <div class="row">
-                            <div class="form-group col-md-4 mb-3">{{ form.first_name.label_tag }} {{ form.first_name }}</div>
-                            <div class="form-group col-md-4 mb-3">{{ form.last_name.label_tag }} {{ form.last_name }}</div>
-                            <div class="form-group col-md-4 mb-3">{{ form.email.label_tag }} {{ form.email }}</div>
-                        </div>
-                        <div class="row">
-                            <div class="form-group col-md-4 mb-3">{{ form.dob.label_tag }} {{ form.dob }}</div>
-                            <div class="form-group col-md-4 mb-3">{{ form.gender.label_tag }} 
-                                <select id="gender" name="gender" class="form-select">
-                                    <!-- Default "None" option -->
-                                    <option value="" selected>Select Gender</option>
-                                    {% for gender in choices_gender %}
-                                        {% for name, value in gender.items %}
-                                            <option value="{{ name }}" {% if user.gender == name %}selected{% endif %}>{{ value }}</option>
-                                        {% endfor %}
-                                    {% endfor %}
-                                </select>
-                                </div>
-                            <div class="form-group col-md-4 mb-3">{{ form.contact.label_tag }} {{ form.contact }}</div>
+                            <div class="form-group col-md-6 mb-3">
+                                {{ form.first_name.label_tag }}<span class="text-danger">*</span>
+                                {{ form.first_name }}
+                            </div>
+                            <div class="form-group col-md-6 mb-3">
+                                {{ form.last_name.label_tag }}<span class="text-danger">*</span>
+                                {{ form.last_name }}
+                            </div>
                         </div>
 
                         <div class="row">
-                            <div class="form-group col-md-4 mb-3">{{ form.address.label_tag }} {{ form.address }}</div>
-                            <div class="form-group col-md-4 mb-3">{{ form.location.label_tag }} {{ form.location }}</div>
-                            <div class="form-group col-md-4 mb-3">{{ form.city.label_tag }} {{ form.city }}</div>
+                            <div class="form-group col-md-6 mb-3">
+                                {{ form.email.label_tag }}<span class="text-danger">*</span>
+                                {{ form.email }}
+                            </div>
+                            <div class="form-group col-md-6 mb-3">
+                                {{ form.dob.label_tag }}<span class="text-danger">*</span>
+                                {{ form.dob }}
+                            </div>
                         </div>
                         <div class="row">
-                            <div class="form-group col-md-4 mb-3">{{ form.district.label_tag }} {{ form.district }}</div>
-                            <div class="form-group col-md-4 mb-3">{{ form.state.label_tag }} {{ form.state }}</div>
-                            <div class="form-group col-md-4 mb-3">{{ form.pincode.label_tag }} {{ form.pincode }}</div>
+                            <!-- <div class="form-group col-md-6 mb-3">
+                                {{ form.gender.label_tag }}
+                                <select id="gender" name="gender" class="form-select">
+                                    <option value="" selected>Select Gender</option>
+                                    {% for value, name in choices_gender %}
+                                        <option value="{{ value }}" {% if user.gender == value %}selected{% endif %}>{{ name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div> -->
+                            <div class="form-group col-md-6 mb-3">
+                                {{ form.gender.label_tag }}<span class="text-danger">*</span>
+                                {{ form.gender }}
+                            </div>
+                            <div class="form-group col-md-4 mb-3">{{ form.phone.label_tag }} {{ form.phone }}</div>
                         </div>
+
+                        <div class="row">
+                            <div class="form-group col-md-6 mb-3">
+                                {{ form.address.label_tag }}<span class="text-danger">*</span>
+                                {{ form.address }}
+                            </div>
+                            <div class="form-group col-md-6 mb-3">
+                                {{ form.location.label_tag }}<span class="text-danger">*</span>
+                                {{ form.location }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group col-md-6 mb-3">
+                                {{ form.city.label_tag }}<span class="text-danger">*</span>
+                                {{ form.city }}
+                            </div>
+                            <div class="form-group col-md-6 mb-3">
+                                {{ form.district.label_tag }}<span class="text-danger">*</span>
+                                {{ form.district }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group col-md-6 mb-3">
+                                {{ form.state.label_tag }}<span class="text-danger">*</span>
+                                {{ form.state }}
+                            </div>
+                            <div class="form-group col-md-6 mb-3">
+                                {{ form.pincode.label_tag }}<span class="text-danger">*</span>
+                                {{ form.pincode }}
+                            </div>
+                        </div>
+
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary">Save</button>
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -158,74 +204,75 @@
         </div>
     </div>
 
-
-    <!-- DataTales Example -->
+    <!-- User Table -->
     <div class="card shadow mb-4">
-        <!-- add button + -->
-        <button class="circle-btn" data-bs-toggle="modal" data-bs-target="#addUserModal">
-            <i class="bi bi-plus-lg text-light"></i>
-        </button>
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
+            <h6 class="m-0 font-weight-bold text-primary">Users</h6>
         </div>
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
-                            <th>Full Name</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
                             <th>Email</th>
-                            <th>Gender</th>
-                            <th>DOB</th>
-                            <th>Address</th>
-                            <th>location</th>
-                            <th>city</th>
-                            <th>district</th>
-                            <th>state</th>
-                            <th>pincode</th>
-                            <th>perform actions</th>
+                            <th>Contact</th>
+                            <th>Location</th>
+                            <th>Actions</th>                      
                         </tr>
                     </thead>
-                    {% for user in users %}
                     <tbody>
-                        <tr>
-                            <td>{{user.first_name}} {{user.last_name}}</td>
-                            <td>{{user.email}}</td>
-                            <td>{{user.gender}}</td>
-                            <td>{{user.dob}}</td>
-                            <td>{{user.address}}</td>
-                            <td>{{user.location}}</td>
-                            <td>{{user.city}}</td>
-                            <td>{{user.diatrict}}</td>
-                            <td>{{user.state}}</td>
-                            <td>{{user.pincode}}</td>
-                            <td>
-                                <!-- Update Button -->
-                                <a href="" class="text-primary edit-user-btn" data-id="{{ user.id }}" data-action-url="{% url 'manage_user_update' user.id %}">
-                                    <i class="bi bi-pencil-square"></i>                           
-                                </a>
-                                
-                                <!-- Delete Button -->
-                                <form method="post" action="{% url 'manage_user_delete' user.id %}">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn text-danger">  
+                        {% for user in users %}
+                            <tr>
+                                <td>{{ user.first_name }}</td>
+                                <td>{{ user.last_name }}</td>
+                                <td>{{ user.email }}</td>
+                                <td>{{ user.phone }}</td>
+                                <td>{{ user.location }}</td>
+                                <td>
+                                    <a href="#" class="text-primary edit-btn"
+                                    data-id="{{ user.id }}"
+                                    data-first-name="{{ user.first_name }}"
+                                    data-last-name="{{ user.last_name }}"
+                                    data-email="{{ user.email }}"
+                                    data-dob="{{ user.dob }}"
+                                    data-gender="{{ user.gender }}"
+                                    data-phone="{{ user.phone }}"
+                                    data-address="{{ user.address }}"
+                                    data-location="{{ user.location }}"
+                                    data-city="{{ user.city }}"
+                                    data-district="{{ user.district }}"
+                                    data-state="{{ user.state }}"
+                                    data-pincode="{{ user.pincode }}"
+                                    data-action-url="{% url 'manage_user_update' user.id %}">
+                                     <i class="bi bi-pencil-square"></i>
+                                 </a>
+                                 
+                                    {% if user.id %}
+                                    <form method="post" action="{% url 'manage_user_delete' user.id %}" style="display:inline;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn text-danger btn-sm"
+                                            onclick="return confirm('Are you sure you want to delete this user?');">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                {% else %}
+                                    <button class="btn btn-danger btn-sm" disabled>
                                         <i class="bi bi-trash"></i>
                                     </button>
-                                </form>
+                                {% endif %}
                                 <a href="#" class="text-primary">
                                     <i class="bi bi-eye-slash"></i>                                    
-                                </a>
-                            </td>
-                        </tr>
+                                </a>  
+                                </td>
+                            </tr>
+                        {% endfor %}
                     </tbody>
-                    {% endfor %}
                 </table>
             </div>
         </div>
     </div>
 </div>
-<!-- Add Button -->
-<button class="circle-btn" data-bs-toggle="modal" data-bs-target="#addUserModal">
-    <i class="bi bi-plus-lg text-light"></i>
-</button>
+
 {% endblock %}
