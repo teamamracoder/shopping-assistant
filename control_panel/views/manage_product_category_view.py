@@ -5,6 +5,10 @@ from django.contrib.auth.models import AnonymousUser
 from ..models import ProductCategoryModel
 from ..forms import ManageProductCategoryForm
 from django.http import JsonResponse
+from django.urls import reverse_lazy
+from django.views.generic import UpdateView
+
+
 
 
 class ManageProductCategoryListView(View):
@@ -13,6 +17,7 @@ class ManageProductCategoryListView(View):
         form = ManageProductCategoryForm()
         return render(request, 'admin/manage_product_category.html', {"categories": categories, "form": form})
 
+# Create
 class ManageProductCategoryCreateView(View):
     def post(self, request):
         form = ManageProductCategoryForm(request.POST)
@@ -30,8 +35,19 @@ class ManageProductCategoryCreateView(View):
 
         messages.error(request, "Please correct the errors below.")
         return render(request, "admin/manage_product_category.html", {"form": form})
+
+
+# Update
+class ManageProductCategoryEditView(UpdateView):
+    model = ProductCategoryModel
+    form_class = ManageProductCategoryForm
+    success_url = reverse_lazy('manage_product_category_list')
+
+    def form_invalid(self, form):
+        categories = ProductCategoryModel.objects.all()
+        return self.render_to_response(self.get_context_data(form=form, categories=categories))
     
-    
+# Delete
 class ManageProductCategoryDeleteView(View):
     """Handles product category deletion."""
 

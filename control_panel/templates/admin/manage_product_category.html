@@ -61,6 +61,42 @@
     }
 </style>
 
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const editButtons = document.querySelectorAll('.edit-category-btn');
+        const form = document.getElementById('addCategoryForm');
+        const nameInput = document.getElementById('id_name');
+        const descriptionInput = document.getElementById('id_description');
+        const modalTitle = document.getElementById('addCategoryModalLabel');
+
+        editButtons.forEach(button => {
+            button.addEventListener('click', function (event) {
+                event.preventDefault(); // prevent default anchor click behavior
+
+                // Set form action for editing
+                form.action = button.getAttribute('data-action-url');
+
+                // Set values in form fields
+                nameInput.value = button.getAttribute('data-name');
+                descriptionInput.value = button.getAttribute('data-description');
+
+                // Change modal title
+                modalTitle.textContent = 'Edit Product Category';
+
+                // Show modal
+                const modal = new bootstrap.Modal(document.getElementById('addCategoryModal'));
+                modal.show();
+            });
+        });
+    });
+</script>
+
+
+
+
+
 <div class="container-fluid">
     <h1 class="h3 mb-2 text-gray-800">Product Categories</h1>
     <p class="mb-4">Manage product categories in the system.</p>
@@ -137,10 +173,18 @@
                                 </td> {% endcomment %}
                                 <td>
                                     <!-- Edit Button -->
-                                    <a href="{#% url 'manage_product_sub_category_edit' subcategory.id %#}" class="text-primary">
+                                    {% comment %} <a href="{#% url 'manage_product_sub_category_edit' subcategory.id %#}" class="text-primary">
                                         <i class="bi bi-pencil-square"></i>
                                     </a>
-                                
+                                 {% endcomment %}
+
+
+                                 <a href="#" class="text-primary edit-category-btn" data-id="{{ category.id }}"data-name="{{ category.name }}"data-description="{{ category.description }}"
+                                 data-action-url="{% url 'manage_product_category_edit' category.id %}">
+                                 <i class="bi bi-pencil-square"></i>
+                              </a>
+                              
+
                                     <!-- Delete Form -->
                                     <form method="post" action="{% url 'manage_product_category_delete' category.id %}" style="display:inline;">
                                         {% csrf_token %}
