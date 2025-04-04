@@ -16,38 +16,26 @@ class ManageProductListView(View):
 class ManageProductCreateView(View):
     """Handles product creation with proper debugging."""
 
-    def get(self, request):
+    def get(self, request): 
         form = ManageProductForm()
         products = ProductsModel.objects.all()
         return render(request, "admin/manage_product.html", {"form": form, "products": products})
 
     def post(self, request):
-        print("✅ POST request received")  # Debugging Step 1
         form = ManageProductForm(request.POST)
 
         if form.is_valid():
-            print("✅ Form is valid")  # Debugging Step 2
-
             product = form.save(commit=False)
 
             # Only assign user if they are authenticated
             if not isinstance(request.user, AnonymousUser):
                 product.created_by = request.user
                 product.updated_by = request.user
-            # product.created_by = request.user
-            # product.updated_by = request.user
             product.save()
 
             messages.success(request, "Product created successfully!")
             return redirect("manage_product_list")
-
-        # else:
-        #     print("❌ Form is NOT valid")  # Debugging Step 3
-        #     print(form.errors)  # Debugging Step 4
-
-        # products = ProductsModel.objects.all()
-        # return render(request, "admin/manage_product.html", {"form": form, "products": products})
-
+        
         messages.error(request, "Please correct the errors below.")
         return render(request, "admin/manage_product.html", {"form": form})
     
