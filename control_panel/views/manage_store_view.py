@@ -31,7 +31,7 @@ class ManageCreateStore(View):
         if form.is_valid():
             store = form.save(commit=False)
             # Retrieve the UserModel instance for the logged-in user
-            user_instance = get_object_or_404(UserModel, id=1)  # Replace 1 with the appropriate user ID or logic
+            user_instance = get_object_or_404(UserModel, id=11)  # Replace 1 with the appropriate user ID or logic
             store.owner = user_instance
             store.created_by = user_instance
             store.updated_by = user_instance
@@ -91,7 +91,7 @@ class ManageCreateStoreCategoryView(View):
                 return render(request, "admin/manage_store_category.html", {"form": form})
 
             category = form.save(commit=False)
-            user_instance = get_object_or_404(UserModel, id=1) 
+            user_instance = get_object_or_404(UserModel, id=11) 
             category.created_by = user_instance
             category.updated_by = user_instance
             category.save()
