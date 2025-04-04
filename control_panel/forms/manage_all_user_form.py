@@ -1,7 +1,7 @@
 from django import forms
 from ..models import UserModel
 
-class ManageUserCreateForm(forms.Form):
+class ManageUserForm(forms.Form):
     first_name = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter first name'}))
     last_name = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter last name'}))
     email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Enter your email'}))
@@ -17,27 +17,27 @@ class ManageUserCreateForm(forms.Form):
 
 
 
-class ManageUserUpdateForm(forms.ModelForm):
-    class Meta:
-        model = UserModel()
-        fields = [
-            "first_name", "last_name", "email", "dob", "gender", "phone",
-            "address", "location", "city", "district", "state", "pincode"
-        ]
-        widgets = {
-            "first_name": forms.TextInput(attrs={"class": "form-control"}),
-            "last_name": forms.TextInput(attrs={"class": "form-control"}),
-            "email": forms.EmailInput(attrs={"class": "form-control"}),
-            "dob": forms.DateInput(attrs={"class": "form-control", "type": "date"}),
-            "gender": forms.Select(attrs={"class": "form-select"}, choices=[("M", "Male"), ("F", "Female")]),
-            "phone": forms.NumberInput(attrs={"class": "form-control"}),
-            "address": forms.TextInput(attrs={"class": "form-control"}),
-            "location": forms.TextInput(attrs={"class": "form-control"}),
-            "city": forms.TextInput(attrs={"class": "form-control"}),
-            "district": forms.TextInput(attrs={"class": "form-control"}),
-            "state": forms.TextInput(attrs={"class": "form-control"}),
-            "pincode": forms.NumberInput(attrs={"class": "form-control"}),
-        }
+# class ManageUserUpdateForm(forms.ModelForm):
+#     class Meta:
+#         model = UserModel()
+#         fields = [
+#             "first_name", "last_name", "email", "dob", "gender", "phone",
+#             "address", "location", "city", "district", "state", "pincode"
+#         ]
+#         widgets = {
+#             "first_name": forms.TextInput(attrs={"class": "form-control"}),
+#             "last_name": forms.TextInput(attrs={"class": "form-control"}),
+#             "email": forms.EmailInput(attrs={"class": "form-control"}),
+#             "dob": forms.DateInput(attrs={"class": "form-control", "type": "date"}),
+#             "gender": forms.Select(attrs={"class": "form-select"}, choices=[("M", "Male"), ("F", "Female")]),
+#             "phone": forms.NumberInput(attrs={"class": "form-control"}),
+#             "address": forms.TextInput(attrs={"class": "form-control"}),
+#             "location": forms.TextInput(attrs={"class": "form-control"}),
+#             "city": forms.TextInput(attrs={"class": "form-control"}),
+#             "district": forms.TextInput(attrs={"class": "form-control"}),
+#             "state": forms.TextInput(attrs={"class": "form-control"}),
+#             "pincode": forms.NumberInput(attrs={"class": "form-control"}),
+#         }
 
 
 # class ManageUserUpdateForm(forms.Form):

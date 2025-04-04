@@ -4,75 +4,97 @@
 {% load static %}
 
 <style>
-    /* Floating Button Styling */
-    .floating-btn {
-            position: fixed;
+    .modal-header {
+        background-color: #007bff;
+        color: white;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .modal-title {
+        font-weight: bold;
+        flex-grow: 1;
+        text-align: center;
+    }
+
+    .circle-btn {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: blue;
+        color: white;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        cursor: pointer;
+        position: fixed;
         bottom: 20px;
         right: 20px;
-        width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background-color: blue;
-            color: white;
-            border: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-        cursor: pointer;
-        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
-        transition: background-color 0.3s ease, transform 0.2s ease;
-        z-index: 1000;
     }
 
-    .floating-btn:hover {
+    .circle-btn:hover {
         background-color: darkblue;
-        transform: scale(1.1);
-    }
-    /* Common styles for icons */
-/* Common button styles */
-.icon-btn {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    border: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-    margin: 0 5px;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
     }
 
-/* Edit button (red) */
-.edit-btn {
-    background-color: red;
-    color: white;
-}
 
-.edit-btn:hover {
-    background-color: darkred;
-    transform: scale(1.1);
-}
-
-/* View button (blue) */
-.view-btn {
-    background-color: blue;
-    color: white;
+    /*Modal Widht*/
+    @media (min-width: 1200px) {
+        .modal-dialog {
+            max-width: 90%; /* Adjust width */
+        }
     }
 
-    .view-btn:hover {
-        background-color: darkblue;
-        transform: scale(1.1);
-}
+    /* Modal Header */
+    .modal-header {
+        background-color: #cecfd1;
+        color: white;
+        border-bottom: 2px solid #c0c0c0;
+        padding: 15px;
+    }
 
-    .modal-dialog {
-        max-width: 90%;
-        /* Adjust width as needed */
+    .modal-title {
+        flex-grow: 1;
+        text-align: center;
     }
 </style>
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.edit-user-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                const userId = this.dataset.id;
+
+                fetch(`/get-user/${userId}/`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Fill the form
+                        for (const field in data) {
+                            const input = document.querySelector(`#addUserForm [name="${field}"]`);
+                            if (input) {
+                                input.value = data[field];
+                            }
+                        }
+
+                        // Update form action to point to update route
+                        document.querySelector('#addUserForm').action = `/update-user/${userId}/`;
+
+                        // Show the modal
+                        const modal = new bootstrap.Modal(document.getElementById('addUserModal'));
+                        modal.show();
+                    });
+            });
+        });
+    });
+</script>
+
+
 <!-- Begin Page Content -->
 <div class="container-fluid">
 
@@ -135,97 +157,8 @@
             </div>
         </div>
     </div>
-    <!-- bootstrap modal  -->
-  <!-- Edit User Modal -->
-<div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editUserModalLabel">Edit User</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="editUserForm" method="post">
-                    {% csrf_token %}
-                    <input type="hidden" id="editUserId" name="user_id">  <!-- Store user ID -->
 
-                    <div class="row">
-                        <div class="form-group col-md-4 mb-3">
-                            <label>First Name</label>
-                            <input type="text" id="editFirstName" name="first_name" class="form-control">
-                        </div>
-                        <div class="form-group col-md-4 mb-3">
-                            <label>Last Name</label>
-                            <input type="text" id="editLastName" name="last_name" class="form-control">
-                        </div>
-                        <div class="form-group col-md-4 mb-3">
-                            <label>Email</label>
-                            <input type="email" id="editEmail" name="email" class="form-control">
-                        </div>
-                    </div>
 
-                    <div class="row">
-                        <div class="form-group col-md-4 mb-3">
-                            <label>DOB</label>
-                            <input type="date" id="editDob" name="dob" class="form-control">
-                        </div>
-                        <div class="form-group col-md-4 mb-3">
-                            <label>Gender</label>
-                            <select id="editGender" name="gender" class="form-select">
-                                <option value="" selected>Select Gender</option>
-                                {% for gender in choices_gender %}
-                                    {% for name, value in gender.items %}
-                                        <option value="{{ name }}">{{ value }}</option>
-                                    {% endfor %}
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="form-group col-md-4 mb-3">
-                            <label>Contact</label>
-                            <input type="text" id="editContact" name="contact" class="form-control">
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="form-group col-md-4 mb-3">
-                            <label>Address</label>
-                            <input type="text" id="editAddress" name="address" class="form-control">
-                        </div>
-                        <div class="form-group col-md-4 mb-3">
-                            <label>Location</label>
-                            <input type="text" id="editLocation" name="location" class="form-control">
-                        </div>
-                        <div class="form-group col-md-4 mb-3">
-                            <label>City</label>
-                            <input type="text" id="editCity" name="city" class="form-control">
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="form-group col-md-4 mb-3">
-                            <label>District</label>
-                            <input type="text" id="editDistrict" name="district" class="form-control">
-                        </div>
-                        <div class="form-group col-md-4 mb-3">
-                            <label>State</label>
-                            <input type="text" id="editState" name="state" class="form-control">
-                        </div>
-                        <div class="form-group col-md-4 mb-3">
-                            <label>Pincode</label>
-                            <input type="text" id="editPincode" name="pincode" class="form-control">
-                        </div>
-                    </div>
-
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Update</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-    
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
         <!-- add button + -->
@@ -266,19 +199,22 @@
                             <td>{{user.diatrict}}</td>
                             <td>{{user.state}}</td>
                             <td>{{user.pincode}}</td>
-                            <!-- <td><i class="bi bi-pencil-square"></i> <i class="bi bi-eye"></i></td> -->
                             <td>
                                 <!-- Update Button -->
-                            <!-- <i class="bi bi-pencil-square text-primary edit-user" data-id="{{ user.id }}" data-bs-toggle="modal" data-bs-target="#editUserModal"></i> -->
-                            <!-- <i class="bi bi-pencil-square edit-user" data-id="{{ user.id }}"></i> -->
-                            <a href="{% url 'manage_user_update' user.id %}" class="btn btn-sm btn-primary">Edit</a>
-                                <!-- Update Button -->
+                                <a href="" class="text-primary edit-user-btn" data-id="{{ user.id }}" data-action-url="{% url 'manage_user_update' user.id %}">
+                                    <i class="bi bi-pencil-square"></i>                           
+                                </a>
+                                
+                                <!-- Delete Button -->
                                 <form method="post" action="{% url 'manage_user_delete' user.id %}">
                                     {% csrf_token %}
-                                    <button type="submit" class="btn btn-danger">
+                                    <button type="submit" class="btn text-danger">  
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </form>
+                                <a href="#" class="text-primary">
+                                    <i class="bi bi-eye-slash"></i>                                    
+                                </a>
                             </td>
                         </tr>
                     </tbody>
@@ -288,60 +224,8 @@
         </div>
     </div>
 </div>
-
-<script>
-    //  for user update
-
-    document.querySelectorAll(".edit-user").forEach(button => {
-        button.addEventListener("click", function() {
-            const userId = this.getAttribute("data-id");
-
-            // Fetch user data and pre-fill the form
-            fetch(`/control-panel/users/get/${userId}/`)
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById("editUserId").value = data.id;
-                    document.getElementById("editFirstName").value = data.first_name;
-                    document.getElementById("editLastName").value = data.last_name;
-                    document.getElementById("editEmail").value = data.email;
-                    document.getElementById("editDob").value = data.dob;
-                    document.getElementById("editGender").value = data.gender;
-                    document.getElementById("editContact").value = data.contact;
-                    document.getElementById("editAddress").value = data.address;
-                    document.getElementById("editLocation").value = data.location;
-                    document.getElementById("editCity").value = data.city;
-                    document.getElementById("editDistrict").value = data.district;
-                    document.getElementById("editState").value = data.state;
-                    document.getElementById("editPincode").value = data.pincode;
-
-                    let editModal = new bootstrap.Modal(document.getElementById("editUserModal"));
-                    editModal.show();
-                });
-        });
-    });
-
-    // Handle update form submission
-    document.getElementById("editUserForm").addEventListener("submit", function(event) {
-        event.preventDefault();
-        
-        let userId = document.getElementById("editUserId").value;
-        let formData = new FormData(this);
-
-        fetch(`/control-panel/users/update/${userId}/`, {
-            method: "POST",
-            body: formData,
-            headers: {
-                "X-CSRFToken": "{{ csrf_token }}"
-            }
-        }).then(response => response.json())
-          .then(data => {
-              alert(data.message);
-              location.reload();
-          }).catch(error => console.error("Error:", error));
-    });
-</script>
-    <button class="floating-btn">
-        <i class="bi bi-plus-lg"></i>
-    </button>
-
+<!-- Add Button -->
+<button class="circle-btn" data-bs-toggle="modal" data-bs-target="#addUserModal">
+    <i class="bi bi-plus-lg text-light"></i>
+</button>
 {% endblock %}
