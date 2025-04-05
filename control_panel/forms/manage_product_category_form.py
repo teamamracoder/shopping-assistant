@@ -3,6 +3,7 @@ from django.core.validators import MinLengthValidator, MaxLengthValidator
 from ..models import ProductCategoryModel
 
 class ManageProductCategoryForm(forms.ModelForm):
+    
     class Meta:
         model = ProductCategoryModel
         fields = ['name', 'description', 'is_active']

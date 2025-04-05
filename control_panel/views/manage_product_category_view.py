@@ -9,13 +9,13 @@ from django.urls import reverse_lazy
 from django.views.generic import UpdateView
 
 
-
-
+#List
 class ManageProductCategoryListView(View):
     def get(self, request):
         categories = ProductCategoryModel.objects.all()
         form = ManageProductCategoryForm()
         return render(request, 'admin/manage_product_category.html', {"categories": categories, "form": form})
+
 
 # Create
 class ManageProductCategoryCreateView(View):
@@ -47,6 +47,7 @@ class ManageProductCategoryEditView(UpdateView):
         categories = ProductCategoryModel.objects.all()
         return self.render_to_response(self.get_context_data(form=form, categories=categories))
     
+
 # Delete
 class ManageProductCategoryDeleteView(View):
     """Handles product category deletion."""

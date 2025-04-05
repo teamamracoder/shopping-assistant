@@ -62,7 +62,6 @@
 </style>
 
 
-
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const editButtons = document.querySelectorAll('.edit-category-btn');
@@ -92,9 +91,6 @@
         });
     });
 </script>
-
-
-
 
 
 <div class="container-fluid">
@@ -128,11 +124,7 @@
                                 {{ form.description }}
                             </div>
                         </div>
-                        {% comment %} <div class="form-group form-check col-md-12 mb-3">
-                            {{ form.is_active }}
-                            <label class="form-check-label" for="{{ form.is_active.id_for_label }}">Active</label>
-                        </div> {% endcomment %}
-                        
+
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary">Save</button>
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -164,26 +156,12 @@
                             <tr>
                                 <td>{{ category.name }}</td>
                                 <td>{{ category.description }}</td>
-                                {% comment %} <td>
-                                    {% if category.is_active %}
-                                        <span class="badge bg-success">Active</span>
-                                    {% else %}
-                                        <span class="badge bg-danger">Inactive</span>
-                                    {% endif %}
-                                </td> {% endcomment %}
+
                                 <td>
-                                    <!-- Edit Button -->
-                                    {% comment %} <a href="{#% url 'manage_product_sub_category_edit' subcategory.id %#}" class="text-primary">
-                                        <i class="bi bi-pencil-square"></i>
+                                    <a href="#" class="text-primary edit-category-btn" data-id="{{ category.id }}"data-name="{{ category.name }}"data-description="{{ category.description }}"
+                                    data-action-url="{% url 'manage_product_category_edit' category.id %}">
+                                    <i class="bi bi-pencil-square"></i>
                                     </a>
-                                 {% endcomment %}
-
-
-                                 <a href="#" class="text-primary edit-category-btn" data-id="{{ category.id }}"data-name="{{ category.name }}"data-description="{{ category.description }}"
-                                 data-action-url="{% url 'manage_product_category_edit' category.id %}">
-                                 <i class="bi bi-pencil-square"></i>
-                              </a>
-                              
 
                                     <!-- Delete Form -->
                                     <form method="post" action="{% url 'manage_product_category_delete' category.id %}" style="display:inline;">
@@ -197,8 +175,7 @@
                                     <a href="#" class="text-primary">
                                         <i class="bi bi-eye-slash"></i>                                    
                                     </a>                                        
-                                </td>
-                                
+                                </td>                                
                             </tr>
                         {% endfor %}
                     </tbody>                   
