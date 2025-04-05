@@ -8,7 +8,6 @@ class ManageStoreForm(forms.ModelForm):
         widget=forms.Select(attrs={'class': 'form-control'}),
         empty_label="Select a category"  # Optional: Custom label for the empty choice
     )
-
     # Define other fields as needed
     contact_no = forms.CharField(
         widget=forms.Textarea(attrs={'rows': 2, 'placeholder': 'Enter contact numbers separated by commas'}),
