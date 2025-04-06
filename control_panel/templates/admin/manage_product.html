@@ -59,6 +59,40 @@
     
 </style>
 
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const editButtons = document.querySelectorAll('.edit-btn');
+        const form = document.getElementById('addProductForm');
+        const modalLabel = document.getElementById('addProductModalLabel');
+    
+        editButtons.forEach(btn => {
+            btn.addEventListener('click', function () {
+                form.action = this.getAttribute('data-action-url');
+                modalLabel.textContent = "Edit Product";
+    
+                // Set form field values
+                form.elements['name'].value = this.getAttribute('data-name');
+                form.elements['product_code'].value = this.getAttribute('data-product-code');
+                form.elements['description'].value = this.getAttribute('data-description');
+                form.elements['price'].value = this.getAttribute('data-price');
+                form.elements['discount_per'].value = this.getAttribute('data-discount');
+                form.elements['quantity'].value = this.getAttribute('data-quantity');
+                form.elements['maf_date'].value = this.getAttribute('data-maf-date');
+                form.elements['exp_date'].value = this.getAttribute('data-exp-date');
+                //form.elements['image_urls'].value = this.getAttribute('data-image-urls');
+                form.elements['category'].value = this.getAttribute('data-category');
+                form.elements['sub_category'].value = this.getAttribute('data-sub-category');
+                form.elements['others_category'].value = this.getAttribute('data-others-category');
+    
+                // Show modal
+                new bootstrap.Modal(document.getElementById('addProductModal')).show();
+            });
+        });
+    });
+    </script>
+    
+
 <div class="container-fluid">
 
     <h1 class="h3 mb-2 text-gray-800">Products</h1>
@@ -168,9 +202,12 @@
                         <tr>
                             <th>Name</th>
                             <th>Category</th>
+                            <th>Description</th>
                             <th>Price</th>
                             <th>Discount (%)</th>
                             <th>Quantity</th>
+                            <th>Product MAF</th>
+                            <th>Product EXP</th>
                             {% comment %} <th>Active</th>   {% endcomment %}
                             <th>Actions</th>                      
                         </tr>
@@ -180,21 +217,32 @@
                             <tr>
                                 <td>{{ product.name }}</td>
                                 <td>{{ product.category }}</td>
+                                <td>{{ product.description }}</td>
                                 <td>${{ product.price }}</td>
                                 <td>{{ product.discount_per }}%</td>
                                 <td>{{ product.quantity }}</td>
-                                {% comment %} <td>
-                                    {% if product.is_active %}
-                                        <span class="badge bg-success">Active</span>
-                                    {% else %}
-                                        <span class="badge bg-danger">Inactive</span>
-                                    {% endif %}
-                                </td> {% endcomment %}
+                                <td>{{ product.maf_date }}</td>
+                                <td>{{ product.exp_date }}</td>
+
                                 <td>
-                                    <a href="{#% url 'manage_product_edit' product.id %#}" class="text-primary">
-                                        <i class="bi bi-pencil-square"></i>
-                                    </a>
-                        
+                                    <a href="#" class="text-primary edit-btn"
+                                    data-id="{{ product.id }}"
+                                    data-name="{{ product.name }}"
+                                    data-product-code="{{ product.product_code }}"
+                                    data-description="{{ product.description }}"
+                                    data-price="{{ product.price }}"
+                                    data-discount="{{ product.discount_per }}"
+                                    data-quantity="{{ product.quantity }}"
+                                    data-maf-date="{{ product.maf_date }}"
+                                    data-exp-date="{{ product.exp_date }}"
+                                    data-image-urls="{{ product.image_urls }}"
+                                    data-category="{{ product.category.id }}"
+                                    data-sub-category="{{ product.sub_category.id }}"
+                                    data-others-category="{{ product.others_category }}"
+                                    data-action-url="{% url 'manage_product_edit' product.id %}">
+                                     <i class="bi bi-pencil-square"></i>
+                                 </a>
+                                 
                                     {% if product.id %}
                                     <form method="post" action="{% url 'manage_product_delete' product.id %}" style="display:inline;">
                                         {% csrf_token %}
