@@ -54,7 +54,7 @@
 
     /* Modal Header */
     .modal-header {
-        background-color: #cecfd1;
+        background-color: #6a5acd;
         color: white;
         border-bottom: 2px solid #c0c0c0;
         padding: 15px;
@@ -64,6 +64,10 @@
         flex-grow: 1;
         text-align: center;
         color: black;
+    }
+
+    .input-group-text {
+        background-color: #6a5acd;
     }
 </style>
 
@@ -126,21 +130,35 @@
                     <form id="addProductSubCategoryForm" method="post" action="{% url 'manage_product_sub_category_create' %}" class="fw-bold"  name="subcategory_id" id="subcategory_id">
                         {% csrf_token %}
                         
-                        <div class="row">
-                            <div class="form-group col-md-6 mb-3">
+                        <div class="row g-3">
+                            <div class="form-group col-md-6">
                                 {{ form.category.label_tag }}<span class="text-danger">*</span>
-                                {{ form.category }}
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-layers"></i></span>
+                                    {{ form.category }}
+                                </div>
                             </div>
-                            <div class="form-group col-md-6 mb-3">
-                                {{ form.name.label_tag }}<span class="text-danger">*</span>
-                                {{ form.name }}
-                            </div>
-                        </div>
-                        <div class="form-group col-md-12 mb-3">
-                            {{ form.description.label_tag }}<span class="text-danger">*</span>
-                            {{ form.description }}
-                        </div>
                         
+                            <div class="form-group col-md-6">
+                                {{ form.name.label_tag }}<span class="text-danger">*</span>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-tag"></i></span>
+                                    {{ form.name }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row g-3">
+
+                            <div class="form-group col-md-12">
+                                {{ form.description.label_tag }}<span class="text-danger">*</span>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-pencil"></i></span>
+                                    {{ form.description }}
+                                </div>
+                            </div>                            
+                        </div>
+
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary">Save</button>
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

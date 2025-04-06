@@ -46,7 +46,7 @@
 
     /* Modal Header */
     .modal-header {
-        background-color: #cecfd1;
+        background-color: #6a5acd;
         color: white;
         border-bottom: 2px solid #c0c0c0;
         padding: 15px;
@@ -57,6 +57,10 @@
         text-align: center;
     }
     
+    .input-group-text {
+        background-color: #6a5acd;
+    }
+
 </style>
 
 
@@ -117,68 +121,106 @@
                         <div class="row">
                             <div class="form-group col-md-6 mb-3">
                                 {{ form.name.label_tag }}<span class="text-danger">*</span>
-                                {{ form.name }}
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-tag"></i></span>
+                                    {{ form.name }}
+                                </div>
                             </div>
                             <div class="form-group col-md-6 mb-3">
                                 {{ form.product_code.label_tag }}<span class="text-danger">*</span>
-                                {{ form.product_code }}
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-upc-scan"></i></span>
+                                    {{ form.product_code }}
+                                </div>
                             </div>
                         </div>
 
                         <div class="row">
-                            <div class="form-group col-md-6 mb-3">
-                                {{ form.description.label_tag }}<span class="text-danger">*</span>
-                                {{ form.description }}
-                            </div>
                             <div class="form-group col-md-6 mb-3">
                                 {{ form.price.label_tag }}<span class="text-danger">*</span>
-                                {{ form.price }}
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-currency-dollar"></i></span>
+                                    {{ form.price }}
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6 mb-3">
+                                {{ form.discount_per.label_tag }}<span class="text-danger">*</span>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-percent"></i></span>
+                                    {{ form.discount_per }}
+                                </div>
                             </div>
                         </div>
 
                         <div class="row">
-                            <div class="form-group col-md-6 mb-3">
-                                {{ form.discount_per.label_tag }}
-                                {{ form.discount_per }}
-                            </div>
                             <div class="form-group col-md-6 mb-3">
                                 {{ form.quantity.label_tag }}<span class="text-danger">*</span>
-                                {{ form.quantity }}
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="form-group col-md-6 mb-3">
-                                {{ form.maf_date.label_tag }}<span class="text-danger">*</span>
-                                {{ form.maf_date }}
-                            </div>
-                            <div class="form-group col-md-6 mb-3">
-                                {{ form.exp_date.label_tag }}<span class="text-danger">*</span>
-                                {{ form.exp_date }}
-                            </div>
-                        </div>
-
-                        <div class="row">                        
-                            <div class="form-group col-md-6 mb-3">
-                                {{ form.image_urls.label_tag }}<span class="text-danger">*</span>
-                                {{ form.image_urls }}
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-hash"></i></span>
+                                    {{ form.quantity }}
+                                </div>
                             </div>
                             <div class="form-group col-md-6 mb-3">
                                 {{ form.category.label_tag }}<span class="text-danger">*</span>
-                                {{ form.category }}
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-tags"></i></span>
+                                    {{ form.category }}
+                                </div>
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="form-group col-md-6 mb-3">
                                 {{ form.sub_category.label_tag }}<span class="text-danger">*</span>
-                                {{ form.sub_category }}
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-tag"></i></span>
+                                    {{ form.sub_category }}
+                                </div>
                             </div>
                             <div class="form-group col-md-6 mb-3">
-                                {{ form.others_category.label_tag }}
-                                {{ form.others_category }}
+                                {{ form.others_category.label_tag }}<span class="text-danger">*</span>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-list-stars"></i></span>
+                                    {{ form.others_category }}
+                                </div>
                             </div>
                         </div>
+
+                        <div class="row">
+                            <div class="form-group col-md-6 mb-3">
+                                {{ form.maf_date.label_tag }}<span class="text-danger">*</span>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-calendar-plus"></i></span>
+                                    {{ form.maf_date }}
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6 mb-3">
+                                {{ form.exp_date.label_tag }}<span class="text-danger">*</span>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-calendar-x"></i></span>
+                                    {{ form.exp_date }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">                        
+                            <div class="form-group col-md-6 mb-3">
+                                {{ form.image_urls.label_tag }}<span class="text-danger">*</span>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-image"></i></span>
+                                    {{ form.image_urls }}
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6 mb-3">
+                                {{ form.description.label_tag }}<span class="text-danger">*</span>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-pencil"></i></span>
+                                    {{ form.description }}
+                                </div>
+                            </div>
+                        </div>
+
+
                         
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary">Save</button>
