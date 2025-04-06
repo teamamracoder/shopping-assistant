@@ -83,8 +83,8 @@
                 form.elements['discount_per'].value = this.getAttribute('data-discount');
                 form.elements['quantity'].value = this.getAttribute('data-quantity');
                 form.elements['maf_date'].value = this.getAttribute('data-maf-date');
-                form.elements['exp_date'].value = this.getAttribute('data-exp-date');
-                //form.elements['image_urls'].value = this.getAttribute('data-image-urls');
+                form.elements['exp_date'].value = this.getAttribute('data-exp-date');                
+                form.elements['image_urls'].value = this.getAttribute('data-image-urls');
                 form.elements['category'].value = this.getAttribute('data-category');
                 form.elements['sub_category'].value = this.getAttribute('data-sub-category');
                 form.elements['others_category'].value = this.getAttribute('data-others-category');
@@ -275,8 +275,8 @@
                                     data-price="{{ product.price }}"
                                     data-discount="{{ product.discount_per }}"
                                     data-quantity="{{ product.quantity }}"
-                                    data-maf-date="{{ product.maf_date }}"
-                                    data-exp-date="{{ product.exp_date }}"
+                                    data-maf-date="{{ product.maf_date|date:'Y-m-d' }}"
+                                    data-exp-date="{{ product.exp_date|date:'Y-m-d' }}"
                                     data-image-urls="{{ product.image_urls }}"
                                     data-category="{{ product.category.id }}"
                                     data-sub-category="{{ product.sub_category.id }}"
