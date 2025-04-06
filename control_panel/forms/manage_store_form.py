@@ -22,10 +22,10 @@ class ManageStoreForm(forms.ModelForm):
     #     widget=forms.Textarea(attrs={'rows': 2, 'placeholder': 'Enter image URLs separated by commas'}),
     #     required=False
     # )
-    store_images = forms.FileField(
-    widget=forms.ClearableFileInput(attrs={'multiple': False}),
-    required=False
-)
+#     store_images = forms.FileField(
+#     widget=forms.ClearableFileInput(attrs={'multiple': True}),
+#     required=True
+# )
 
 
     class Meta:

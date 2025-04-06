@@ -190,7 +190,7 @@ function getCookie(name) {
                         </div>
                         <div class="col-md-4">
                             <label for="id_store_images">Upload Store Images</label>
-                            {{ form.store_images }}
+                           <input type="file" id="store_images" name="store_images" multiple>
                             
                         </div>
 
@@ -349,10 +349,10 @@ function getCookie(name) {
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
             </div>
-            <div class="card-body">
+            <div class="card-body" >
                 <div class="table-responsive">
-                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                        <thead>
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0" >
+                        <thead >
                             <tr>
                                 <th>Store Name</th>
                                 <th>Registration No</th>
@@ -366,7 +366,7 @@ function getCookie(name) {
                         </thead>
                       
                       
-                        <tbody>
+                        <tbody >
         {% for store in store_list %}
                         
         <tr>

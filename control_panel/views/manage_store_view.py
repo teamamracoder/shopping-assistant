@@ -43,28 +43,31 @@ class ManageStoreView(View):
 #             return render(request, "admin/manage_store.html", {"form": form})
 import os
 from django.conf import settings
-
 class ManageCreateStore(View):
     def post(self, request, *args, **kwargs):
-        form = ManageStoreForm(request.POST, request.FILES)
+        form = ManageStoreForm(request.POST)  # Don't pass request.FILES here
+
         if form.is_valid():
             store = form.save(commit=False)
-            user_instance = get_object_or_404(UserModel, id=1)  # Replace with logic
+            user_instance = get_object_or_404(UserModel, id=1)  # Replace this logic with actual user
             store.owner = user_instance
             store.created_by = user_instance
             store.updated_by = user_instance
             store.save()
 
-            # Handle multiple image files
+            # Handle multiple uploaded files manually
             image_urls = []
             for f in request.FILES.getlist('store_images'):
-                path = os.path.join(settings.STATIC_ROOT, 'img/store', f.name)
-                os.makedirs(os.path.dirname(path), exist_ok=True)
-                with open(path, 'wb+') as destination:
+                save_path = os.path.join(settings.STATIC_ROOT, 'img/store', f.name)
+                os.makedirs(os.path.dirname(save_path), exist_ok=True)
+                with open(save_path, 'wb+') as destination:
                     for chunk in f.chunks():
                         destination.write(chunk)
-                image_urls.append(f'static/img/store/{f.name}')
-            
+
+                relative_url = f'static/img/store/{f.name}'
+                image_urls.append(relative_url)
+
+            # Save URLs to ArrayField
             store.store_image_urls = image_urls
             store.save()
 
@@ -73,6 +76,36 @@ class ManageCreateStore(View):
         else:
             messages.error(request, "Please correct the errors below.")
             return render(request, "admin/manage_store.html", {"form": form})
+
+# class ManageCreateStore(View):
+#     def post(self, request, *args, **kwargs):
+#         form = ManageStoreForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             store = form.save(commit=False)
+#             user_instance = get_object_or_404(UserModel, id=1)  # Replace with logic
+#             store.owner = user_instance
+#             store.created_by = user_instance
+#             store.updated_by = user_instance
+#             store.save()
+
+#             # Handle multiple image files
+#             image_urls = []
+#             for f in request.FILES.getlist('store_images'):
+#                 path = os.path.join(settings.STATIC_ROOT, 'img/store', f.name)
+#                 os.makedirs(os.path.dirname(path), exist_ok=True)
+#                 with open(path, 'wb+') as destination:
+#                     for chunk in f.chunks():
+#                         destination.write(chunk)
+#                 image_urls.append(f'static/img/store/{f.name}')
+            
+#             store.store_image_urls = image_urls
+#             store.save()
+
+#             messages.success(request, "Store created successfully!")
+#             return redirect('manage_Store_list')
+#         else:
+#             messages.error(request, "Please correct the errors below.")
+#             return render(request, "admin/manage_store.html", {"form": form})
         
 
 class ManageUpdateStoreView(View):
