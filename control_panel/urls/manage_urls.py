@@ -1,6 +1,6 @@
 from django.urls import path
 
-from control_panel.views import IndexView,ManageDashboardView,ManageUserCreateView,ManageUserDeleteView,ManageUserUpdateView,IndexView,ManageDashboardView,ManageProductSubCategoryListView,ManageProductSubCategoryCreateView,ManageProductCategoryEditView,ManageProductSubCategoryDeleteView,ManageProductListView,ManageProductCreateView,ManageProductDeleteView,ManageProductCategoryListView,ManageProductCategoryCreateView,ManageProductCategoryDeleteView,ManageUserListView
+from control_panel.views import IndexView,ManageDashboardView,ManageServiceTypeView,ManageUserCreateView,ManageUserDeleteView,ManageUserUpdateView,IndexView,ManageDashboardView,ManageProductSubCategoryListView,ManageProductSubCategoryCreateView,ManageProductCategoryEditView,ManageProductSubCategoryDeleteView,ManageProductListView,ManageProductCreateView,ManageProductDeleteView,ManageProductCategoryListView,ManageProductCategoryCreateView,ManageProductCategoryDeleteView,ManageUserListView
 from control_panel.views import *
 # app_name = 'user_management'  # Set the app namespace here
 urlpatterns = [
@@ -57,4 +57,10 @@ urlpatterns = [
     path('toggle-store-category-status/<int:category_id>/', ToggleStoreCategoryStatus.as_view(), name='toggle_store_cetegory_status'),
 
     path('stores/category/update/<int:pk>/',ManageCategoryUpdateStoreView.as_view(), name='manage_update_store_category'),
+
+
+    #service type url by Rahul
+    path('service-type/', ManageServiceTypeView.as_view(), name='manage_service_type_list'),
+    path('service-type/create', ManageCreateServiceTypeView.as_view(), name='manage_create_service_type'),
+
 ]
