@@ -118,6 +118,8 @@
                 <div class="modal-body">
                     <form id="addProductForm" method="post" action="{% url 'manage_product_create' %}" class="fw-bold" >
                         {% csrf_token %}
+                        {{ form.as_p }}
+
                         <div class="row">
                             <div class="form-group col-md-6 mb-3">
                                 {{ form.name.label_tag }}<span class="text-danger">*</span>
