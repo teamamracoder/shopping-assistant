@@ -17,7 +17,7 @@ class ManageProductForm(forms.ModelForm):
             'quantity': forms.NumberInput(attrs={'id': 'product-quantity', 'class': 'form-control', 'placeholder': 'Enter quantity'}),
             'maf_date': forms.DateInput(attrs={'id': 'product-maf', 'class': 'form-control', 'type': 'date'}),
             'exp_date': forms.DateInput(attrs={'id': 'product-exp', 'class': 'form-control', 'type': 'date'}),
-            # 'image_urls': forms.Textarea(attrs={'id': 'product-image', 'class': 'form-control', 'rows': 2, 'placeholder': 'Enter image URLs (comma-separated)'}),
+            'image_urls': forms.Textarea(attrs={'id': 'product-image', 'class': 'form-control', 'rows': 2, 'placeholder': 'Enter image URLs (comma-separated)'}),
             'category': forms.Select(attrs={'id': 'product-category', 'class': 'form-control'}),
             'sub_category': forms.Select(attrs={'id': 'product-subcategory', 'class': 'form-control'}),
             'others_category': forms.TextInput(attrs={'id': 'product-others', 'class': 'form-control', 'placeholder': 'Enter other category'}),
