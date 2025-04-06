@@ -53,9 +53,10 @@ class ManageUserCreateView(View):
                     pincode=form.cleaned_data['pincode'],
                     roles=[Role.END_USER.value],
                 )
-                return redirect("manage_user_list")
+                return redirect("manage_user_list", {'user_data': user_data})
             except IntegrityError:
                 form.add_error(None, 'A user with this email or contact already exists.')
+        print(form.errors)        
         return render(request, "admin/manage_all_user.html", {'form': form})
 
 # class ManageUserCreateView(View):
