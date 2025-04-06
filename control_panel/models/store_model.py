@@ -9,18 +9,22 @@ class StoreModel(models.Model):
     registration_no = models.CharField(max_length=255)  # 4. RegistrationNo
     gst_no = models.CharField(max_length=255)  # 5. GSTNo
     store_category = models.ForeignKey('StoreCategoryModel', on_delete=models.CASCADE, blank=True, null=True, related_name='fk_create_store_categories_store_categorie_id')
-    contact_no = ArrayField(models.CharField(max_length=15), blank=True)  # 7. ContactNo (Array of strings)
-    email = ArrayField(models.EmailField(), blank=True)  # 8. Email (Array of strings)
+    # contact_no = ArrayField(models.CharField(max_length=15), blank=True)  # 7. ContactNo (Array of strings)
+    contact_no = models.CharField(max_length=15)
+    alternate_contact_no =  models.CharField(max_length=15,blank=True,null=True)
+    # email = ArrayField(models.EmailField(), blank=True)  # 8. Email (Array of strings)
+    email = models.EmailField()
+    alternate_email= models.EmailField(blank=True, null=True)
     open_time = models.DateTimeField()  # 9. OpenTime
     close_time = models.DateTimeField()  # 10. CloseTime
-    address = models.TextField()  # 11. Address
-    location = models.CharField(max_length=255)  # 12. Location
-    street_or_road = models.CharField(max_length=255)  # 13. Street/Road
-    village_or_city = models.CharField(max_length=255)  # 14. Village/City
-    district = models.CharField(max_length=255)  # 15. District
-    state = models.CharField(max_length=255)  # 16. State
+    address = models.TextField(blank=True, null=True)  # 11. Address
+    location = models.CharField(max_length=255,blank=True, null=True)  # 12. Location
+    street_or_road = models.CharField(max_length=255,blank=True, null=True)  # 13. Street/Road
+    village_or_city = models.CharField(max_length=255,blank=True, null=True)  # 14. Village/City
+    district = models.CharField(max_length=255,blank=True, null=True)  # 15. District
+    state = models.CharField(max_length=255,blank=True, null=True)  # 16. State
     pin_code = models.CharField(max_length=6)  # 17. PinCode
-    store_image_urls = ArrayField(models.URLField(max_length=255), blank=True)  # 18. StoreImage_urls (Array of strings)
+    store_image_urls = ArrayField(models.URLField(max_length=255), blank=True,null=True)  # 18. StoreImage_urls (Array of strings)
 
     is_active = models.BooleanField(db_default=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, blank=True)
