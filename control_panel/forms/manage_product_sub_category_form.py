@@ -13,6 +13,8 @@ class ManageProductSubCategoryForm(forms.ModelForm):
             'name': forms.TextInput(attrs={'class': 'form-control', 'id': 'id_name', 'placeholder': 'Enter subcategory name'}),
             'description': forms.Textarea(attrs={'class': 'form-control', 'id': 'id_description', 'rows': 2, 'placeholder': 'Enter description'}),
             'category': forms.Select(attrs={'class': 'form-control', 'id': 'id_category'}),
+            'is_active': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+
         }
 
     name = forms.CharField(
@@ -24,10 +26,3 @@ class ManageProductSubCategoryForm(forms.ModelForm):
         ],
         widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter subcategory name'}),
     )
-
-    # description = forms.CharField(
-    #     required=False,
-    #     min_length=10,
-    #     max_length=300,
-    #     widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 2, 'placeholder': 'Enter description'}),
-    # )
