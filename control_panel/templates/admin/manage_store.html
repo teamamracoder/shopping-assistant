@@ -115,16 +115,17 @@ function getCookie(name) {
 
 </style>
 <!-- Bootstrap XXL Modal (Using Custom CSS) -->
-<!-- Bootstrap XXL Modal (Using Custom CSS) -->
+
 <div class="modal fade" id="storeModal" tabindex="-1" aria-labelledby="storeModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl custom-modal-xxl">
+    <div class="modal-dialog  custom-modal-xxl">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="storeModalLabel">Add New Store</h5>
+                <h5 class="modal-title"><i class="bi bi-shop-window"></i> Add New Store</h5>
+                <h5 class="modal-title" id="storeModalLabel"></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form method="POST" action="{% url 'manage_create_store' %}" id="storeForm" >
+                <form method="POST" enctype="multipart/form-data" action="{% url 'manage_create_store' %}" id="storeForm" >
                     {% csrf_token %}
                     <div class="row">
                         <div class="col-md-4">
@@ -188,8 +189,9 @@ function getCookie(name) {
                             {{ form.pin_code }}
                         </div>
                         <div class="col-md-4">
-                            <label for="id_store_image_urls">Store Images (comma separated)</label>
-                            {{ form.store_image_urls }}
+                            <label for="id_store_images">Upload Store Images</label>
+                            {{ form.store_images }}
+                            
                         </div>
 
                         <div class="col-md-4">
@@ -201,94 +203,122 @@ function getCookie(name) {
                             {{ form.address }}
                         </div>
                     </div>
-                    <div class="mt-3 text-end">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Save Store</button>
+                    <div class="modal-footer justify-content-end">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check2-circle me-1"></i> Save Store
+                        </button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
-</div>
+</div> 
+<!-- Bootstrap Icons -->
 
-<!-- Custom CSS for Larger Modal -->
-<style>
-    .custom-modal-xxl {
-        max-width: 95%;
+
+<style> 
+    .modal-content {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 1rem;
+        backdrop-filter: blur(8px);
+        border: 1px solid #e3e3e3;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     }
-    /* Modal Header */
+    textarea.form-control {
+        height: calc(2.25rem + 2px);
+        resize: none;
+    }
     .modal-header {
-        background-color: #cecfd1;
+        background: linear-gradient(135deg, #4e54c8, #8f94fb);
         color: white;
-        border-bottom: 2px solid #c0c0c0;
-        padding: 15px;
+        padding: 1rem 1.5rem;
+        border-radius: 1rem 1rem 0 0;
     }
 
-    /* Modal Title */
     .modal-title {
-        font-weight: bold;
+        font-weight: 600;
+        font-size: 1.4rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
     }
 
-    /* Modal Body */
     .modal-body {
-        background-color: #f8f9fa;
-        padding: 20px;
-        border-radius: 5px;
+        padding: 1.2rem 1.5rem;
     }
 
-    /* Labels Styling */
-    .modal-body label {
-        font-weight: bold;
+    .form-label {
+        font-weight: 600;
+        font-size: 0.9rem;
         color: #333;
-        margin-bottom: 5px;
-        display: block;
+        margin-bottom: 0.2rem;
     }
 
-    /* Input Fields */
-    .modal-body input,
-    .modal-body select,
-    .modal-body textarea {
-        width: 100%;
-        padding: 8px;
+    .form-control,
+    .form-select {
+        border-radius: 0.5rem;
+        padding: 0.5rem 0.9rem;
+        font-size: 0.92rem;
         border: 1px solid #ced4da;
-        border-radius: 5px;
-        transition: 0.3s ease-in-out;
+        transition: 0.2s ease-in-out;
     }
 
-    /* Input Fields Focus */
-    .modal-body input:focus,
-    .modal-body select:focus,
-    .modal-body textarea:focus {
-        border-color: #007bff;
-        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #4e54c8;
+        box-shadow: 0 0 0 0.15rem rgba(78, 84, 200, 0.2);
     }
 
-    /* Button Styling */
-    .btn-primary {
-        background-color: #007bff;
+    .input-group-text {
+        background-color: #4e54c8;
+        color: white;
         border: none;
-        padding: 10px 15px;
-        font-weight: bold;
-        transition: 0.3s ease-in-out;
+        border-radius: 0.5rem 0 0 0.5rem;
+        padding: 0.45rem 0.75rem;
+    }
+
+    .custom-field-box {
+        background-color: #f9f9f9;
+        border-radius: 0.6rem;
+        /* padding: 0.75rem 1rem; */
+        margin-bottom: 1rem;
+        border: 1px solid #eee;
+        box-shadow: 0 0 3px rgba(0,0,0,0.02);
+    }
+
+    .modal-footer {
+        padding: 1rem 1.5rem;
+        border-top: none;
+        background-color: #fafafa;
+        border-radius: 0 0 1rem 1rem;
+    }
+
+    .btn-primary {
+        background: linear-gradient(to right, #4e54c8, #8f94fb);
+        border: none;
+        padding: 0.5rem 1.2rem;
+        font-weight: 600;
+        border-radius: 0.5rem;
+        font-size: 0.95rem;
     }
 
     .btn-primary:hover {
-        background-color: #0056b3;
+        background: linear-gradient(to right, #3d42b2, #7a7ef5);
     }
 
     .btn-secondary {
-        padding: 10px 15px;
-        font-weight: bold;
-        transition: 0.3s ease-in-out;
+        border-radius: 0.5rem;
+        font-weight: 500;
+        padding: 0.5rem 1rem;
+        font-size: 0.95rem;
     }
 
-    /* Responsive Form Elements */
-    @media (max-width: 768px) {
-        .modal-body .row .col-md-4 {
-            flex: 0 0 100%;
-            max-width: 100%;
-            margin-bottom: 10px;
-        }
+    .text-danger {
+        font-size: 0.82rem;
+    }
+    .custom-modal-xxl {
+        max-width: 95%;
     }
 </style>
 

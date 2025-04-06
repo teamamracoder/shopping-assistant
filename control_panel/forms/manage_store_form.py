@@ -8,6 +8,7 @@ class ManageStoreForm(forms.ModelForm):
         widget=forms.Select(attrs={'class': 'form-control'}),
         empty_label="Select a category"  # Optional: Custom label for the empty choice
     )
+    
     # Define other fields as needed
     contact_no = forms.CharField(
         widget=forms.Textarea(attrs={'rows': 2, 'placeholder': 'Enter contact numbers separated by commas'}),
@@ -17,10 +18,15 @@ class ManageStoreForm(forms.ModelForm):
         widget=forms.Textarea(attrs={'rows': 2, 'placeholder': 'Enter emails separated by commas'}),
         required=False
     )
-    store_image_urls = forms.CharField(
-        widget=forms.Textarea(attrs={'rows': 2, 'placeholder': 'Enter image URLs separated by commas'}),
-        required=False
-    )
+    # store_image_urls = forms.CharField(
+    #     widget=forms.Textarea(attrs={'rows': 2, 'placeholder': 'Enter image URLs separated by commas'}),
+    #     required=False
+    # )
+    store_images = forms.FileField(
+    widget=forms.ClearableFileInput(attrs={'multiple': False}),
+    required=False
+)
+
 
     class Meta:
         model = StoreModel
@@ -56,6 +62,4 @@ class ManageStoreForm(forms.ModelForm):
         email = self.cleaned_data.get('email')
         return [mail.strip() for mail in email.split(',')] if email else []
 
-    def clean_store_image_urls(self):
-        store_image_urls = self.cleaned_data.get('store_image_urls')
-        return [url.strip() for url in store_image_urls.split(',')] if store_image_urls else []
+
