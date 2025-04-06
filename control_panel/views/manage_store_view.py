@@ -41,30 +41,36 @@ class ManageStoreView(View):
 #         else:
 #             messages.error(request, "Please correct the errors below.")
 #             return render(request, "admin/manage_store.html", {"form": form})
-import os
+
 from django.conf import settings
+import os
+
 
 class ManageCreateStore(View):
     def post(self, request, *args, **kwargs):
         form = ManageStoreForm(request.POST, request.FILES)
+
         if form.is_valid():
             store = form.save(commit=False)
-            user_instance = get_object_or_404(UserModel, id=1)  # Replace with logic
+            user_instance = get_object_or_404(UserModel, id=1)  # TODO: Replace with actual user logic
+            store.is_active=True
             store.owner = user_instance
             store.created_by = user_instance
             store.updated_by = user_instance
             store.save()
 
-            # Handle multiple image files
+            # Handle multiple uploaded files manually
             image_urls = []
             for f in request.FILES.getlist('store_images'):
-                path = os.path.join(settings.STATIC_ROOT, 'img/store', f.name)
-                os.makedirs(os.path.dirname(path), exist_ok=True)
-                with open(path, 'wb+') as destination:
+                save_path = os.path.join(settings.STATIC_ROOT, 'img/store', f.name)
+                os.makedirs(os.path.dirname(save_path), exist_ok=True)
+                with open(save_path, 'wb+') as destination:
                     for chunk in f.chunks():
                         destination.write(chunk)
-                image_urls.append(f'static/img/store/{f.name}')
-            
+
+                relative_url = f'static/img/store/{f.name}'
+                image_urls.append(relative_url)
+
             store.store_image_urls = image_urls
             store.save()
 
@@ -73,26 +79,50 @@ class ManageCreateStore(View):
         else:
             messages.error(request, "Please correct the errors below.")
             return render(request, "admin/manage_store.html", {"form": form})
-        
 
+
+
+
+
+# class ManageUpdateStoreView(View):
+#     def post(self, request, pk):
+#         store = get_object_or_404(StoreModel, pk=pk)
+#         form = ManageStoreForm(request.POST, instance=store)
+#         if form.is_valid():
+#             form.save()
+#             messages.success(request, "Store updated successfully!")
+#             return redirect('manage_Store_list')  # Ensure this is the correct URL name
+#         else:
+#             store_list=StoreModel.objects.all()
+#             messages.error(request, "Please correct the errors below.")
+#             return render(request, "admin/manage_store.html", {"form": form, "store_list": store_list})
 class ManageUpdateStoreView(View):
     def post(self, request, pk):
         store = get_object_or_404(StoreModel, pk=pk)
-        form = ManageStoreForm(request.POST, instance=store)
+        form = ManageStoreForm(request.POST, request.FILES, instance=store)
+
         if form.is_valid():
-            form.save()
+            updated_store = form.save(commit=False)
+
+            # Check if new image is uploaded
+            if 'store_images' in request.FILES:
+                uploaded_file = request.FILES['store_images']
+                save_path = os.path.join(settings.STATIC_ROOT, 'img/store', uploaded_file.name)
+                os.makedirs(os.path.dirname(save_path), exist_ok=True)
+                with open(save_path, 'wb+') as destination:
+                    for chunk in uploaded_file.chunks():
+                        destination.write(chunk)
+                relative_url = f'static/img/store/{uploaded_file.name}'
+                updated_store.store_images = relative_url
+
+            updated_store.save()
             messages.success(request, "Store updated successfully!")
-            return redirect('manage_Store_list')  # Ensure this is the correct URL name
+            return redirect('manage_Store_list')
         else:
-            store_list=StoreModel.objects.all()
-            for store in store_list:
-                if isinstance(store.email, str):
-                    store.email = store.email.split(',')
-                if isinstance(store.contact_no, str):
-                    store.contact_no = store.contact_no.split(',')
+            store_list = StoreModel.objects.all()
             messages.error(request, "Please correct the errors below.")
             return render(request, "admin/manage_store.html", {"form": form, "store_list": store_list})
-        
+
 class ToggleStoreStatus(View):
     def post(self, request, store_id):
         store = get_object_or_404(StoreModel, id=store_id)

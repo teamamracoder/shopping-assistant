@@ -128,80 +128,168 @@ function getCookie(name) {
                 <form method="POST" enctype="multipart/form-data" action="{% url 'manage_create_store' %}" id="storeForm" >
                     {% csrf_token %}
                     <div class="row">
-                        <div class="col-md-4">
-                            <label for="id_store_name">Store Name</label>
-                            {{ form.store_name }}
-                        </div>
-                        <div class="col-md-4">
-                            <label for="id_registration_no">Registration No</label>
-                            {{ form.registration_no }}
-                        </div>
-                        <div class="col-md-4">
-                            <label for="id_gst_no">GST No</label>
-                            {{ form.gst_no }}
-                        </div>
-                        
-                        <div class="col-md-4">
-                            <label for="id_store_category">Store Category</label>
-                            {{ form.store_category }}
-                        </div>
-                        <div class="col-md-4">
-                            <label for="id_contact_no">Contact No (comma separated)</label>
-                            {{ form.contact_no }}
-                        </div>
-                        <div class="col-md-4">
-                            <label for="id_email">Email (comma separated)</label>
-                            {{ form.email }}
-                        </div>
+                        <!-- Store Name -->
+<div class="col-md-4 mb-3">
+    <label for="id_store_name">Store Name</label>
+    <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-pencil-square"></i></span>
+        {{ form.store_name }}
+    </div>
+</div>
 
-                        <div class="col-md-4">
-                            <label for="id_open_time">Opening Time</label>
-                            {{ form.open_time }}
-                        </div>
-                        <div class="col-md-4">
-                            <label for="id_close_time">Closing Time</label>
-                            {{ form.close_time }}
-                        </div>
-                        <div class="col-md-4">
-                            <label for="id_location">Location</label>
-                            {{ form.location }}
-                        </div>
+<!-- Registration No -->
+<div class="col-md-4 mb-3">
+    <label for="id_registration_no">Registration No</label>
+    <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-file-earmark-text"></i></span>
+        {{ form.registration_no }}
+    </div>
+</div>
 
-                        <div class="col-md-4">
-                            <label for="id_street_or_road">Street/Road</label>
-                            {{ form.street_or_road }}
-                        </div>
-                        <div class="col-md-4">
-                            <label for="id_village_or_city">Village/City</label>
-                            {{ form.village_or_city }}
-                        </div>
-                        <div class="col-md-4">
-                            <label for="id_district">District</label>
-                            {{ form.district }}
-                        </div>
+<!-- GST No -->
+<div class="col-md-4 mb-3">
+    <label for="id_gst_no">GST No</label>
+    <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-clipboard-data"></i></span>
+        {{ form.gst_no }}
+    </div>
+</div>
 
-                        <div class="col-md-4">
-                            <label for="id_state">State</label>
-                            {{ form.state }}
-                        </div>
-                        <div class="col-md-4">
-                            <label for="id_pin_code">Pin Code</label>
-                            {{ form.pin_code }}
-                        </div>
-                        <div class="col-md-4">
-                            <label for="id_store_images">Upload Store Images</label>
-                            {{ form.store_images }}
-                            
-                        </div>
+<!-- Contact No -->
+<div class="col-md-4 mb-3">
+    <label for="id_contact_no">Contact No</label>
+    <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-telephone-forward"></i></span>
+        {{ form.contact_no }}
+    </div>
+</div>
 
-                        <div class="col-md-4">
-                            <label for="id_is_active">Is Active?</label>
-                            {{ form.is_active }}
-                        </div>
-                        <div class="col-md-8">
-                            <label for="id_address">Address</label>
-                            {{ form.address }}
-                        </div>
+<!-- Email -->
+<div class="col-md-4 mb-3">
+    <label for="id_email">Email </label>
+    <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+        {{ form.email }}
+    </div>
+</div>
+
+<!-- Alternate Contact No -->
+<div class="col-md-4 mb-3">
+    <label for="id_alternate_contact_no">Alternate Contact No</label>
+    <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+        {{ form.alternate_contact_no }}
+    </div>
+</div>
+
+<!-- Alternate Email -->
+<div class="col-md-4 mb-3">
+    <label for="id_alternate_email">Alternate Email</label>
+    <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-envelope-check"></i></span>
+        {{ form.alternate_email }}
+    </div>
+</div>
+
+<!-- Open Time -->
+<div class="col-md-4 mb-3">
+    <label for="id_open_time">Opening Time</label>
+    <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-clock-history"></i></span>
+        {{ form.open_time }}
+    </div>
+</div>
+
+<!-- Close Time -->
+<div class="col-md-4 mb-3">
+    <label for="id_close_time">Closing Time</label>
+    <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-clock"></i></span>
+        {{ form.close_time }}
+    </div>
+</div>
+
+                        <!-- Store Category -->
+<div class="col-md-4 mb-3">
+    <label for="id_store_category">Store Category</label>
+    <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-tags"></i></span>
+        {{ form.store_category }}
+    </div>
+</div>
+
+<!-- Location -->
+<div class="col-md-4 mb-3">
+    <label for="id_location">Location</label>
+    <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
+        {{ form.location }}
+    </div>
+</div>
+
+<!-- Street or Road -->
+<div class="col-md-4 mb-3">
+    <label for="id_street_or_road">Street/Road</label>
+    <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-signpost"></i></span>
+        {{ form.street_or_road }}
+    </div>
+</div>
+
+<!-- Village or City -->
+<div class="col-md-4 mb-3">
+    <label for="id_village_or_city">Village/City</label>
+    <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-buildings"></i></span>
+        {{ form.village_or_city }}
+    </div>
+</div>
+
+<!-- District -->
+<div class="col-md-4 mb-3">
+    <label for="id_district">District</label>
+    <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-map"></i></span>
+        {{ form.district }}
+    </div>
+</div>
+
+<!-- State -->
+<div class="col-md-4 mb-3">
+    <label for="id_state">State</label>
+    <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-map-fill"></i></span>
+        {{ form.state }}
+    </div>
+</div>
+
+<!-- Pin Code -->
+<div class="col-md-4 mb-3">
+    <label for="id_pin_code">Pin Code</label>
+    <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-pin-map"></i></span>
+        {{ form.pin_code }}
+    </div>
+</div>
+
+<!-- Address -->
+<div class="col-md-8 mb-3">
+    <label for="id_address">Address</label>
+    <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-house-door"></i></span>
+        {{ form.address }}
+    </div>
+</div>
+
+<!-- Store Images -->
+<div class="col-md-4 mb-3">
+    <label for="store_images">Upload Store Images</label>
+    <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-images"></i></span>
+        <input type="file" id="store_images" name="store_images" multiple class="form-control">
+    </div>
+</div>
+
                     </div>
                     <div class="modal-footer justify-content-end">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -290,7 +378,7 @@ function getCookie(name) {
     .modal-footer {
         padding: 1rem 1.5rem;
         border-top: none;
-        background-color: #fafafa;
+
         border-radius: 0 0 1rem 1rem;
     }
 
@@ -349,10 +437,10 @@ function getCookie(name) {
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
             </div>
-            <div class="card-body">
+            <div class="card-body" >
                 <div class="table-responsive">
-                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                        <thead>
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0" >
+                        <thead >
                             <tr>
                                 <th>Store Name</th>
                                 <th>Registration No</th>
@@ -366,7 +454,7 @@ function getCookie(name) {
                         </thead>
                       
                       
-                        <tbody>
+                        <tbody >
         {% for store in store_list %}
                         
         <tr>
@@ -401,85 +489,203 @@ function getCookie(name) {
         <div class="modal-dialog modal-xl custom-modal-xxl">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="editModalLabel{{ store.id }}">Edit Store</h5>
+                    <h5 class="modal-title"><i class="bi bi-pencil-square"></i> Edit Store</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form method="POST" action="{% url 'manage_update_store' store.id %}" id="editStoreForm{{ store.id }}">
+                    <form method="POST" enctype="multipart/form-data" action="{% url 'manage_update_store' store.id %}" id="editStoreForm{{ store.id }}">
                         {% csrf_token %}
                         <div class="row">
-                            <div class="col-md-4">
+                            <!-- Store Name -->
+                            <div class="col-md-4 mb-3">
                                 <label for="id_store_name">Store Name</label>
-                                <input type="text" name="store_name" class="form-control" value="{{ store.store_name }}" required>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-pencil-square"></i></span>
+                                    <input type="text" name="store_name" class="form-control" value="{{ store.store_name }}" required>
+                                </div>
                             </div>
-                            <div class="col-md-4">
+    
+                            <!-- Registration No -->
+                            <div class="col-md-4 mb-3">
                                 <label for="id_registration_no">Registration No</label>
-                                <input type="text" name="registration_no" class="form-control" value="{{ store.registration_no }}">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-file-earmark-text"></i></span>
+                                    <input type="text" name="registration_no" class="form-control" value="{{ store.registration_no }}">
+                                </div>
                             </div>
-                            <div class="col-md-4">
+    
+                            <!-- GST No -->
+                            <div class="col-md-4 mb-3">
                                 <label for="id_gst_no">GST No</label>
-                                <input type="text" name="gst_no" class="form-control" value="{{ store.gst_no }}">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-clipboard-data"></i></span>
+                                    <input type="text" name="gst_no" class="form-control" value="{{ store.gst_no }}">
+                                </div>
                             </div>
-                            <div class="col-md-4">
-                                <label for="id_store_category">Store Category</label>
-                                {{ form.store_category }}
-                            
-                            </div>
-                            <div class="col-md-4">
+    
+                            <!-- Contact No -->
+                            <div class="col-md-4 mb-3">
                                 <label for="id_contact_no">Contact No</label>
-                                <input type="text" name="contact_no" class="form-control" value="{{ store.contact_no|join:", " }}">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-telephone-forward"></i></span>
+                                    <input type="text" name="contact_no" class="form-control" value="{{ store.contact_no }}">
+                                </div>
                             </div>
-                            <div class="col-md-4">
+    
+                            <!-- Alternate Contact No -->
+                            <div class="col-md-4 mb-3">
+                                <label for="id_alternate_contact_no">Alternate Contact No</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+                                    <input type="text" name="alternate_contact_no" class="form-control" value="{{ store.alternate_contact_no }}">
+                                </div>
+                            </div>
+    
+                            <!-- Email -->
+                            <div class="col-md-4 mb-3">
                                 <label for="id_email">Email</label>
-                                <input type="email" name="email" class="form-control" value="{{ store.email|join:", " }}">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                                    <input type="email" name="email" class="form-control" value="{{  store.email|join:", " }}">
+                                </div>
                             </div>
-                            <div class="col-md-4">
-                                <label for="id_location">Location</label>
-                                <input type="text" name="location" class="form-control" value="{{ store.location }}">
+    
+                            <!-- Alternate Email -->
+                            <div class="col-md-4 mb-3">
+                                <label for="id_alternate_email">Alternate Email</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-envelope-check"></i></span>
+                                    <input type="email" name="alternate_email" class="form-control" value="{{ store.alternate_email }}">
+                                </div>
                             </div>
-                            <div class="col-md-4">
-                                <label for="id_address">Address</label>
-                                <input type="text" name="address" class="form-control" value="{{ store.address }}">
-                            </div>
-                            <!-- Newly Added Fields -->
-                            <div class="col-md-4">
+    
+                            <!-- Open Time -->
+                            <div class="col-md-4 mb-3">
                                 <label for="id_open_time">Open Time</label>
-                                <input type="datetime-local" name="open_time" class="form-control" value="{{ store.open_time|date:'Y-m-d\TH:i' }}" required>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-clock-history"></i></span>
+                                    <input type="datetime-local" name="open_time" class="form-control" value="{{ store.open_time|date:'Y-m-d\\TH:i' }}" required>
+                                </div>
                             </div>
-                            <div class="col-md-4">
+    
+                            <!-- Close Time -->
+                            <div class="col-md-4 mb-3">
                                 <label for="id_close_time">Close Time</label>
-                                <input type="datetime-local" name="close_time" class="form-control" value="{{ store.close_time|date:'Y-m-d\TH:i' }}" required>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-clock"></i></span>
+                                    <input type="datetime-local" name="close_time" class="form-control" value="{{ store.close_time|date:'Y-m-d\\TH:i' }}" required>
+                                </div>
                             </div>
-                            <div class="col-md-4">
+    
+                            <!-- Store Category -->
+                            <div class="col-md-4 mb-3">
+                                <label for="id_store_category">Store Category</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-tags"></i></span>
+                                    {{ form.store_category }}
+                                </div>
+                            </div>
+    
+                            <!-- Location -->
+                            <div class="col-md-4 mb-3">
+                                <label for="id_location">Location</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
+                                    <input type="text" name="location" class="form-control" value="{{ store.location }}">
+                                </div>
+                            </div>
+    
+                            <!-- Street/Road -->
+                            <div class="col-md-4 mb-3">
                                 <label for="id_street_or_road">Street/Road</label>
-                                <input type="text" name="street_or_road" class="form-control" value="{{ store.street_or_road }}" required>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-signpost"></i></span>
+                                    <input type="text" name="street_or_road" class="form-control" value="{{ store.street_or_road }}">
+                                </div>
                             </div>
-                            <div class="col-md-4">
+    
+                            <!-- Village/City -->
+                            <div class="col-md-4 mb-3">
                                 <label for="id_village_or_city">Village/City</label>
-                                <input type="text" name="village_or_city" class="form-control" value="{{ store.village_or_city }}" required>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-buildings"></i></span>
+                                    <input type="text" name="village_or_city" class="form-control" value="{{ store.village_or_city }}">
+                                </div>
                             </div>
-                            <div class="col-md-4">
+    
+                            <!-- District -->
+                            <div class="col-md-4 mb-3">
                                 <label for="id_district">District</label>
-                                <input type="text" name="district" class="form-control" value="{{ store.district }}" required>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-map"></i></span>
+                                    <input type="text" name="district" class="form-control" value="{{ store.district }}">
+                                </div>
                             </div>
-                            <div class="col-md-4">
+    
+                            <!-- State -->
+                            <div class="col-md-4 mb-3">
                                 <label for="id_state">State</label>
-                                <input type="text" name="state" class="form-control" value="{{ store.state }}" required>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-map-fill"></i></span>
+                                    <input type="text" name="state" class="form-control" value="{{ store.state }}">
+                                </div>
                             </div>
-                            <div class="col-md-4">
+    
+                            <!-- Pin Code -->
+                            <div class="col-md-4 mb-3">
                                 <label for="id_pin_code">Pin Code</label>
-                                <input type="text" name="pin_code" class="form-control" value="{{ store.pin_code }}" required>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-pin-map"></i></span>
+                                    <input type="text" name="pin_code" class="form-control" value="{{ store.pin_code }}">
+                                </div>
                             </div>
+    
+                            <!-- Address -->
+                            <div class="col-md-8 mb-3">
+                                <label for="id_address">Address</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-house-door"></i></span>
+                                    <input type="text" name="address" class="form-control" value="{{ store.address }}">
+                                </div>
+                            </div>
+
+
+                            <!-- Store Image Upload & Preview -->
+<div class="col-md-6 mb-3">
+    <label for="storeImage{{ store.id }}">Store Image</label>
+    <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-image"></i></span>
+        <input type="file" name="store_images" class="form-control" id="storeImage{{ store.id }}" accept="image/*" onchange="previewEditImage(this, '{{ store.id }}')">
+    </div>
+</div>
+
+<div class="col-md-6 mb-3">
+    <label>Preview</label>
+    <div id="imagePreviewEdit{{ store.id }}">
+        {% if store.store_images %}
+        {% for image_path in store.store_images %}
+        <img src="{% static store.store_images %}" alt="Store Image" class="img-thumbnail" style="max-height: 150px;">
+        {% endfor %}
+        {% else %}
+            <p class="text-muted">No image uploaded</p>
+        {% endif %}
+    </div>
+</div>
+
                         </div>
-                        <div class="mt-3 text-end">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Update Store</button>
+    
+                        <div class="modal-footer justify-content-end">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-arrow-repeat me-1"></i> Update Store
+                            </button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
+    
     
 
         
@@ -503,6 +709,26 @@ function getCookie(name) {
     </button>
 
 
-    
+    <script>
+        function previewEditImage(input, storeId) {
+            const preview = document.getElementById('imagePreviewEdit' + storeId);
+            preview.innerHTML = ''; // Clear previous preview
+        
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.createElement("img");
+                    img.src = e.target.result;
+                    img.className = "img-thumbnail";
+                    img.style.maxHeight = "150px";
+                    preview.appendChild(img);
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        </script>
+        
+
+
 
 {% endblock %}
