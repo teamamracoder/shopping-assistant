@@ -74,6 +74,23 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const shouldOpenModal = urlParams.get("openaddProductSubCategoryModal");
+
+        if (shouldOpenModal === "1") {
+            const addCategoryModal = new bootstrap.Modal(document.getElementById('addProductSubCategoryModal'));
+            addCategoryModal.show();
+
+            // Clear the form (in case data is pre-filled)
+            const form = document.getElementById('addProductSubCategoryForm');
+            form.reset();
+
+            // Optional: Clear query string so it doesn't reopen on future reloads
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+
+
+
         const form = document.getElementById("addProductSubCategoryForm");
         const modalTitle = document.getElementById("addProductSubCategoryModalLabel");
 
@@ -113,9 +130,14 @@
     <p class="mb-4">Manage product sub categories in the system.</p>
 
     <!-- Add Button (Opens Modal) -->
-    <button class="circle-btn" data-bs-toggle="modal" data-bs-target="#addProductSubCategoryModal">
+    <!-- <button class="circle-btn" data-bs-toggle="modal" data-bs-target="#addProductSubCategoryModal">
         <i class="bi bi-plus-lg text-light"></i>
-    </button>
+    </button> -->
+
+    <a href="?openaddProductSubCategoryModal=1" class="circle-btn" id="addCategoryBtn">
+        <i class="bi bi-plus-lg text-light"></i>
+    </a>
+    
 
     <!-- Bootstrap Modal -->
     <div class="modal fade" id="addProductSubCategoryModal" tabindex="-1" aria-labelledby="addProductSubCategoryModalLabel" aria-hidden="true">
@@ -222,9 +244,26 @@
                                             <i class="bi bi-trash"></i>
                                         </button>
                                     </form>
-                                    <a href="#" class="text-primary">
+
+                                    {% if subcategory.id %}
+                                    <form method="post" action="{% url 'manage_toggle_product_sub_category_active' subcategory.id %}" style="display:inline;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm {% if subcategory.is_active %}text-success{% else %}text-muted{% endif %}"
+                                                title="Toggle visibility"
+                                                onclick="return confirm('Are you sure you want to toggle this subcategory\'s visibility?');">
+                                            {% if subcategory.is_active %}
+                                                <i class="bi bi-eye"></i>
+                                            {% else %}
+                                                <i class="bi bi-eye-slash"></i>
+                                            {% endif %}
+                                        </button>
+                                    </form>
+                                    {% endif %}
+                                    
+
+                                    <!-- <a href="#" class="text-primary">
                                         <i class="bi bi-eye-slash"></i>                                    
-                                    </a>  
+                                    </a>   -->
                                 </td>                                    
                             </tr>
                         {% endfor %} 

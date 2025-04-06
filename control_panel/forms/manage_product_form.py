@@ -11,7 +11,7 @@ class ManageProductForm(forms.ModelForm):
         widgets = {
             'name': forms.TextInput(attrs={'id': 'product-name', 'class': 'form-control', 'placeholder': 'Enter product name'}),
             'product_code': forms.TextInput(attrs={'id': 'product-code', 'class': 'form-control', 'placeholder': 'Enter product code'}),
-            'description': forms.Textarea(attrs={'id': 'product-description', 'class': 'form-control', 'rows': 3, 'placeholder': 'Enter description'}),
+            'description': forms.Textarea(attrs={'id': 'product-description', 'class': 'form-control', 'rows': 2, 'placeholder': 'Enter description'}),
             'price': forms.NumberInput(attrs={'id': 'product-price', 'class': 'form-control', 'placeholder': 'Enter price'}),
             'discount_per': forms.NumberInput(attrs={'id': 'product-discount', 'class': 'form-control', 'placeholder': 'Enter discount percentage'}),
             'quantity': forms.NumberInput(attrs={'id': 'product-quantity', 'class': 'form-control', 'placeholder': 'Enter quantity'}),

@@ -70,6 +70,24 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const shouldOpenModal = urlParams.get("openAddCategoryModal");
+
+        if (shouldOpenModal === "1") {
+            const addCategoryModal = new bootstrap.Modal(document.getElementById('addCategoryModal'));
+            addCategoryModal.show();
+
+            // Clear the form (in case data is pre-filled)
+            const form = document.getElementById('addCategoryForm');
+            form.reset();
+
+            // Optional: Clear query string so it doesn't reopen on future reloads
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+
+
+
         const editButtons = document.querySelectorAll('.edit-category-btn');
         const form = document.getElementById('addCategoryForm');
         const nameInput = document.getElementById('id_name');
@@ -104,9 +122,14 @@
     <p class="mb-4">Manage product categories in the system.</p>
 
     <!-- Add Button -->
-    <button class="circle-btn" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
+    <!-- <button class="circle-btn" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
         <i class="bi bi-plus-lg text-light"></i>
-    </button>
+    </button> -->
+
+    <!-- Add a query param to tell the page to open modal after reload -->
+<a href="?openAddCategoryModal=1" class="circle-btn" id="addCategoryBtn">
+    <i class="bi bi-plus-lg text-light"></i>
+</a>
 
     <!-- Bootstrap Modal -->
     <div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
@@ -185,9 +208,19 @@
                                         </button>
                                     </form>
 
-                                    <a href="#" class="text-primary">
-                                        <i class="bi bi-eye-slash"></i>                                    
-                                    </a>                                        
+                                    <form method="post" action="{% url 'manage_toggle_product_category_active' category.id %}" style="display:inline;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm {% if category.is_active %}text-success{% else %}text-muted{% endif %}"
+                                                title="Toggle visibility"
+                                                onclick="return confirm('Are you sure you want to toggle this category\'s visibility?');">
+                                            {% if category.is_active %}
+                                                <i class="bi bi-eye"></i>
+                                            {% else %}
+                                                <i class="bi bi-eye-slash"></i>
+                                            {% endif %}
+                                        </button>
+                                    </form>
+                                    
                                 </td>                                
                             </tr>
                         {% endfor %}

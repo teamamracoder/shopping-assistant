@@ -1,3 +1,5 @@
+import os
+from django.conf import settings
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.contrib import messages
@@ -35,6 +37,20 @@ class ManageProductCreateView(View):
             if not isinstance(request.user, AnonymousUser):
                 product.created_by = request.user
                 product.updated_by = request.user
+
+                            # Handle multiple uploaded files manually
+            # image_urls = []
+            # for f in request.FILES.getlist('product_images'):
+            #     save_path = os.path.join(settings.STATIC_ROOT, 'img/product', f.name)
+            #     os.makedirs(os.path.dirname(save_path), exist_ok=True)
+            #     with open(save_path, 'wb+') as destination:
+            #         for chunk in f.chunks():
+            #             destination.write(chunk)
+
+            #     relative_url = f'static/img/product/{f.name}'
+            #     image_urls.append(relative_url)
+
+            # product.image_urls = image_urls
             product.save()
 
             messages.success(request, "Product created successfully!")
@@ -64,3 +80,15 @@ class ManageProductDeleteView(View):
         product.delete()
         messages.success(request, "Product deleted successfully!")
         return redirect("manage_product_list")  # Ensure this is the correct URL name
+    
+# Toggle Button
+class ManageToggleProductActiveView(View):
+    def post(self, request, pk, *args, **kwargs):
+        product = get_object_or_404(ProductsModel, pk=pk)
+        product.is_active = not product.is_active
+        product.save()
+
+        status = "activated" if product.is_active else "deactivated"
+        messages.success(request, f"Product '{product.name}' has been {status}.")
+        
+        return redirect('manage_product_list')
