@@ -24,10 +24,3 @@ class ManageProductSubCategoryForm(forms.ModelForm):
         ],
         widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter subcategory name'}),
     )
-
-    # description = forms.CharField(
-    #     required=False,
-    #     min_length=10,
-    #     max_length=300,
-    #     widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 2, 'placeholder': 'Enter description'}),
-    # )
