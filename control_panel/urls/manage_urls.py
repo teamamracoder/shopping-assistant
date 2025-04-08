@@ -1,6 +1,6 @@
 from django.urls import path
 
-from control_panel.views import IndexView,ManageDashboardView,ManageServiceTypeView,ManageUserCreateView,ManageUserDeleteView,ManageUserUpdateView,IndexView,ManageDashboardView,ManageProductSubCategoryListView,ManageProductSubCategoryCreateView,ManageProductCategoryEditView,ManageProductSubCategoryDeleteView,ManageToggleProductSubCategoryActiveView,ManageProductListView,ManageProductCreateView,ManageProductDeleteView,ManageToggleProductActiveView,ManageProductCategoryListView,ManageProductCategoryCreateView,ManageProductCategoryDeleteView,ManageToggleProductCategoryActiveView,ManageUserListView,ManageTemplateListView,ManageTemplateCreateView,ManageToggletemplatesActiveView
+from control_panel.views import IndexView,ManageDashboardView,ManageServiceTypeView,ManageUserCreateView,ManageUserDeleteView,ManageUserUpdateView,IndexView,ManageDashboardView,ManageProductSubCategoryListView,ManageProductSubCategoryCreateView,ManageProductCategoryEditView,ManageProductSubCategoryDeleteView,ManageToggleProductSubCategoryActiveView,ManageProductListView,ManageProductCreateView,ManageProductDeleteView,ManageToggleProductActiveView,ManageProductCategoryListView,ManageProductCategoryCreateView,ManageProductCategoryDeleteView,ManageToggleProductCategoryActiveView,ManageUserListView,ManageTemplateListView,ManageTemplateCreateView,ManageTemplateEditView,ManageTemplateDeleteView,ManageToggletemplatesActiveView
 from control_panel.views import *
 
 # app_name = 'user_management'  # Set the app namespace here
@@ -72,6 +72,8 @@ urlpatterns = [
 
     path('templates/', ManageTemplateListView.as_view(), name='manage_template_list'),
     path('templates/create/', ManageTemplateCreateView.as_view(), name='manage_template_create'),
+    path("templates/edit/<int:pk>/", ManageTemplateEditView.as_view(), name="manage_template_edit"),
+    path('templates/delete/<int:pk>/', ManageTemplateDeleteView.as_view(), name='manage_template_delete'),
     path("templates/<int:pk>/toggle/", ManageToggletemplatesActiveView.as_view(), name="manage_toggle_template_active"),
 
 ]

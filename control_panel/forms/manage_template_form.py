@@ -8,9 +8,9 @@ class ManageTemplateForm(forms.ModelForm):
         fields = ['subject', 'body', 'payload', 'link', 'placeholders']
         widgets = {
             'subject': forms.TextInput(attrs={'class': 'form-control'}),
-            'body': forms.Textarea(attrs={'class': 'form-control', 'rows': 2}),
-            'payload': forms.Textarea(attrs={'class': 'form-control', 'rows': 2}),
+            'body': forms.Textarea(attrs={'class': 'form-control', 'rows': 1}),
+            'payload': forms.Textarea(attrs={'class': 'form-control', 'rows': 1}),
             'link': forms.URLInput(attrs={'class': 'form-control'}),
-            'placeholders': forms.Textarea(attrs={'class': 'form-control', 'rows': 2}),
+            'placeholders': forms.Textarea(attrs={'class': 'form-control', 'rows': 1}),
         }
 

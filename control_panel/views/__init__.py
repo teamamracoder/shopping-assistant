@@ -10,4 +10,4 @@ from .manage_product_category_view import ManageProductCategoryListView, ManageP
 
 from .manage_service_type_view import ManageServiceTypeView, ManageCreateServiceTypeView
 
-from .manage_template_view import ManageTemplateListView,ManageTemplateCreateView,ManageToggletemplatesActiveView
+from .manage_template_view import ManageTemplateListView,ManageTemplateCreateView,ManageTemplateEditView,ManageTemplateDeleteView,ManageToggletemplatesActiveView

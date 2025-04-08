@@ -1,5 +1,5 @@
 {% extends "../index.html" %}
-{% block title %}Create Email Template{% endblock %}
+{% block title %}Update Email Template{% endblock %}
 {% block content %}
 
 <style>
@@ -42,16 +42,15 @@
 </script>
 
 <div class="container-fluid">
-    <h1 class="h3 mb-4 text-gray-800">Create New Email Template</h1>
+    <h1 class="h3 mb-4 text-gray-800">Update Email Template</h1>
 
     <div class="card shadow">
         <div class="card-header py-3 text-white rounded-top">
-            <h6 class="m-0 fw-bold text-center fs-6">Email Template Create</h6>
+            <h6 class="m-0 fw-bold text-center fs-6">Email Template Update</h6>
         </div>
         <div class="card-body">
-            <form method="post" enctype="multipart/form-data" action="{% url 'manage_template_create' %}">
-                {% csrf_token %}
-            
+            <form method="post" enctype="multipart/form-data" action="{% url 'manage_template_edit' object.id %}">
+            {% csrf_token %}
 
                 <div class="row g-3">
                     <!-- Subject -->
@@ -112,15 +111,31 @@
                         </div>
                     </div>
 
-                    <!-- Preview Area -->
-                    <div class="col-md-6 mb-3">
+                    <!-- Preview Area (New Uploads) -->
+                    <div class="col-md-2 mb-3">
                         <div id="imagePreviewContainer" style="display: flex; flex-wrap: wrap; gap: 10px;"></div>
                     </div>
+
+                    <!-- Existing Images -->
+                    {% if template.image_urls %}
+                    <div class="col-md-6 mb-3">
+                        <label>Existing Images:</label><br>
+                        {% for url in template.image_urls %}
+                            <img src="/{{ url }}" width="85" height="80" class="rounded border me-2 mb-2" style="object-fit: cover;">
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    <!-- {% if object.image_urls %}
+                    {% for url in object.image_urls %}
+                        <img src="/{{ url }}" ... >
+                    {% endfor %}
+                {% endif %}
+                     -->
                 </div>
 
                 <!-- Form Buttons -->
                 <div class="mt-4 text-end">
-                    <button type="submit" class="btn btn-primary">Create</button>
+                    <button type="submit" class="btn btn-success">Update</button>
                     <a href="{% url 'manage_template_list' %}" class="btn btn-secondary ms-2">Cancel</a>
                 </div>
             </form>
