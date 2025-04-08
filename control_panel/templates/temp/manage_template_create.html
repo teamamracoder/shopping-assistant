@@ -4,13 +4,17 @@
 
 <style>
     .input-group-text {
-        background-color: #6a5acd;
+        background-color: #c9dff1;
         color: white;
     }
 
-    .card-header {
-        background-color: #6a5acd;
+    .input-group i::before{
+        background-color: #205aa6;
     }
+    .row{
+        font-weight: bold;
+    }
+
 </style>
 
 <script>
@@ -45,8 +49,8 @@
     <h1 class="h3 mb-4 text-gray-800">Create New Email Template</h1>
 
     <div class="card shadow">
-        <div class="card-header py-3 text-white rounded-top">
-            <h6 class="m-0 fw-bold text-center fs-6">Email Template Create</h6>
+        <div class="card-header bg-primary-subtle py-3 text-white rounded-top">
+            <h6 class="m-0 fw-bold text-center fs-5 text-dark">Email Template Create</h6>
         </div>
         <div class="card-body">
             <form method="post" enctype="multipart/form-data" action="{% url 'manage_template_create' %}">

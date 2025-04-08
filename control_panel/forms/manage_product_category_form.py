@@ -10,7 +10,7 @@ class ManageProductCategoryForm(forms.ModelForm):
         
         widgets = {
             'name': forms.TextInput(attrs={"class": "form-control",'id': 'id_name', "placeholder": "Enter category name"}),
-            'description': forms.Textarea(attrs={"class": "form-control",'id': 'id_description', "placeholder": "Enter description", "rows": 3}),
+            'description': forms.Textarea(attrs={"class": "form-control",'id': 'id_description', "placeholder": "Enter description", "rows": 1}),
             # 'is_active': forms.CheckboxInput(attrs={"class": "form-check-input"}),
         }
         
