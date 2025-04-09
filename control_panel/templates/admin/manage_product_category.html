@@ -3,16 +3,7 @@
 {% block content %}
 
 <style>
-    .modal-header {
-        background-color: #007bff;
-        color: white;
-        border-top-left-radius: 5px;
-        border-top-right-radius: 5px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
+    
     .modal-title {
         font-weight: bold;
         flex-grow: 1;
@@ -40,29 +31,23 @@
         background-color: darkblue;
     }
 
+    .input-group-text {
+        background-color: #c9dff1;
+        color: white;
+    }
+
+    .input-group i::before{
+        background-color: #205aa6;
+    }
+    .row .form-group{
+        font-weight: bold;
+    }
+
     /*Modal Widht*/
     @media (min-width: 1200px) {
         .modal-dialog {
-            max-width: 90%; /* Adjust width */
+            max-width: 90%; 
         }
-    }
-
-    /* Modal Header */
-    .modal-header {
-        background-color: #6a5acd;
-        color: white;
-        border-bottom: 2px solid #c0c0c0;
-        padding: 15px;
-
-    }
-
-    .modal-title {
-        flex-grow: 1;
-        text-align: center;
-    }
-
-    .input-group-text {
-        background-color: #6a5acd;
     }
     
 </style>
@@ -127,16 +112,16 @@
     </button> -->
 
     <!-- Add a query param to tell the page to open modal after reload -->
-<a href="?openAddCategoryModal=1" class="circle-btn" id="addCategoryBtn">
-    <i class="bi bi-plus-lg text-light"></i>
-</a>
+    <a href="?openAddCategoryModal=1" class="circle-btn" id="addCategoryBtn">
+        <i class="bi bi-plus-lg text-light"></i>
+    </a>
 
     <!-- Bootstrap Modal -->
     <div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addCategoryModalLabel">Add Product Category</h5>
+                <div class="modal-header bg-primary-subtle">
+                    <h5 class="modal-title text-dark fs-6" id="addCategoryModalLabel">Add Product Category</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">

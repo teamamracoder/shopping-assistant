@@ -1,0 +1,149 @@
+{% extends "../index.html" %}
+{% block title %}Update Email Template{% endblock %}
+{% block content %}
+
+<style>
+    .input-group-text {
+        background-color: #c9dff1;
+        color: white;
+    }
+
+    .input-group i::before{
+        background-color: #205aa6;
+    }
+    .row{
+        font-weight: bold;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const imageInput = document.getElementById("template_images");
+        const previewContainer = document.getElementById("imagePreviewContainer");
+
+        imageInput.addEventListener("change", function () {
+            previewContainer.innerHTML = ""; // Clear old previews
+
+            const files = Array.from(imageInput.files);
+            files.forEach(file => {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    const img = document.createElement("img");
+                    img.src = e.target.result;
+                    img.className = "rounded border";
+                    img.style.width = "85px";
+                    img.style.height = "80px";
+                    img.style.objectFit = "cover";
+                    previewContainer.appendChild(img);
+                };
+
+                reader.readAsDataURL(file);
+            });
+        });
+    });
+</script>
+
+<div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800">Update Email Template</h1>
+
+    <div class="card shadow">
+        <div class="card-header bg-primary-subtle py-3 text-white rounded-top">
+            <h6 class="m-0 fw-bold text-center text-dark fs-6">Email Template Update</h6>
+        </div>
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data" action="{% url 'manage_template_edit' object.id %}">
+            {% csrf_token %}
+
+                <div class="row g-3">
+                    <!-- Subject -->
+                    <div class="form-group col-md-6">
+                        {{ form.subject.label_tag }}<span class="text-danger">*</span>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                            {{ form.subject }}
+                        </div>
+                    </div>
+
+                    <!-- Link -->
+                    <div class="form-group col-md-6">
+                        {{ form.link.label_tag }}
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-link-45deg"></i></span>
+                            {{ form.link }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    <!-- Body -->
+                    <div class="form-group col-6">
+                        {{ form.body.label_tag }}<span class="text-danger">*</span>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-body-text"></i></span>
+                            {{ form.body }}
+                        </div>
+                    </div>
+
+                    <!-- Payload -->
+                    <div class="form-group col-md-6">
+                        {{ form.payload.label_tag }}
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-code-slash"></i></span>
+                            {{ form.payload }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    <!-- Placeholders -->
+                    <div class="form-group col-md-6">
+                        {{ form.placeholders.label_tag }}
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-braces"></i></span>
+                            {{ form.placeholders }}
+                        </div>
+                    </div>
+
+                    <!-- Image Upload -->
+                    <div class="col-md-2 mb-3">
+                        <label for="template_images">Upload Template Images</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-images"></i></span>
+                            <input type="file" name="template_images" id="template_images" multiple class="form-control" />
+                        </div>
+                    </div>
+
+                    <!-- Preview Area (New Uploads) -->
+                    <div class="col-md-2 mb-3">
+                        <div id="imagePreviewContainer" style="display: flex; flex-wrap: wrap; gap: 10px;"></div>
+                    </div>
+
+                    <!-- Existing Images -->
+                    {% if template.image_urls %}
+                    <div class="col-md-6 mb-3">
+                        <label>Existing Images:</label><br>
+                        {% for url in template.image_urls %}
+                            <img src="/{{ url }}" width="85" height="80" class="rounded border me-2 mb-2" style="object-fit: cover;">
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    <!-- {% if object.image_urls %}
+                    {% for url in object.image_urls %}
+                        <img src="/{{ url }}" ... >
+                    {% endfor %}
+                {% endif %}
+                     -->
+                </div>
+
+                <!-- Form Buttons -->
+                <div class="mt-4 text-end">
+                    <button type="submit" class="btn btn-primary">Update</button>
+                    <a href="{% url 'manage_template_list' %}" class="btn btn-secondary ms-2">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -4,15 +4,11 @@
 
 
 <style>
-    .modal-header {
-        background-color: #007bff;
-        color: white;
-        border-top-left-radius: 5px;
-        border-top-right-radius: 5px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        position: relative;
+
+.modal-title {
+        font-weight: bold;
+        flex-grow: 1;
+        text-align: center;
     }
 
     .circle-btn {
@@ -45,23 +41,17 @@
         }
     }
 
-    /* Modal Header */
-    .modal-header {
-        background-color: #6a5acd;
-        color: white;
-        border-bottom: 2px solid #c0c0c0;
-        padding: 15px;
-    }
-
-    .modal-title {
-        flex-grow: 1;
-        text-align: center;
-    }
-    
     .input-group-text {
-        background-color: #6a5acd;
+        background-color: #c9dff1;
+        color: white;
     }
 
+    .input-group i::before{
+        background-color: #205aa6;
+    }
+    .row .form-group{
+        font-weight: bold;
+    }
 
 </style>
 
@@ -159,8 +149,8 @@
         <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-xl">
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title fw-bold" id="addProductModalLabel">Add Product</h5>
+                    <div class="modal-header bg-primary-subtle">
+                        <h5 class="modal-title fs-6" id="addProductModalLabel">Add Product</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
