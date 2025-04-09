@@ -118,3 +118,37 @@ class ToggleStoreCategoryStatus(View):
         category.is_active = not category.is_active
         category.save()
         return redirect('manage_Store_category_list') 
+
+
+# class ManageCategoryUpdateStoreView(View):
+#     def post(self, request, pk):
+#         store = get_object_or_404(StoreCategoryModel, pk=pk)
+#         form = StoreCategoryForm(request.POST, instance=store)
+#         if form.is_valid():
+#             form.save()
+#             messages.success(request, "Store updated successfully!")
+#             return redirect('manage_Store_category_list')  # Ensure this is the correct URL name
+#         else:
+#             store_category_list=StoreCategoryModel.objects.all()
+           
+#             messages.error(request, "Please correct the errors below.")
+#             return render(request, "admin/manage_store_category.html", {"form": form, "store_list": store_category_list})
+class ManageCategoryUpdateStoreView(View):
+    def post(self, request, pk):
+        store = get_object_or_404(StoreCategoryModel, pk=pk)
+        form = StoreCategoryForm(request.POST, instance=store)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Store updated successfully!")
+            return redirect('manage_Store_category_list')  # Ensure the URL name is correct
+        else:
+            messages.error(request, "Please correct the errors below.")
+            
+            # Ensure form errors are passed back to the template
+            store_category_list = StoreCategoryModel.objects.all()
+            return render(request, "admin/manage_store_category.html", {
+                "form": form,
+                "store_list": store_category_list,
+                "store": store,  # Ensure the store object is passed
+            })        

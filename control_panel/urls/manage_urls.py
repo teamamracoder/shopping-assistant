@@ -1,6 +1,6 @@
 from django.urls import path
 
-from control_panel.views import IndexView,ManageDashboardView,ManageProductSubCategoryListView,ManageProductSubCategoryCreateView,ManageProductSubCategoryEditView,ManageProductCategoryEditView,ManageProductSubCategoryDeleteView,ManageProductListView,ManageProductCreateView,ManageProductEditView,ManageProductDeleteView,ManageProductCategoryListView,ManageProductCategoryCreateView,ManageProductCategoryDeleteView
+from control_panel.views import IndexView,ManageDashboardView,ManageUserCreateView,ManageUserDeleteView,ManageUserUpdateView,IndexView,ManageDashboardView,ManageProductSubCategoryListView,ManageProductSubCategoryCreateView,ManageProductCategoryEditView,ManageProductSubCategoryDeleteView,ManageProductListView,ManageProductCreateView,ManageProductDeleteView,ManageProductCategoryListView,ManageProductCategoryCreateView,ManageProductCategoryDeleteView,ManageUserListView
 from control_panel.views import *
 # app_name = 'user_management'  # Set the app namespace here
 urlpatterns = [
@@ -25,18 +25,17 @@ urlpatterns = [
     path("product_categories/edit/<int:pk>/", ManageProductCategoryEditView.as_view(), name="manage_product_category_edit"),
     path("product_categories/delete/<int:pk>/", ManageProductCategoryDeleteView.as_view(), name="manage_product_category_delete"),
 
-
-# store urls by priya
+    #store urls by priya
     path('stores/', ManageStoreView.as_view(), name='manage_Store_list'),
     path('stores/create/', ManageCreateStore.as_view(), name='manage_create_store'),
     path('stores/update/<int:pk>/', ManageUpdateStoreView.as_view(), name='manage_update_store'),
     path('toggle-store-status/<int:store_id>/', ToggleStoreStatus.as_view(), name='toggle_store_status'),
 
-#store category url
+    #store category url
     path('stores/category/', ManageStoreCategoryView.as_view(), name='manage_Store_category_list'),
     path('store-category/create/', ManageCreateStoreCategoryView.as_view(), name='manage_create_store_category'),
     path("store-category/delete/<int:category_id>/", ManageDeleteStoreCategoryView.as_view(), name="delete_store_category"),
     path('toggle-store-category-status/<int:category_id>/', ToggleStoreCategoryStatus.as_view(), name='toggle_store_cetegory_status'),
 
-
+    path('stores/category/update/<int:pk>/',ManageCategoryUpdateStoreView.as_view(), name='manage_update_store_category'),
 ]
