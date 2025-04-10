@@ -100,7 +100,7 @@ class ManageProductEditView(View):
 
 
     
-#Delete     
+# Delete     
 class ManageProductDeleteView(View):
     """Handles product deletion."""
 
