@@ -20,104 +20,43 @@ class ManageUserListView(View):
     def get(self, request):
         users = UserModel.objects.all()
         form = ManageUserForm()
-        return render(request, 'admin/manage_all_user.html', {"users": users, "form": form})
-
-# from django.shortcuts import render, redirect
-# from django.views import View
-# from django.db import IntegrityError
-# from .forms import ManageUserForm
-# from .models import UserModel, Gender, Role
+        choices_gender = [{type.value : type.name} for type in Gender]
+        choices_role = [{type.value : type.name} for type in Role]
+        return render(request, "admin/manage_all_user.html", {'users': users, 'form': form, 'choices_gender': choices_gender, 'choices_role' : choices_role   })
+    
 
 class ManageUserCreateView(View):
     def get(self, request):
         users = UserModel.objects.all()
         form = ManageUserForm()
-        choices_gender = [{type.value: type.name} for type in Gender]
-        return render(request, "admin/manage_all_user.html", {'form': form, 'choices_gender': choices_gender, 'users': users})
+        choices_gender = [{type.value : type.name} for type in Gender]
+        choices_role = [{type.value : type.name} for type in Role]
+        return render(request, "admin/manage_all_user.html", {'users': users, 'form': form, 'choices_gender': choices_gender, 'choices_role' : choices_role })
 
     def post(self, request):
         form = ManageUserForm(request.POST)
         if form.is_valid():
-            try:
                 user_data = UserModel.objects.create(
                     first_name=form.cleaned_data['first_name'],
                     last_name=form.cleaned_data['last_name'],
                     email=form.cleaned_data['email'],
                     dob=form.cleaned_data['dob'],
                     gender=form.cleaned_data['gender'],
+                    roles=form.cleaned_data['role'],
+                    phone=form.cleaned_data['phone'],
                     address=form.cleaned_data['address'],
                     location=form.cleaned_data['location'],
                     city=form.cleaned_data['city'],
                     district=form.cleaned_data['district'],
                     state=form.cleaned_data['state'],
                     pincode=form.cleaned_data['pincode'],
-                    roles=[Role.END_USER.value],
+                
                 )
-                return redirect("manage_user_list", {'user_data': user_data})
-            except IntegrityError:
-                form.add_error(None, 'A user with this email or contact already exists.')
-        print(form.errors)        
+                # UserModel.save(user_data)  # Save the user data to the database
+                messages.success(request, 'User created successfully.')
+
+        print("Form error is ::==============",form.errors)
         return render(request, "admin/manage_all_user.html", {'form': form})
-
-# class ManageUserCreateView(View):
-#     def get(self, request):
-#         users = UserModel.objects.all()
-#         form = ManageUserForm()
-#         choices_gender = [(type.value, type.name) for type in Gender]
-#         return render(request, "admin/manage_all_user.html", {'form': form, 'choices_gender': choices_gender, 'users': users})
-
-#     def post(self, request):
-#         form = ManageUserForm(request.POST)
-#         if form.is_valid():
-#             try:
-#                 user_data = UserModel.objects.create(
-#                     first_name=form.cleaned_data['first_name'],
-#                     last_name=form.cleaned_data['last_name'],
-#                     email=form.cleaned_data['email'],
-#                     dob=form.cleaned_data['dob'],
-#                     gender=form.cleaned_data['gender'],
-#                     address=form.cleaned_data['address'],
-#                     location=form.cleaned_data['location'],
-#                     city=form.cleaned_data['city'],
-#                     district=form.cleaned_data['district'],
-#                     state=form.cleaned_data['state'],
-#                     pincode=form.cleaned_data['pincode'],
-#                     roles=[Role.END_USER.value],
-#                 )
-#                 return redirect("manage_user_list")
-#             except IntegrityError:
-#                 form.add_error(None, 'A user with this email or contact already exists.')
-#         return render(request, "admin/manage_all_user.html", {'form': form})
-
-
-
-
-# class ManageUserCreateView(View):
-#     def get(self, request):
-#         users = UserModel.objects.all()  # Fetch all users
-#         form = ManageUserForm()
-#         choices_gender = [{type.value: type.name} for type in Gender]
-#         return render(request, "admin/manage_all_user.html", {'form': form,'choices_gender': choices_gender,'users':users})
-
-#     def post(self, request):
-#         form = ManageUserForm(request.POST)
-#         if form.is_valid():
-#             user_data = UserModel.objects.create(
-#                 first_name = form.cleaned_data['first_name'],
-#                 last_name  = form.cleaned_data['last_name'],
-#                 email      = form.cleaned_data['email'],
-#                 dob        = form.cleaned_data['dob'],
-#                 gender     = form.cleaned_data['gender'],
-#                 address    = form.cleaned_data['address'],
-#                 location   = form.cleaned_data['location'],
-#                 city       = form.cleaned_data['city'],
-#                 district   = form.cleaned_data['district'],
-#                 state      = form.cleaned_data['state'],
-#                 pincode    = form.cleaned_data['pincode'],
-#                 roles      = [Role.END_USER.value],
-#             )
-#             return redirect("manage_user_list",{'user_data': user_data})
-#         return render(request, "admin/manage_all_user.html", {'form': form})
 
 
 class ManageUserDeleteView(View):
@@ -139,4 +78,3 @@ class ManageUserUpdateView(UpdateView):
     def get(self, request, *args, **kwargs):
         # You can override this to customize if necessary
         return super().get(request, *args, **kwargs)
-

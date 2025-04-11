@@ -1,0 +1,224 @@
+{% extends "../index.html" %}
+{% block title %} Users {% endblock %}
+{% block content %}
+
+<style>
+  .circle-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: blue;
+    color: white;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+  }
+
+  .circle-btn:hover {
+    background-color: darkblue;
+  }
+
+  /* Modal Width */
+  @media (min-width: 1200px) {
+    .modal-dialog {
+      max-width: 90%;
+      /* Adjust width */
+    }
+  }
+
+  /* Modal Header */
+  .modal-header {
+    background-color: #cecfd1;
+    color: white;
+    border-bottom: 2px solid #c0c0c0;
+    padding: 15px;
+  }
+
+  .modal-title {
+    flex-grow: 1;
+    text-align: center;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+  const editButtons = document.querySelectorAll('.edit-btn');
+  const addButton = document.querySelector('.circle-btn');
+  const form = document.getElementById('addUserForm');
+  const modalLabel = document.getElementById('addUserModalLabel');
+
+  // Reset form for adding
+  addButton.addEventListener('click', function () {
+    form.reset();
+    modalLabel.textContent = "Add Booking";
+    form.action = "{% url 'manage_service_booking_create' %}";
+  });
+
+  // Handle edit
+  editButtons.forEach(btn => {
+    btn.addEventListener('click', function () {
+      modalLabel.textContent = "Edit Booking";
+      form.action = this.getAttribute('data-action-url');
+
+      // Fill fields
+      document.getElementById('id_service').value = this.getAttribute('data-service-id');
+      document.getElementById('id_user').value = this.getAttribute('data-user-id');
+      document.getElementById('id_service_provider').value = this.getAttribute('data-provider-id');
+      document.getElementById('id_booking_charge').value = this.getAttribute('data-booking-charge');
+      document.getElementById('id_booking_time').value = this.getAttribute('data-booking-time');
+      document.getElementById('id_is_active').checked = this.getAttribute('data-is-active') === 'True';
+
+      new bootstrap.Modal(document.getElementById('addUserModal')).show();
+    });
+  });
+});
+
+</script>
+
+<div class="container-fluid">
+
+  <h1 class="h3 mb-2 text-gray-800">Service Type Booking </h1>
+  <p class="mb-4">Manage service type booking in the system.</p>
+
+  <!-- Add Button (Opens Modal) -->
+  <button class="circle-btn" data-bs-toggle="modal" data-bs-target="#addUserModal">
+    <i class="bi bi-plus-lg text-light"></i>
+  </button>
+
+  <!-- Bootstrap Modal -->
+  <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold" id="addUserModalLabel">Add User</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form id="addUserForm" method="POST" action="{% url 'manage_service_booking_create' %}" class="fw-bold">
+              {% csrf_token %}
+              <div class="row">
+                  {% for field in form %}
+                      {% if not field.is_hidden %}
+                      <div class="form-group col-md-6 mb-3">
+                          {{ field.label_tag }}
+                          {{ field }}
+                          {% if field.errors %}
+                              <div class="text-danger">{{ field.errors }}</div>
+                          {% endif %}
+                      </div>
+                      {% endif %}
+                  {% endfor %}
+              
+                  {# Show hidden fields without labels #}
+                  {{ form.created_by }}
+                  {{ form.updated_by }}
+              </div>
+            
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </form>
+            
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- User Table -->
+  <div class="card shadow mb-4">
+    <div class="card-header py-3">
+      <h6 class="m-0 font-weight-bold text-primary">Service Type Booking </h6>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+          <thead>
+            <tr>
+              <!-- <th>Id</th> -->
+              <th>service</th>
+              <th>Service Provider</th>
+              <th>User</th>
+              <th>Booking Charge</th>
+              <th>Booking Time</th>
+              <th>Active</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          {% for booking in service_bookings %}
+          <tbody>
+            <tr>
+                <!-- <td>{{ booking.id }}</td> -->
+                <td>{{ booking.service.service_type.service_name }}</td>
+                <td>{{ booking.service_provider.first_name }} {{ booking.service_provider.last_name }}</td>
+                <td>{{ booking.user.first_name }} {{ booking.user.last_name }}</td>
+                <td>{{ booking.booking_charge }}</td>
+                <td>{{ booking.booking_time }}</td>
+                <td>{{ booking.is_active }}</td>
+
+
+                <!-- '  -->
+              <td>
+                <a href="#" class="text-primary edit-btn"
+                    data-id="{{ booking.id }}"
+                    data-action-url="{% url 'manage_service_booking_update' booking.id %}"
+                    data-service-id="{{ booking.service.id }}"
+                    data-user-id="{{ booking.user.id }}"
+                    data-provider-id="{{ booking.service_provider.id }}"
+                    data-booking-charge="{{ booking.booking_charge }}"
+                    data-booking-time="{{ booking.booking_time|date:'Y-m-d\\TH:i' }}"
+                    data-is-active="{{ booking.is_active }}">
+                    <i class="bi bi-pencil-square"></i>
+                  </a>
+
+
+                {% if booking.id %}
+                <form method="post" action="{% url 'manage_service_booking_delete' booking.id %}"
+                  style="display:inline;">
+                  {% csrf_token %}
+                  <button type="submit" class="btn text-danger btn-sm"
+                    onclick="return confirm('Are you sure you want to delete this service booking ?');">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </form>
+                {% else %}
+                <button class="btn btn-danger btn-sm" disabled>
+                  <i class="bi bi-trash"></i>
+                </button>
+                {% endif %}
+                <a href="#" class="text-primary">
+                  <i class="bi bi-eye-slash"></i>
+                </a>
+              </td>
+            </tr>
+
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+
+
+
+{% for field in form %}
+        <div class="form-group col-md-6 mb-3">
+            {{ field.label_tag }} 
+            {{ field }}
+            {% if field.errors %}
+                <div class="text-danger">{{ field.errors }}</div>
+            {% endif %}
+        </div>
+        {% endfor %}
