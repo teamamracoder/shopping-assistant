@@ -1,17 +1,40 @@
 from django.urls import path
 
+
+from control_panel.views import ManageServiceTypeListView, ManageServiceTypeCreateView, ManageServiceTypeUpdateView,ManageServiceTypeDeleteView,ServiceBookingUpdateView
 from control_panel.views import IndexView,ManageDashboardView,ManageServiceTypeView,ManageUserCreateView,ManageUserDeleteView,ManageUserUpdateView,IndexView,ManageDashboardView,ManageProductSubCategoryListView,ManageProductSubCategoryCreateView,ManageProductCategoryEditView,ManageProductSubCategoryDeleteView,ManageToggleProductSubCategoryActiveView,ManageProductListView,ManageProductCreateView,ManageProductDeleteView,ManageToggleProductActiveView,ManageProductCategoryListView,ManageProductCategoryCreateView,ManageProductCategoryDeleteView,ManageToggleProductCategoryActiveView,ManageUserListView,ManageTemplateListView,ManageTemplateCreateView,ManageTemplateEditView,ManageTemplateDeleteView,ManageToggletemplatesActiveView
-from control_panel.views import *
+
 
 # app_name = 'user_management'  # Set the app namespace here
+
 urlpatterns = [
     path('', IndexView.as_view(), name='home'),
     path('dashboard/', ManageDashboardView.as_view(), name='manage_dashboard'),
 
+# user url by tufan
     path('users/', ManageUserListView.as_view(), name='manage_user_list'),
     path('users/create/', ManageUserCreateView.as_view(), name='manage_user_create'),
     path('admin/users/update/<int:pk>/', ManageUserUpdateView.as_view(), name='manage_user_update'),
     path('users/delete/<int:user_id>/', ManageUserDeleteView.as_view(), name="manage_user_delete"),
+
+# service_model urls by tufan
+    path('services_model/', ManageServiceModelListView.as_view(), name='manage_service_list'),
+    path('services_model/create/', ManageServiceModelCreateView.as_view(), name='manage_create_service_model'),
+    path('services_model/update/<int:pk>/', ManageServiceModelUpdateView.as_view(), name='manage_update_service_model'),
+    path('services_model/delete/<int:pk>/', ManageServiceModelDeleteView.as_view(), name='manage_delete_service_model'),
+    
+# service type model urls by tufan
+    path('services-type/', ManageServiceTypeListView.as_view(), name='manage_service_type_model_list'),
+    path('services-type/create/', ManageServiceTypeCreateView.as_view(), name='manage_service_type_model_create'),
+    path('services-type/update/<int:pk>/', ManageServiceTypeUpdateView.as_view(), name='manage_service_type_model_update'),
+    path('services-type/delete/<int:pk>/', ManageServiceTypeDeleteView.as_view(), name='manage_service_type_model_delete'),
+
+#service_booking_model url by tufan 
+    path('service-bookings/create/', ServiceBookingCreateView.as_view(), name='manage_service_booking_create'),
+    path('service-bookings/update/<int:pk>/', ServiceBookingUpdateView.as_view(), name='manage_service_booking_update'),
+    path('service-bookings/delete/<int:pk>/', ServiceBookingDeleteView.as_view(), name='manage_service_booking_delete'),
+
+
 
 # store urls by priya
     path('stores/', ManageStoreView.as_view(), name='manage_Store_list'),
