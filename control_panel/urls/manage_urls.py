@@ -2,6 +2,7 @@ from django.urls import path
 
 from control_panel.views import IndexView,ManageDashboardView,ManageUserCreateView,ManageUserDeleteView,ManageUserUpdateView,IndexView,ManageDashboardView,ManageProductSubCategoryListView,ManageProductSubCategoryCreateView,ManageProductCategoryEditView,ManageProductSubCategoryDeleteView,ManageProductListView,ManageProductCreateView,ManageProductDeleteView,ManageProductCategoryListView,ManageProductCategoryCreateView,ManageProductCategoryDeleteView,ManageUserListView
 from control_panel.views import *
+
 # app_name = 'user_management'  # Set the app namespace here
 urlpatterns = [
     path('', IndexView.as_view(), name='home'),
@@ -49,6 +50,7 @@ urlpatterns = [
     path('stores/create/', ManageCreateStore.as_view(), name='manage_create_store'),
     path('stores/update/<int:pk>/', ManageUpdateStoreView.as_view(), name='manage_update_store'),
     path('toggle-store-status/<int:store_id>/', ToggleStoreStatus.as_view(), name='toggle_store_status'),
+
 
     #store category url
     path('stores/category/', ManageStoreCategoryView.as_view(), name='manage_Store_category_list'),
