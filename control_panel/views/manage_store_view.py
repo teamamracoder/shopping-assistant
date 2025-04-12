@@ -12,7 +12,13 @@ from django.urls import reverse_lazy
 from django.urls import reverse
 from django.http import JsonResponse
 from django.http import HttpResponseForbidden
-
+import os
+from django.views import View
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+from django.utils.timezone import now
+from django.core.files.storage import default_storage
+from django.conf import settings
 
 class ManageStoreView(View):
     def get(self, request):
@@ -25,42 +31,118 @@ class ManageStoreView(View):
         return render(request, "admin/manage_store.html", {"form": form, "store_list": store_list})
 
 
+
+
+
+
+
+IMAGE_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.gif', '.webp']
+
 class ManageCreateStore(View):
     def post(self, request, *args, **kwargs):
-        form = ManageStoreForm(request.POST)
+        form = ManageStoreForm(request.POST, request.FILES)
+
         if form.is_valid():
             store = form.save(commit=False)
-            # Retrieve the UserModel instance for the logged-in user
-            user_instance = get_object_or_404(UserModel, id=1)  # Replace 1 with the appropriate user ID or logic
+            user_instance = get_object_or_404(UserModel, id=1)  # TODO: Replace with actual user logic
+            store.is_active = True
             store.owner = user_instance
             store.created_by = user_instance
             store.updated_by = user_instance
             store.save()
+
+            # Save images directly in media/ directory
+            image_urls = []
+            for f in request.FILES.getlist('store_images'):
+                file_extension = os.path.splitext(f.name)[1].lower()
+                if file_extension not in IMAGE_EXTENSIONS:
+                    continue  # skip non-image files
+
+                unique_timestamp = now().strftime('%Y%m%d%H%M%S')
+                file_name = f"{unique_timestamp}_{f.name}"
+                
+                # Save directly into media/
+                saved_path = default_storage.save(file_name, f)
+                full_media_url = f"{settings.MEDIA_URL}{saved_path}"
+
+                image_urls.append(full_media_url)
+
+            store.store_image_urls = image_urls
+            store.save()
+
             messages.success(request, "Store created successfully!")
-            return redirect('manage_Store_list')  # Ensure 'manage_store_list' is the correct URL name
+            return redirect('manage_Store_list')
         else:
             messages.error(request, "Please correct the errors below.")
             return render(request, "admin/manage_store.html", {"form": form})
-        
 
+
+
+# class ManageUpdateStoreView(View):
+#     def post(self, request, pk):
+#         store = get_object_or_404(StoreModel, pk=pk)
+#         form = ManageStoreForm(request.POST, request.FILES, instance=store)
+
+#         if form.is_valid():
+#             updated_store = form.save(commit=False)
+
+#             # Check if new image is uploaded
+#             if 'store_images' in request.FILES:
+#                 uploaded_file = request.FILES['store_images']
+#                 save_path = os.path.join(settings.STATIC_ROOT, 'img/store', uploaded_file.name)
+#                 os.makedirs(os.path.dirname(save_path), exist_ok=True)
+#                 with open(save_path, 'wb+') as destination:
+#                     for chunk in uploaded_file.chunks():
+#                         destination.write(chunk)
+#                 relative_url = f'static/img/store/{uploaded_file.name}'
+#                 updated_store.store_images = relative_url
+
+#             updated_store.save()
+#             messages.success(request, "Store updated successfully!")
+#             return redirect('manage_Store_list')
+#         else:
+#             store_list = StoreModel.objects.all()
+#             messages.error(request, "Please correct the errors below.")
+#             return render(request, "admin/manage_store.html", {"form": form, "store_list": store_list})
 class ManageUpdateStoreView(View):
     def post(self, request, pk):
         store = get_object_or_404(StoreModel, pk=pk)
-        form = ManageStoreForm(request.POST, instance=store)
+        form = ManageStoreForm(request.POST, request.FILES, instance=store)
+
         if form.is_valid():
-            form.save()
+            updated_store = form.save(commit=False)
+            existing_urls = store.store_image_urls or []
+
+            # Handle new uploads
+            new_image_urls = []
+            for f in request.FILES.getlist('store_images[]'):
+                if not f:
+                    continue
+                file_extension = os.path.splitext(f.name)[1].lower()
+                if file_extension not in IMAGE_EXTENSIONS:
+                    continue
+
+                unique_timestamp = now().strftime('%Y%m%d%H%M%S')
+                file_name = f"{unique_timestamp}_{f.name}"
+                saved_path = default_storage.save(file_name, f)
+                full_media_url = f"{settings.MEDIA_URL}{saved_path}"
+                new_image_urls.append(full_media_url)
+
+
+            # Combine old + new
+            updated_store.store_image_urls = existing_urls + new_image_urls
+            updated_store.updated_by = get_object_or_404(UserModel, id=1)  # Replace with logged-in user
+            updated_store.save()
+
             messages.success(request, "Store updated successfully!")
-            return redirect('manage_Store_list')  # Ensure this is the correct URL name
+            return redirect('manage_Store_list')
         else:
-            store_list=StoreModel.objects.all()
-            for store in store_list:
-                if isinstance(store.email, str):
-                    store.email = store.email.split(',')
-                if isinstance(store.contact_no, str):
-                    store.contact_no = store.contact_no.split(',')
+            store_list = StoreModel.objects.all()
             messages.error(request, "Please correct the errors below.")
             return render(request, "admin/manage_store.html", {"form": form, "store_list": store_list})
-        
+
+
+
 class ToggleStoreStatus(View):
     def post(self, request, store_id):
         store = get_object_or_404(StoreModel, id=store_id)
@@ -91,7 +173,7 @@ class ManageCreateStoreCategoryView(View):
                 return render(request, "admin/manage_store_category.html", {"form": form})
 
             category = form.save(commit=False)
-            user_instance = get_object_or_404(UserModel, id=1) 
+            user_instance = get_object_or_404(UserModel, id=11) 
             category.created_by = user_instance
             category.updated_by = user_instance
             category.save()
@@ -118,3 +200,23 @@ class ToggleStoreCategoryStatus(View):
         category.is_active = not category.is_active
         category.save()
         return redirect('manage_Store_category_list') 
+
+class ManageCategoryUpdateStoreView(View):
+    def post(self, request, pk):
+        store = get_object_or_404(StoreCategoryModel, pk=pk)
+        form = StoreCategoryForm(request.POST, instance=store)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Store updated successfully!")
+            return redirect('manage_Store_category_list')  # Ensure the URL name is correct
+        else:
+            messages.error(request, "Please correct the errors below.")
+            
+            # Ensure form errors are passed back to the template
+            store_category_list = StoreCategoryModel.objects.all()
+            return render(request, "admin/manage_store_category.html", {
+                "form": form,
+                "store_list": store_category_list,
+                "store": store,  # Ensure the store object is passed
+            })        

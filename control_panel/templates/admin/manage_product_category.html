@@ -1,0 +1,188 @@
+{% extends "../index.html" %}
+{% block title %} Product Categories {% endblock %}
+{% block content %}
+
+<style>
+    .modal-header {
+        background-color: #007bff;
+        color: white;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .modal-title {
+        font-weight: bold;
+        flex-grow: 1;
+        text-align: center;
+    }
+
+    .circle-btn {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: blue;
+        color: white;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        cursor: pointer;
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+    }
+
+    .circle-btn:hover {
+        background-color: darkblue;
+    }
+
+    /*Modal Widht*/
+    @media (min-width: 1200px) {
+        .modal-dialog {
+            max-width: 90%; /* Adjust width */
+        }
+    }
+
+    /* Modal Header */
+    .modal-header {
+        background-color: #cecfd1;
+        color: white;
+        border-bottom: 2px solid #c0c0c0;
+        padding: 15px;
+    }
+
+    .modal-title {
+        flex-grow: 1;
+        text-align: center;
+    }
+</style>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const editButtons = document.querySelectorAll('.edit-category-btn');
+        const form = document.getElementById('addCategoryForm');
+        const nameInput = document.getElementById('id_name');
+        const descriptionInput = document.getElementById('id_description');
+        const modalTitle = document.getElementById('addCategoryModalLabel');
+
+        editButtons.forEach(button => {
+            button.addEventListener('click', function (event) {
+                event.preventDefault(); // prevent default anchor click behavior
+
+                // Set form action for editing
+                form.action = button.getAttribute('data-action-url');
+
+                // Set values in form fields
+                nameInput.value = button.getAttribute('data-name');
+                descriptionInput.value = button.getAttribute('data-description');
+
+                // Change modal title
+                modalTitle.textContent = 'Edit Product Category';
+
+                // Show modal
+                const modal = new bootstrap.Modal(document.getElementById('addCategoryModal'));
+                modal.show();
+            });
+        });
+    });
+</script>
+
+
+<div class="container-fluid">
+    <h1 class="h3 mb-2 text-gray-800">Product Categories</h1>
+    <p class="mb-4">Manage product categories in the system.</p>
+
+    <!-- Add Button -->
+    <button class="circle-btn" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
+        <i class="bi bi-plus-lg text-light"></i>
+    </button>
+
+    <!-- Bootstrap Modal -->
+    <div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addCategoryModalLabel">Add Product Category</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addCategoryForm" method="post" action="{% url 'manage_product_category_create' %}" class="fw-bold">
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <div class="form-group col-md-6 mb-3">
+                                {{ form.name.label_tag }}<span class="text-danger">*</span>
+                                {{ form.name }}
+                            </div>
+                            <div class="form-group col-md-6 mb-3">
+                                {{ form.description.label_tag }}<span class="text-danger">*</span>
+                                {{ form.description }}
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Save</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Category Table -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Product Categories</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Description</th>
+                            {% comment %} <th>Active</th>   {% endcomment %}
+                            <th>Actions</th>                      
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for category in categories %}
+                            <tr>
+                                <td>{{ category.name }}</td>
+                                <td>{{ category.description }}</td>
+
+                                <td>
+                                    <a href="#" class="text-primary edit-category-btn" data-id="{{ category.id }}"data-name="{{ category.name }}"data-description="{{ category.description }}"
+                                    data-action-url="{% url 'manage_product_category_edit' category.id %}">
+                                    <i class="bi bi-pencil-square"></i>
+                                    </a>
+
+                                    <!-- Delete Form -->
+                                    <form method="post" action="{% url 'manage_product_category_delete' category.id %}" style="display:inline;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn text-danger btn-sm"
+                                            onclick="return confirm('Are you sure you want to delete this category?');">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+
+                                    <a href="#" class="text-primary">
+                                        <i class="bi bi-eye-slash"></i>                                    
+                                    </a>                                        
+                                </td>                                
+                            </tr>
+                        {% endfor %}
+                    </tbody>                   
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,62 +1,87 @@
 from django import forms
+from django.core.exceptions import ValidationError
 from ..models import StoreModel, StoreCategoryModel
+import re
 
 class ManageStoreForm(forms.ModelForm):
-    # Define the store_category field as a ModelChoiceField
     store_category = forms.ModelChoiceField(
-        queryset=StoreCategoryModel.objects.filter(is_active=True),  # Fetch only active categories
+        queryset=StoreCategoryModel.objects.filter(is_active=True),
         widget=forms.Select(attrs={'class': 'form-control'}),
-        empty_label="Select a category"  # Optional: Custom label for the empty choice
+        empty_label="Select a category"
     )
 
-    # Define other fields as needed
     contact_no = forms.CharField(
-        widget=forms.Textarea(attrs={'rows': 2, 'placeholder': 'Enter contact numbers separated by commas'}),
-        required=False
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter contact number'})
     )
+
     email = forms.CharField(
-        widget=forms.Textarea(attrs={'rows': 2, 'placeholder': 'Enter emails separated by commas'}),
-        required=False
-    )
-    store_image_urls = forms.CharField(
-        widget=forms.Textarea(attrs={'rows': 2, 'placeholder': 'Enter image URLs separated by commas'}),
-        required=False
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter email'})
     )
 
     class Meta:
         model = StoreModel
         fields = [
-       'store_name', 'registration_no', 'gst_no', 'store_category', 
-            'contact_no', 'email', 'open_time', 'close_time', 'address', 'location',
-            'street_or_road', 'village_or_city', 'district', 'state', 'pin_code', 
+            'store_name', 'registration_no', 'gst_no', 'store_category',
+            'contact_no', 'alternate_contact_no', 'email', 'alternate_email',
+            'open_time', 'close_time', 'address', 'location', 'street_or_road',
+            'village_or_city', 'district', 'state', 'pin_code',
             'store_image_urls', 'is_active'
         ]
+
+        common_text_input = lambda placeholder='': forms.TextInput(attrs={
+            'class': 'form-control', 'placeholder': placeholder
+        })
+
         widgets = {
-          
-            'store_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter store name'}),
-            'registration_no': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter registration number'}),
-            'gst_no': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter GST number'}),
+            'store_name': common_text_input('Enter store name'),
+            'registration_no': common_text_input('Enter registration number'),
+            'gst_no': common_text_input('Enter GST number'),
+            'alternate_contact_no': common_text_input('Enter alternate contact number'),
+            'alternate_email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Enter alternate email'}),
             'open_time': forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'}),
             'close_time': forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'}),
             'address': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Enter full address'}),
-            'location': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter location'}),
-            'street_or_road': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter street or road'}),
-            'village_or_city': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter village or city'}),
-            'district': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter district'}),
-            'state': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter state'}),
-            'pin_code': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter pin code'}),
-            'is_active': forms.Select(choices=[(True, 'Yes'), (False, 'No')], attrs={'class': 'form-control'}),
-          
+            'location': common_text_input('Enter location'),
+            'street_or_road': common_text_input('Enter street or road name'),
+            'village_or_city': common_text_input('Enter village or city'),
+            'district': common_text_input('Enter district'),
+            'state': common_text_input('Enter state'),
+            'pin_code': common_text_input('Enter pin code'),
         }
 
+    def validate_phone(self, number, field_name):
+        if number and not re.match(r'^\d{10}$', number):
+            raise ValidationError(f"Enter a valid 10-digit {field_name}.")
+        return number
+
+    def validate_email(self, email, field_name):
+        if email and not re.match(r'^[\w\.-]+@[\w\.-]+\.\w+$', email):
+            raise ValidationError(f"Enter a valid {field_name}.")
+        return email
+
     def clean_contact_no(self):
-        contact_no = self.cleaned_data.get('contact_no')
-        return [num.strip() for num in contact_no.split(',')] if contact_no else []
+        return self.validate_phone(self.cleaned_data.get('contact_no'), 'contact number')
+
+    def clean_alternate_contact_no(self):
+        return self.validate_phone(self.cleaned_data.get('alternate_contact_no'), 'alternate contact number')
 
     def clean_email(self):
-        email = self.cleaned_data.get('email')
-        return [mail.strip() for mail in email.split(',')] if email else []
+        return self.validate_email(self.cleaned_data.get('email'), 'email address')
 
-    def clean_store_image_urls(self):
-        store_image_urls = self.cleaned_data.get('store_image_urls')
-        return [url.strip() for url in store_image_urls.split(',')] if store_image_urls else []
+    def clean_alternate_email(self):
+        return self.validate_email(self.cleaned_data.get('alternate_email'), 'alternate email address')
+
+    def clean_pin_code(self):
+        pin_code = self.cleaned_data.get('pin_code')
+        if pin_code and not re.match(r'^\d{6}$', pin_code):
+            raise ValidationError("Enter a valid 6-digit PIN code.")
+        return pin_code
+
+    def clean(self):
+        cleaned_data = super().clean()
+        open_time = cleaned_data.get("open_time")
+        close_time = cleaned_data.get("close_time")
+        if open_time and close_time and close_time <= open_time:
+            raise ValidationError("Closing time must be after opening time.")
