@@ -9,8 +9,8 @@ class ManageProductCategoryForm(forms.ModelForm):
         fields = ['name', 'description', 'is_active']
         
         widgets = {
-            'name': forms.TextInput(attrs={"class": "form-control",'id': 'id_name', "placeholder": "Enter category name"}),
-            'description': forms.Textarea(attrs={"class": "form-control",'id': 'id_description', "placeholder": "Enter description", "rows": 1}),
+            'name': forms.TextInput(attrs={"class": "form-control",'name': 'name','id': 'id_name', "placeholder": "Enter category name"}),
+            'description': forms.Textarea(attrs={"class": "form-control",'name': 'descripyion','id': 'id_description', "placeholder": "Enter description", "rows": 1}),
             # 'is_active': forms.CheckboxInput(attrs={"class": "form-check-input"}),
         }
         
@@ -21,12 +21,12 @@ class ManageProductCategoryForm(forms.ModelForm):
         }
 
     # Corrected Name Field Validation
-    name = forms.CharField(
-        min_length=3,
-        max_length=50,
-        validators=[
-            MinLengthValidator(3, message="Category name must be at least 3 characters long."),
-            MaxLengthValidator(50, message="Category name cannot exceed 50 characters."),  # Fixed max length message
-        ],
-        widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "Enter category name"})
-    )
+    # name = forms.CharField(
+    #     min_length=3,
+    #     max_length=50,
+    #     validators=[
+    #         MinLengthValidator(3, message="Category name must be at least 3 characters long."),
+    #         MaxLengthValidator(50, message="Category name cannot exceed 50 characters."),  # Fixed max length message
+    #     ],
+    #     widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "Enter category name"})
+    # )

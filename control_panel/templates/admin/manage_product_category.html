@@ -127,7 +127,8 @@
                 <div class="modal-body">
                     <form id="addCategoryForm" method="post" action="{% url 'manage_product_category_create' %}" class="fw-bold">
                         {% csrf_token %}
-                        
+                        <!-- {{ data.addCategoryForm.as_p }} -->
+
                         <div class="row g-3">
                             <div class="form-group col-md-6">
                                 {{ form.name.label_tag }}<span class="text-danger">*</span>
@@ -163,7 +164,7 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <table class="table" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
                             <th>Name</th>
@@ -216,4 +217,62 @@
     </div>
 </div>
 
+
+<script>
+    $(document).ready(function () {
+        $('#addCategoryForm').validate({
+            rules: {
+                name: {
+                    required: true,
+                    minlength: 5,
+                    maxlength: 100
+                },
+                description: {
+                    required: true,
+                    minlength: 5,
+                    maxlength: 255
+                }
+            },
+            messages: {
+                name: {
+                    required: "Please enter a category name",
+                    minlength: "name must be at least 5 characters.",
+                    maxlength: "Name must not exceed 100 characters"
+                },
+                description: {
+                    required: "Please enter a description",
+                    minlength: "Description must be at least 5 characters.",
+                    maxlength: "Description must not exceed 255 characters"
+                }
+            },
+            errorElement: 'div',
+            errorClass: 'text-danger d-block ms-1',
+            highlight: function (element) {
+                $(element).addClass('is-invalid');
+            },
+            unhighlight: function (element) {
+                $(element).removeClass('is-invalid');
+            },
+            errorPlacement: function (error, element) {
+                if (element.parent('.input-group').length) {
+                    error.insertAfter(element.parent()); // for input-groups
+                } else {
+                    error.insertAfter(element);
+                }
+            }
+        });
+    });
+</script>
+
+
+<style>
+    .is-invalid {
+        border-color: #dc3545 !important;
+    } 
+
+    .text-danger {
+        font-size: 1rem; /* normal font size */
+        font-weight: normal;
+    }
+</style>
 {% endblock %}
