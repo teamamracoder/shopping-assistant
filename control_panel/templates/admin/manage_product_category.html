@@ -235,6 +235,54 @@
             },
             messages: {
                 name: {
+                    required: "Please enter a template name",
+                    minlength: "Name must be at least 5 characters.",
+                    maxlength: "Name must not exceed 100 characters"
+                },
+                description: {
+                    required: "Please enter a description",
+                    minlength: "Description must be at least 5 characters.",
+                    maxlength: "Description must not exceed 255 characters"
+                }
+            },
+            errorElement: 'div',
+            errorClass: 'text-danger d-block ms-1',
+            highlight: function (element) {
+                $(element).removeClass('is-valid').addClass('is-invalid');
+            },
+            unhighlight: function (element) {
+                $(element).removeClass('is-invalid').addClass('is-valid');
+            },
+            errorPlacement: function (error, element) {
+                if (element.parent('.input-group').length) {
+                    error.insertAfter(element.parent());
+                } else {
+                    error.insertAfter(element);
+                }
+            }
+        });
+    });
+    
+</script>
+
+
+<!-- <script>
+    $(document).ready(function () {
+        $('#addCategoryForm').validate({
+            rules: {
+                name: {
+                    required: true,
+                    minlength: 5,
+                    maxlength: 100
+                },
+                description: {
+                    required: true,
+                    minlength: 5,
+                    maxlength: 255
+                }
+            },
+            messages: {
+                name: {
                     required: "Please enter a category name",
                     minlength: "name must be at least 5 characters.",
                     maxlength: "Name must not exceed 100 characters"
@@ -263,7 +311,7 @@
         });
     });
 </script>
-
+ -->
 
 <style>
     .is-invalid {
