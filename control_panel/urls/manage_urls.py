@@ -56,6 +56,7 @@ urlpatterns = [
     path('stores/update/<int:pk>/', ManageUpdateStoreView.as_view(), name='manage_update_store'),
     path('toggle-store-status/<int:store_id>/', ToggleStoreStatus.as_view(), name='toggle_store_status'),
 
+
     #store category url
     path('stores/category/', ManageStoreCategoryView.as_view(), name='manage_Store_category_list'),
     path('store-category/create/', ManageCreateStoreCategoryView.as_view(), name='manage_create_store_category'),
