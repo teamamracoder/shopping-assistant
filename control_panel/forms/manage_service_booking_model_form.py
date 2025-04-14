@@ -10,7 +10,6 @@ class ManageServiceBookingForm(forms.ModelForm):
             'user',
             'booking_charge',
             'booking_time',
-            'is_active',
             'created_by',
             'updated_by',
         ]
@@ -20,7 +19,6 @@ class ManageServiceBookingForm(forms.ModelForm):
             'user': forms.Select(attrs={'class': 'form-control'}),
             'booking_charge': forms.NumberInput(attrs={'class': 'form-control'}),
             'booking_time': forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'}),
-            'is_active': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
             'created_by': forms.HiddenInput(),
             'updated_by': forms.HiddenInput(),
         }

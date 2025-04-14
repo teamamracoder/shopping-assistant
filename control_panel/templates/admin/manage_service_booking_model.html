@@ -67,7 +67,6 @@
     btn.addEventListener('click', function () {
       modalLabel.textContent = "Edit Booking";
       form.action = this.getAttribute('data-action-url');
-
       // Fill fields
       document.getElementById('id_service').value = this.getAttribute('data-service-id');
       document.getElementById('id_user').value = this.getAttribute('data-user-id');
@@ -75,19 +74,15 @@
       document.getElementById('id_booking_charge').value = this.getAttribute('data-booking-charge');
       document.getElementById('id_booking_time').value = this.getAttribute('data-booking-time');
       document.getElementById('id_is_active').checked = this.getAttribute('data-is-active') === 'True';
-
       new bootstrap.Modal(document.getElementById('addUserModal')).show();
     });
   });
 });
-
 </script>
 
 <div class="container-fluid">
-
   <h1 class="h3 mb-2 text-gray-800">Service Type Booking </h1>
   <p class="mb-4">Manage service type booking in the system.</p>
-
   <!-- Add Button (Opens Modal) -->
   <button class="circle-btn" data-bs-toggle="modal" data-bs-target="#addUserModal">
     <i class="bi bi-plus-lg text-light"></i>
@@ -127,7 +122,6 @@
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
             </form>
-            
         </div>
       </div>
     </div>
@@ -163,10 +157,8 @@
                 <td>{{ booking.booking_charge }}</td>
                 <td>{{ booking.booking_time }}</td>
                 <td>{{ booking.is_active }}</td>
-
-
-                <!-- '  -->
               <td>
+
                 <a href="#" class="text-primary edit-btn"
                     data-id="{{ booking.id }}"
                     data-action-url="{% url 'manage_service_booking_update' booking.id %}"
@@ -178,7 +170,6 @@
                     data-is-active="{{ booking.is_active }}">
                     <i class="bi bi-pencil-square"></i>
                   </a>
-
 
                 {% if booking.id %}
                 <form method="post" action="{% url 'manage_service_booking_delete' booking.id %}"
@@ -194,9 +185,19 @@
                   <i class="bi bi-trash"></i>
                 </button>
                 {% endif %}
-                <a href="#" class="text-primary">
-                  <i class="bi bi-eye-slash"></i>
-                </a>
+
+                <form method="post" action="{% url 'manage_service_booking_active' booking.id %}" style="display:inline;">                  
+                  {% csrf_token %}                  
+                  <button type="submit" class="btn btn-sm {% if booking.is_active %}text-success{% else %}text-muted{% endif %}"
+                          title="Toggle visibility"
+                          onclick="return confirm('Are you sure you want to toggle this user\'s visibility?');">
+                      {% if booking.is_active %}
+                          <i class="bi bi-eye text-primary fs-6"></i>
+                      {% else %}
+                          <i class="bi bi-eye-slash text-danger fs-6"></i>
+                      {% endif %}
+                  </button>
+              </form>     
               </td>
             </tr>
 
@@ -208,17 +209,71 @@
   </div>
 </div>
 
+<script>
+  // jquery form validations
+  $(document).ready(function () {
+      $("#addUserForm").validate({
+          rules: {
+              service: {
+                  required: true
+              },
+              service_provider: {
+                  required: true
+              },
+              user: {
+                  required: true
+              },
+              booking_charge: {
+                  required: true,
+                  number: true,
+                  min: 0
+              },
+              booking_time: {
+                  required: true,
+                  dateISO: true
+              }
+          },
+          messages: {
+              service: {
+                  required: "Please select a service"
+              },
+              service_provider: {
+                  required: "Please select a service provider"
+              },
+              user: {
+                  required: "Please select a user"
+              },
+              booking_charge: {
+                  required: "Please enter booking charge",
+                  number: "Please enter a valid number",
+                  min: "Charge cannot be negative"
+              },
+              booking_time: {
+                  required: "Please select booking time",
+                  dateISO: "Please enter a valid date and time"
+              }
+          },
+          errorElement: "div",
+          errorClass: "text-danger",
+          highlight: function (element) {
+              $(element).addClass("is-invalid");
+          },
+          unhighlight: function (element) {
+              $(element).removeClass("is-invalid");
+          }
+      });
+  });
+  </script>
+  
+
 {% endblock %}
 
-
-
-
 {% for field in form %}
-        <div class="form-group col-md-6 mb-3">
-            {{ field.label_tag }} 
-            {{ field }}
-            {% if field.errors %}
-                <div class="text-danger">{{ field.errors }}</div>
-            {% endif %}
-        </div>
-        {% endfor %}
+  <div class="form-group col-md-6 mb-3">
+      {{ field.label_tag }} 
+      {{ field }}
+      {% if field.errors %}
+        <div class="text-danger">{{ field.errors }}</div>
+      {% endif %}
+  </div>
+{% endfor %}

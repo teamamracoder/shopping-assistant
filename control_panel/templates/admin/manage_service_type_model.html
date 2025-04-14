@@ -54,7 +54,6 @@
     const addButton = document.querySelector('.circle-btn');
     const form = document.getElementById('addUserForm');
     const modalLabel = document.getElementById('addUserModalLabel');
-
     // ADD: Reset form
     addButton.addEventListener('click', function () {
       form.reset();
@@ -78,9 +77,6 @@
 <div class="container-fluid">
 
   <h1 class="h3 mb-2 text-gray-800">Service Type
-
-
-
   </h1>
   <p class="mb-4">Manage service type in the system.</p>
 
@@ -101,7 +97,7 @@
           <form id="addUserForm" method="POST" action="{% url 'manage_service_type_model_create' %}" class="fw-bold">
             {% csrf_token %}
             <div class="row">
-              <div class="form-group col-md-6 mb-3">
+              <div class="form-group col-md-12 mb-3">
                 {{ form.service_name.label_tag }}<span class="text-danger">*</span>
                 {{ form.service_name }}
               </div>
@@ -144,7 +140,6 @@
                   <i class="bi bi-pencil-square"></i>
                 </a>
 
-
                 {% if data.id %}
                 <form method="post" action="{% url 'manage_service_type_model_delete' data.id%}"
                   style="display:inline;">
@@ -159,12 +154,22 @@
                   <i class="bi bi-trash"></i>
                 </button>
                 {% endif %}
-                <a href="#" class="text-primary">
-                  <i class="bi bi-eye-slash"></i>
-                </a>
+                <form method="post" action="{% url 'manage_toggle_service_type_active' data.id %}"
+                  style="display:inline;">
+                  {% csrf_token %}
+                  <button type="submit"
+                    class="btn btn-sm {% if user.is_active %}text-success{% else %}text-muted{% endif %}"
+                    title="Toggle visibility"
+                    onclick="return confirm('Are you sure you want to toggle this user\'s visibility?');">
+                    {% if data.is_active %}
+                    <i class="bi bi-eye text-primary fs-6"></i>
+                    {% else %}
+                    <i class="bi bi-eye-slash text-danger fs-6"></i>
+                    {% endif %}
+                  </button>
+                </form>
               </td>
             </tr>
-
             {% endfor %}
           </tbody>
         </table>
