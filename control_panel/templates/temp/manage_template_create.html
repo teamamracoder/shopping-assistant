@@ -33,8 +33,8 @@
                     const img = document.createElement("img");
                     img.src = e.target.result;
                     img.className = "rounded border";
-                    img.style.width = "85px";
-                    img.style.height = "80px";
+                    img.style.width = "75px";
+                    img.style.height = "60px";
                     img.style.objectFit = "cover";
                     previewContainer.appendChild(img);
                 };
@@ -107,7 +107,8 @@
                         </div>
                     </div>
 
-                    <!-- Image Upload -->
+
+                      <!-- Image Upload -->
                     <div class="col-md-2 mb-3">
                         <label for="template_images">Upload Template Images</label>
                         <div class="input-group">
@@ -115,10 +116,11 @@
                             <input type="file" name="template_images" id="template_images" multiple class="form-control" />
                         </div>
                     </div>
+
                     <!-- Preview Area -->
-                    <div class="col-md-6 mb-3">
+                    <div class="col-md-4 mb-3">
                         <div id="imagePreviewContainer" style="display: flex; flex-wrap: wrap; gap: 10px;"></div>
-                    </div>
+                    </div>                    
                 </div>
 
 

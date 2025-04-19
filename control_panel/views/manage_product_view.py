@@ -41,13 +41,17 @@ class ManageProductCreateView(View):
             # Handle multiple uploaded files manually
             image_urls = []
             for f in request.FILES.getlist('product_images'):
-                save_path = os.path.join(settings.STATIC_ROOT, 'img/product', f.name)
-                os.makedirs(os.path.dirname(save_path), exist_ok=True)
+                # ✅ Use MEDIA_ROOT not STATIC_ROOT
+                save_dir = os.path.join(settings.MEDIA_ROOT, 'img/product')
+                os.makedirs(save_dir, exist_ok=True)
+
+                save_path = os.path.join(save_dir, f.name)
                 with open(save_path, 'wb+') as destination:
                     for chunk in f.chunks():
                         destination.write(chunk)
 
-                relative_url = f'static/img/product/{f.name}'
+                # ✅ Save correct relative media URL
+                relative_url = f'media/img/product/{f.name}'
                 image_urls.append(relative_url)
 
             product.image_urls = image_urls
@@ -58,16 +62,6 @@ class ManageProductCreateView(View):
         
         messages.error(request, "Please correct the errors below.")
         return render(request, "admin/manage_product.html", {"form": form})
-
-
-#Update
-# class ManageProductEditView(UpdateView):
-#     model = ProductsModel
-#     form_class = ManageProductForm
-#     success_url = reverse_lazy('manage_product_list')
-
-#     def form_valid(self, form):
-#         return super().form_valid(form)
 
 
 class ManageProductEditView(View):
@@ -99,7 +93,6 @@ class ManageProductEditView(View):
             return render(request, "admin/manage_product.html", {"form": form, "product_list": product_list})
 
 
-    
 # Delete     
 class ManageProductDeleteView(View):
     """Handles product deletion."""
