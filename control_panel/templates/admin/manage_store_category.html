@@ -402,5 +402,18 @@
   data-bs-target="#storeModal">
   <i class="bi bi-plus-lg"></i>
 </button>
+<!-- refresh page -->
+<script>
+  document.querySelectorAll('.modal').forEach(modal => {
+modal.addEventListener('hidden.bs.modal', function () {
+  const form = modal.querySelector('form');
+  if (form) form.reset();
 
+  // Optional: Clear the preview
+  const preview = modal.querySelector('[id^="imagePreviewEdit"]');
+  if (preview) preview.innerHTML = '';
+});
+});
+
+ </script>
 {% endblock %}
