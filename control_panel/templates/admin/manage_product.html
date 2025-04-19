@@ -117,8 +117,8 @@
                     const img = document.createElement("img");
                     img.src = e.target.result;
                     img.className = "rounded border";
-                    img.style.width = "85px";
-                    img.style.height = "80px";
+                    img.style.width = "75px";
+                    img.style.height = "60px";
                     img.style.objectFit = "cover";
                     previewContainer.appendChild(img);
                 };
@@ -287,7 +287,7 @@
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <table class="table" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
                                 <th>Name</th>
@@ -371,4 +371,121 @@
         </div>
     </div>
   
+    <script>
+        // jQuery Validation
+    $("#addProductForm").validate({
+        rules: {
+            name: {
+                required: true,
+                minlength: 3
+            },
+            product_code: {
+                required: true
+            },
+            price: {
+                required: true,
+                number: true
+            },
+            discount_per: {
+                required: true,
+                number: true,
+                min: 0,
+                max: 100
+            },
+            quantity: {
+                required: true,
+                number: true,
+                min: 1
+            },
+            maf_date: {
+                required: true,
+                date: true
+            },
+            exp_date: {
+                required: true,
+                date: true
+            },
+            description: {
+                required: true,
+                minlength: 10
+            },
+            category: {
+                required: true
+            },
+            sub_category: {
+                required: true
+            },
+            others_category: {
+                required: true
+            }
+        },
+        messages: {
+            name: {
+                required: "Please enter the product name.",
+                minlength: "Product name must be at least 3 characters long."
+            },
+            product_code: {
+                required: "Please enter the product code."
+            },
+            price: {
+                required: "Please enter the product price.",
+                number: "Please enter a valid price."
+            },
+            discount_per: {
+                required: "Please enter the discount percentage.",
+                number: "Please enter a valid percentage.",
+                min: "Discount percentage cannot be negative.",
+                max: "Discount percentage cannot exceed 100."
+            },
+            quantity: {
+                required: "Please enter the quantity.",
+                number: "Please enter a valid quantity.",
+                min: "Quantity must be at least 1."
+            },
+            maf_date: {
+                required: "Please select the manufacturing date.",
+                date: "Please enter a valid date."
+            },
+            exp_date: {
+                required: "Please select the expiration date.",
+                date: "Please enter a valid date."
+            },
+            description: {
+                required: "Please enter the product description.",
+                minlength: "Description must be at least 10 characters long."
+            },
+            category: {
+                required: "Please select the product category."
+            },
+            sub_category: {
+                required: "Please select the product sub-category."
+            },
+            others_category: {
+                required: "Please enter the other category."
+            }
+        },
+        errorElement: "span",
+        errorPlacement: function (error, element) {
+            error.addClass("invalid-feedback");
+            element.closest(".form-group").append(error);
+        },
+        highlight: function (element, errorClass, validClass) {
+            $(element).addClass("is-invalid").removeClass("is-valid");
+        },
+        unhighlight: function (element, errorClass, validClass) {
+            $(element).addClass("is-valid").removeClass("is-invalid");
+        }
+    });
+    </script>
+
+    <style>
+        .is-invalid {
+            border-color: #dc3545 !important;
+        } 
+    
+        .invalid-feedback {
+            font-size: 1rem; /* normal font size */
+            font-weight: normal;        }
+    </style>
+
 {% endblock %}
