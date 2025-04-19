@@ -5,7 +5,6 @@ from control_panel.views import ManageServiceTypeListView,ServiceBookingCreateVi
 from control_panel.views import IndexView,ManageStoreView,ServiceBookingDeleteView,ManageServiceModelDeleteView,ManageServiceModelUpdateView,ManageServiceModelListView,ManageServiceModelCreateView,ManageDashboardView,ManageServiceTypeView,ManageUserCreateView,ManageUserDeleteView,ManageUserUpdateView,IndexView,ManageDashboardView,ManageProductSubCategoryListView,ManageProductSubCategoryCreateView,ManageProductCategoryEditView,ManageProductSubCategoryDeleteView,ManageToggleProductSubCategoryActiveView,ManageProductListView,ManageProductCreateView,ManageProductDeleteView,ManageToggleProductActiveView,ManageProductCategoryListView,ManageProductCategoryCreateView,ManageProductCategoryDeleteView,ManageToggleProductCategoryActiveView,ManageUserListView,ManageTemplateListView,ManageTemplateCreateView,ManageTemplateEditView,ManageTemplateDeleteView,ManageToggletemplatesActiveView
 from control_panel.views import *
 
-
 # app_name = 'user_management'  # Set the app namespace here
 
 urlpatterns = [
@@ -79,6 +78,7 @@ urlpatterns = [
     path('stores/create/', ManageCreateStore.as_view(), name='manage_create_store'),
     path('stores/update/<int:pk>/', ManageUpdateStoreView.as_view(), name='manage_update_store'),
     path('toggle-store-status/<int:store_id>/', ToggleStoreStatus.as_view(), name='toggle_store_status'),
+
 
     #store category url
     path('stores/category/', ManageStoreCategoryView.as_view(), name='manage_Store_category_list'),

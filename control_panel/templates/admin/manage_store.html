@@ -2,120 +2,96 @@
 {% block title %} Store {% endblock %}
 {% block content %}
 {% load static %}
+
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.19.5/jquery.validate.min.js"></script>
+
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
 
-<script>
-    function toggleStoreStatus(storeId, btnElement) {
-    // Send AJAX POST request to toggle store status
-    fetch(`/toggle-store-status/${storeId}/`, {
-        method: 'POST',
-        headers: {
-            'X-CSRFToken': getCookie('csrftoken'), // Ensure CSRF token is included
-            'Content-Type': 'application/json',
-        },
-    })
-    .then(response => response.json())
-    .then(data => {
-        const iconElement = btnElement.querySelector('i');
-        if (data.is_active) {
-            iconElement.classList.remove('bi-eye-slash-fill');
-            iconElement.classList.add('bi-eye');
-        } else {
-            iconElement.classList.remove('bi-eye');
-            iconElement.classList.add('bi-eye-slash-fill');
-        }
-    })
-    .catch(error => console.error('Error:', error));
-}
-
-// Function to retrieve CSRF token from cookies
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            // Check if this cookie string begins with the desired name
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
-
-</script>
-<style>
-    /* Floating Button Styling */
-    .floating-btn {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        background-color: blue;
-        color: white;
-        border: none;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 28px;
-        cursor: pointer;
-        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
-        transition: background-color 0.3s ease, transform 0.2s ease;
-        z-index: 1000;
-    }
-
-    .floating-btn:hover {
-        background-color: darkblue;
-        transform: scale(1.1);
-    }
-    /* Common styles for icons */
-/* Common button styles */
-.icon-btn {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    border: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin: 0 5px;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-}
-
-/* Edit button (red) */
-.edit-btn {
-    background-color: red;
-    color: white;
-}
-
-.edit-btn:hover {
-    background-color: darkred;
-    transform: scale(1.1);
-}
-
-/* View button (blue) */
-.view-btn {
-    background-color: blue;
-    color: white;
-}
-
-.view-btn:hover {
-    background-color: darkblue;
-    transform: scale(1.1);
-}
-
-</style>
 <!-- Bootstrap XXL Modal (Using Custom CSS) -->
-
+<script>
+    $(document).ready(function () {
+        // Trigger when modal is shown to ensure form is rendered and visible
+        $('#storeModal').on('shown.bs.modal', function () {
+            $('#storeForm').validate({
+                rules: {
+                    store_name: {
+                        required: true,
+                        minlength: 3
+                    },
+                    contact_no: {
+                        required: true,
+                        digits: true,
+                        minlength: 10,
+                        maxlength: 10
+                    },
+                    email: {
+                        required: true,
+                        email: true
+                    },
+                    pin_code: {
+                        required: true,
+                        digits: true,
+                        minlength: 6,
+                        maxlength: 6
+                    },
+                    address: {
+                        required: true
+                    }
+                },
+                messages: {
+                    store_name: {
+                        required: "Please enter store name",
+                        minlength: "Must be at least 3 characters"
+                    },
+                    contact_no: {
+                        required: "Please enter contact number",
+                        digits: "Only digits allowed",
+                        minlength: "Must be 10 digits",
+                        maxlength: "Must be 10 digits"
+                    },
+                    email: {
+                        required: "Please enter email",
+                        email: "Enter a valid email"
+                    },
+                    pin_code: {
+                        required: "Please enter pin code",
+                        digits: "Only digits allowed",
+                        minlength: "Must be 6 digits",
+                        maxlength: "Must be 6 digits"
+                    },
+                    address: {
+                        required: "Please enter address"
+                    }
+                },
+                errorElement: "div",
+                errorClass: "invalid-feedback",
+                highlight: function (element) {
+                    $(element).addClass("is-invalid").css("border-color", "red");
+                },
+                unhighlight: function (element) {
+                    $(element).removeClass("is-invalid").css("border-color", "");
+                },
+                errorPlacement: function (error, element) {
+                    if (element.closest('.input-group').length) {
+                        error.insertAfter(element.closest('.input-group'));
+                    } else {
+                        error.insertAfter(element);
+                    }
+                }
+            });
+        });
+    });
+    </script>
+    
+<style>
+    .invalid-feedback {
+        color: red;
+        font-size: 0.875em;
+    }
+    </style>
+        
 <div class="modal fade" id="storeModal" tabindex="-1" aria-labelledby="storeModalLabel" aria-hidden="true">
     <div class="modal-dialog  custom-modal-xxl">
         <div class="modal-content">
@@ -282,12 +258,21 @@ function getCookie(name) {
 </div>
 
 <!-- Store Images -->
+<!-- <div class="col-md-4 mb-3">
+    <label for="store_images">Upload Store Images</label>
+    <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-images"></i></span>
+        <input type="file" id="store_images" name="store_images" multiple class="form-control">
+    </div>
+</div> -->
+<!-- Store Images -->
 <div class="col-md-4 mb-3">
     <label for="store_images">Upload Store Images</label>
     <div class="input-group">
         <span class="input-group-text"><i class="bi bi-images"></i></span>
         <input type="file" id="store_images" name="store_images" multiple class="form-control">
     </div>
+    <div id="imagePreviewContainer" class="d-flex flex-wrap mt-2 gap-2"></div>
 </div>
 
                     </div>
@@ -305,110 +290,7 @@ function getCookie(name) {
 <!-- Bootstrap Icons -->
 
 
-<style> 
-    .modal-content {
-        background: rgba(255, 255, 255, 0.9);
-        border-radius: 1rem;
-        backdrop-filter: blur(8px);
-        border: 1px solid #e3e3e3;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    }
-    textarea.form-control {
-        height: calc(2.25rem + 2px);
-        resize: none;
-    }
-    .modal-header {
-        background: linear-gradient(135deg, #4e54c8, #8f94fb);
-        color: white;
-        padding: 1rem 1.5rem;
-        border-radius: 1rem 1rem 0 0;
-    }
 
-    .modal-title {
-        font-weight: 600;
-        font-size: 1.4rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .modal-body {
-        padding: 1.2rem 1.5rem;
-    }
-
-    .form-label {
-        font-weight: 600;
-        font-size: 0.9rem;
-        color: #333;
-        margin-bottom: 0.2rem;
-    }
-
-    .form-control,
-    .form-select {
-        border-radius: 0.5rem;
-        padding: 0.5rem 0.9rem;
-        font-size: 0.92rem;
-        border: 1px solid #ced4da;
-        transition: 0.2s ease-in-out;
-    }
-
-    .form-control:focus,
-    .form-select:focus {
-        border-color: #4e54c8;
-        box-shadow: 0 0 0 0.15rem rgba(78, 84, 200, 0.2);
-    }
-
-    .input-group-text {
-        background-color: #4e54c8;
-        color: white;
-        border: none;
-        border-radius: 0.5rem 0 0 0.5rem;
-        padding: 0.45rem 0.75rem;
-    }
-
-    .custom-field-box {
-        background-color: #f9f9f9;
-        border-radius: 0.6rem;
-        /* padding: 0.75rem 1rem; */
-        margin-bottom: 1rem;
-        border: 1px solid #eee;
-        box-shadow: 0 0 3px rgba(0,0,0,0.02);
-    }
-
-    .modal-footer {
-        padding: 1rem 1.5rem;
-        border-top: none;
-
-        border-radius: 0 0 1rem 1rem;
-    }
-
-    .btn-primary {
-        background: linear-gradient(to right, #4e54c8, #8f94fb);
-        border: none;
-        padding: 0.5rem 1.2rem;
-        font-weight: 600;
-        border-radius: 0.5rem;
-        font-size: 0.95rem;
-    }
-
-    .btn-primary:hover {
-        background: linear-gradient(to right, #3d42b2, #7a7ef5);
-    }
-
-    .btn-secondary {
-        border-radius: 0.5rem;
-        font-weight: 500;
-        padding: 0.5rem 1rem;
-        font-size: 0.95rem;
-    }
-
-    .text-danger {
-        font-size: 0.82rem;
-    }
-    .custom-modal-xxl {
-        max-width: 95%;
-    }
-</style>
 
 {% if form.errors %}
 <div class="alert alert-danger">
@@ -467,6 +349,7 @@ function getCookie(name) {
             <td style="display: flex;">
                 <button class="icon-btn edit-btn" data-bs-toggle="modal" data-bs-target="#editModal{{ store.id }}">
                     <i class="bi bi-pencil-square"></i>
+                
                 </button>
                 <!-- <button class="icon-btn view-btn" onclick="toggleStoreStatus('{{ store.id }}', this)">
                     <i class="bi {% if store.is_active %}bi-eye{% else %}bi-eye-slash-fill{% endif %}"></i>
@@ -655,22 +538,55 @@ function getCookie(name) {
     <label for="storeImage{{ store.id }}">Store Image</label>
     <div class="input-group">
         <span class="input-group-text"><i class="bi bi-image"></i></span>
-        <input type="file" name="store_images" class="form-control" id="storeImage{{ store.id }}" accept="image/*" onchange="previewEditImage(this, '{{ store.id }}')">
+        <input type="file" name="store_images[]" multiple class="form-control" id="storeImage{{ store.id }}" accept="image/*" onchange="previewEditImage(this, '{{ store.id }}')"> 
+        <!-- <input type="file" name="store_images" multiple onchange="previewEditImage(this, {{ store.id }})" > -->
+
     </div>
 </div>
-
+<style>
+    .invalid-feedback {
+        color: red;
+        font-size: 0.875em;
+    }
+    </style>
+    
+<!-- 
 <div class="col-md-6 mb-3">
     <label>Preview</label>
-    <div id="imagePreviewEdit{{ store.id }}">
-        {% if store.store_images %}
-        {% for image_path in store.store_images %}
-        <img src="{% static store.store_images %}" alt="Store Image" class="img-thumbnail" style="max-height: 150px;">
-        {% endfor %}
+    <div id="imagePreviewEdit{{ store.id }}" class="d-flex flex-wrap gap-2">
+        {% if store.store_image_urls %}
+            {% for image_path in store.store_image_urls %}
+                <div class="position-relative">
+                    <img src="{% static image_path %}" alt="Store Image" class="img-thumbnail" style="max-height: 100px;">
+                    <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1"
+                            onclick="deleteStoreImage('{{ store.id }}', '{{ image_path }}')">
+                        &times;
+                    </button>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="text-muted">No image uploaded</p>
+        {% endif %}
+    </div>
+</div> -->
+<div class="col-md-6 mb-3">
+    <label>Preview</label>
+    <div id="imagePreviewEdit{{ store.id }}" class="d-flex flex-wrap gap-2">
+        {% if store.store_image_urls %}
+            {% for image_path in store.store_image_urls %}
+                <div class="position-relative db-image">
+                    <img src="{% static image_path %}" alt="Store Image" class="img-thumbnail" style="max-height: 100px;">
+                    <!-- Do NOT include delete button for DB images -->
+                </div>
+            {% endfor %}
         {% else %}
             <p class="text-muted">No image uploaded</p>
         {% endif %}
     </div>
 </div>
+
+
+
 
                         </div>
     
@@ -708,27 +624,331 @@ function getCookie(name) {
         <i class="bi bi-plus-lg"></i>
     </button>
 
-
-    <script>
-        function previewEditImage(input, storeId) {
-            const preview = document.getElementById('imagePreviewEdit' + storeId);
-            preview.innerHTML = ''; // Clear previous preview
+        <script>
+            function previewEditImage(input, storeId) {
+                const preview = document.getElementById('imagePreviewEdit' + storeId);
+                preview.innerHTML = ''; // Clear previous previews
         
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const img = document.createElement("img");
-                    img.src = e.target.result;
-                    img.className = "img-thumbnail";
-                    img.style.maxHeight = "150px";
-                    preview.appendChild(img);
-                };
-                reader.readAsDataURL(input.files[0]);
+                if (input.files && input.files.length > 0) {
+                    Array.from(input.files).forEach((file, index) => {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const wrapper = document.createElement('div');
+                            wrapper.className = 'position-relative';
+                            wrapper.style.marginRight = '10px';
+        
+                            const img = document.createElement("img");
+                            img.src = e.target.result;
+                            img.className = "img-thumbnail";
+                            img.style.maxHeight = "100px";
+        
+                            const removeBtn = document.createElement("button");
+                            removeBtn.type = "button";
+                            removeBtn.className = "btn btn-danger btn-sm position-absolute top-0 end-0 m-1";
+                            removeBtn.innerHTML = "&times;";
+                            removeBtn.onclick = function() {
+                                wrapper.remove();
+        
+                                // Optionally: Remove the file from the input field
+                                // Warning: This resets all files as we cannot modify FileList directly
+                                const dataTransfer = new DataTransfer();
+                                Array.from(input.files).forEach((f, i) => {
+                                    if (i !== index) {
+                                        dataTransfer.items.add(f);
+                                    }
+                                });
+                                input.files = dataTransfer.files;
+                            };
+        
+                            wrapper.appendChild(img);
+                            wrapper.appendChild(removeBtn);
+                            preview.appendChild(wrapper);
+                        };
+                        reader.readAsDataURL(file);
+                    });
+                }
+            }
+        </script>
+     
+            
+     <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const fileInput = document.getElementById("store_images");
+            const previewContainer = document.getElementById("imagePreviewContainer");
+            let selectedFiles = [];
+        
+            fileInput.addEventListener("change", function () {
+                const files = Array.from(fileInput.files);
+        
+                // Reset previews and file list
+                previewContainer.innerHTML = "";
+                selectedFiles = files;
+        
+                selectedFiles.forEach((file, index) => {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        const previewDiv = document.createElement("div");
+                        previewDiv.classList.add("position-relative");
+        
+                        previewDiv.innerHTML = `
+                            <img src="${e.target.result}" class="img-thumbnail" style="height:100px;width:100px;object-fit:cover;">
+                            <button type="button" class="btn-close position-absolute top-0 end-0" aria-label="Close" data-index="${index}"></button>
+                        `;
+        
+                        previewContainer.appendChild(previewDiv);
+        
+                        // Handle remove
+                        previewDiv.querySelector(".btn-close").addEventListener("click", function () {
+                            const removeIndex = parseInt(this.getAttribute("data-index"));
+                            selectedFiles.splice(removeIndex, 1);
+                            updateFileList();
+                        });
+                    };
+                    reader.readAsDataURL(file);
+                });
+            });
+        
+            function updateFileList() {
+                const dataTransfer = new DataTransfer();
+                selectedFiles.forEach(file => dataTransfer.items.add(file));
+                fileInput.files = dataTransfer.files;
+                fileInput.dispatchEvent(new Event('change'));
+            }
+        });
+        </script>
+<!-- refresh page -->
+       <script>
+        document.querySelectorAll('.modal').forEach(modal => {
+    modal.addEventListener('hidden.bs.modal', function () {
+        const form = modal.querySelector('form');
+        if (form) form.reset();
+
+        // Optional: Clear the preview
+        const preview = modal.querySelector('[id^="imagePreviewEdit"]');
+        if (preview) preview.innerHTML = '';
+    });
+});
+
+       </script>
+         
+
+        <style> 
+            .modal-content {
+                background: rgba(255, 255, 255, 0.9);
+                border-radius: 1rem;
+                backdrop-filter: blur(8px);
+                border: 1px solid #e3e3e3;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            }
+            textarea.form-control {
+                height: calc(2.25rem + 2px);
+                resize: none;
+            }
+            .modal-header {
+                background: linear-gradient(135deg, #4e54c8, #8f94fb);
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 1rem 1rem 0 0;
+            }
+            #imagePreviewContainer img {
+            margin-right: 10px;
+            border-radius: 10px;
+        }
+            .modal-title {
+                font-weight: 600;
+                font-size: 1.4rem;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+        
+            .modal-body {
+                padding: 1.2rem 1.5rem;
+            }
+        
+            .form-label {
+                font-weight: 600;
+                font-size: 0.9rem;
+                color: #333;
+                margin-bottom: 0.2rem;
+            }
+        
+            .form-control,
+            .form-select {
+                border-radius: 0.5rem;
+                padding: 0.5rem 0.9rem;
+                font-size: 0.92rem;
+                border: 1px solid #ced4da;
+                transition: 0.2s ease-in-out;
+            }
+        
+            .form-control:focus,
+            .form-select:focus {
+                border-color: #4e54c8;
+                box-shadow: 0 0 0 0.15rem rgba(78, 84, 200, 0.2);
+            }
+        
+            .input-group-text {
+                background-color: #4e54c8;
+                color: white;
+                border: none;
+                border-radius: 0.5rem 0 0 0.5rem;
+                padding: 0.45rem 0.75rem;
+            }
+        
+            .custom-field-box {
+                background-color: #f9f9f9;
+                border-radius: 0.6rem;
+                /* padding: 0.75rem 1rem; */
+                margin-bottom: 1rem;
+                border: 1px solid #eee;
+                box-shadow: 0 0 3px rgba(0,0,0,0.02);
+            }
+        
+            .modal-footer {
+                padding: 1rem 1.5rem;
+                border-top: none;
+        
+                border-radius: 0 0 1rem 1rem;
+            }
+        
+            .btn-primary {
+                background: linear-gradient(to right, #4e54c8, #8f94fb);
+                border: none;
+                padding: 0.5rem 1.2rem;
+                font-weight: 600;
+                border-radius: 0.5rem;
+                font-size: 0.95rem;
+            }
+        
+            .btn-primary:hover {
+                background: linear-gradient(to right, #3d42b2, #7a7ef5);
+            }
+        
+            .btn-secondary {
+                border-radius: 0.5rem;
+                font-weight: 500;
+                padding: 0.5rem 1rem;
+                font-size: 0.95rem;
+            }
+        
+            .text-danger {
+                font-size: 0.82rem;
+            }
+            .custom-modal-xxl {
+                max-width: 95%;
+            }
+        </style>
+        
+<script>
+    function toggleStoreStatus(storeId, btnElement) {
+    // Send AJAX POST request to toggle store status
+    fetch(`/toggle-store-status/${storeId}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken'), // Ensure CSRF token is included
+            'Content-Type': 'application/json',
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        const iconElement = btnElement.querySelector('i');
+        if (data.is_active) {
+            iconElement.classList.remove('bi-eye-slash-fill');
+            iconElement.classList.add('bi-eye');
+        } else {
+            iconElement.classList.remove('bi-eye');
+            iconElement.classList.add('bi-eye-slash-fill');
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+// Function to retrieve CSRF token from cookies
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Check if this cookie string begins with the desired name
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
             }
         }
-        </script>
-        
+    }
+    return cookieValue;
+}
 
+</script>
 
+    
 
+<style>
+    /* Floating Button Styling */
+    .floating-btn {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: blue;
+        color: white;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        cursor: pointer;
+        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+        transition: background-color 0.3s ease, transform 0.2s ease;
+        z-index: 1000;
+    }
+
+    .floating-btn:hover {
+        background-color: darkblue;
+        transform: scale(1.1);
+    }
+    /* Common styles for icons */
+/* Common button styles */
+.icon-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 0 5px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Edit button (red) */
+.edit-btn {
+    background-color: red;
+    color: white;
+}
+
+.edit-btn:hover {
+    background-color: darkred;
+    transform: scale(1.1);
+}
+
+/* View button (blue) */
+.view-btn {
+    background-color: blue;
+    color: white;
+}
+
+.view-btn:hover {
+    background-color: darkblue;
+    transform: scale(1.1);
+}
+
+</style>
 {% endblock %}
