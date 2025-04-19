@@ -61,8 +61,8 @@
 
 
 <div class="container-fluid">
-    <h1 class="h3 mb-2 text-gray-800">Products</h1>
-    <p class="mb-4">Manage products in the system.</p>
+    <h1 class="h3 mb-2 text-gray-800">Service</h1>
+    <p class="mb-4">Manage service in the system.</p>
     <!-- Add Button (Opens Modal) -->
     <button class="circle-btn" data-bs-toggle="modal" data-bs-target="#addServiceModel">
         <i class="bi bi-plus-lg text-light"></i>
@@ -85,7 +85,7 @@
                             <div class="form-group col-md-6 mb-3">
                                 {{ form.service_type.label_tag }}<span class="text-danger">*</span>
                                 {{ form.service_type }}
-                            </div>
+                            </div>      
                             <div class="form-group col-md-6 mb-3">
                                 {{ form.service_provider.label_tag }}<span class="text-danger">*</span>
                                 {{ form.service_provider }}
@@ -102,7 +102,6 @@
                                 {{ form.description }}
                             </div>
                         </div>
-
                 </div>
                 <div class="row">
                     <select name="created_by" class="form-control" hidden>
@@ -118,10 +117,6 @@
                 </div>
 
                 <div class="row">
-                    <div class="form-group col-md-6 mb-3">
-                        {{ form.is_active.label_tag }}
-                        {{ form.is_active }}
-                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary">Save</button>
@@ -190,7 +185,7 @@
                                     class="btn btn-sm {% if user.is_active %}text-success{% else %}text-muted{% endif %}"
                                     title="Toggle visibility"
                                     onclick="return confirm('Are you sure you want to toggle this user\'s visibility?');">
-                                    {% if data.is_active %}
+                                    {% if services_model.is_active %}
                                     <i class="bi bi-eye text-primary fs-6"></i>
                                     {% else %}
                                     <i class="bi bi-eye-slash text-danger fs-6"></i>
@@ -239,4 +234,68 @@
         modalLabel.textContent = "Add Service";
     });
 </script>
+
+<script>
+    $(document).ready(function(){
+        console.log("nkdnfbgkdfkbgndfkngjkdngjkdfngjkdfnjkgn-------");
+        
+    }
+    )
 </script>
+
+
+
+<!-- <script>
+$(document).ready(function () {
+    $('#addProductForm').validate({
+        ignore: ":hidden:not(select)",
+
+        rules: {
+            service_type: { required: true },
+            service_provider: { required: true },
+            services_charge: {
+                required: true,
+                number: true,
+                min: 0
+            },
+            description: {
+                required: true,
+                minlength: 5
+            }
+        },
+
+        messages: {
+            service_type: { required: "Please select a service type" },
+            service_provider: { required: "Please select a service provider" },
+            services_charge: {
+                required: "Please enter the service charge",
+                number: "Enter a valid number",
+                min: "Charge cannot be negative"
+            },
+            description: {
+                required: "Please provide a description",
+                minlength: "Description must be at least 5 characters"
+            }
+        },
+
+        errorClass: "text-danger fw-bold",
+        errorElement: "div",
+        highlight: function (element) {
+            $(element).addClass("is-invalid");
+        },
+        unhighlight: function (element) {
+            $(element).removeClass("is-invalid");
+        }
+    });
+
+    // Prevent submission if invalid
+    $('#addProductForm').on('submit', function (e) {
+        if (!$(this).valid()) {
+            e.preventDefault();
+        }
+    });
+});
+</script> -->
+
+
+    

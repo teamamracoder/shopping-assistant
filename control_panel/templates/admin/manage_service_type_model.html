@@ -97,7 +97,7 @@
           <form id="addUserForm" method="POST" action="{% url 'manage_service_type_model_create' %}" class="fw-bold">
             {% csrf_token %}
             <div class="row">
-              <div class="form-group col-md-12 mb-3">
+              <div class="form-group col-md-12 mb-3" name="service_name">
                 {{ form.service_name.label_tag }}<span class="text-danger">*</span>
                 {{ form.service_name }}
               </div>
@@ -177,5 +177,39 @@
     </div>
   </div>
 </div>
+
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- jQuery Validation Plugin -->
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+
+
+<script>
+  $(document).ready(function () {
+      $('#addUserForm').validate({
+          rules: {
+              service_name: {
+                  required: true
+              }
+          },
+          messages: {
+              service_name: {
+                  required: "Please enter a service name"
+              }
+          },
+          errorClass: "text-danger fw-bold",  // Error text style
+          errorElement: "div",  // Error element
+          highlight: function (element) {
+              $(element).addClass("is-invalid");  // Add invalid class
+          },
+          unhighlight: function (element) {
+              $(element).removeClass("is-invalid");  // Remove invalid class
+          }
+      });
+  });
+  </script>
+  
 
 {% endblock %}

@@ -2,6 +2,14 @@ from django import forms
 from ..models import ServiceBookingModel
 
 class ManageServiceBookingForm(forms.ModelForm):
+    booking_time = forms.DateTimeField(
+        widget=forms.DateTimeInput(attrs={
+            'class': 'form-control',
+            'type': 'date',
+        }),
+        input_formats=['%Y-%m-%dT%H:%M'],  # HTML datetime-local format
+    )
+
     class Meta:
         model = ServiceBookingModel
         fields = [
@@ -18,7 +26,6 @@ class ManageServiceBookingForm(forms.ModelForm):
             'service_provider': forms.Select(attrs={'class': 'form-control'}),
             'user': forms.Select(attrs={'class': 'form-control'}),
             'booking_charge': forms.NumberInput(attrs={'class': 'form-control'}),
-            'booking_time': forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'}),
             'created_by': forms.HiddenInput(),
             'updated_by': forms.HiddenInput(),
         }
