@@ -3,16 +3,7 @@
 {% block content %}
 
 <style>
-    .modal-header {
-        background-color: #007bff;
-        color: white;
-        border-top-left-radius: 5px;
-        border-top-right-radius: 5px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
+    
     .modal-title {
         font-weight: bold;
         flex-grow: 1;
@@ -40,30 +31,48 @@
         background-color: darkblue;
     }
 
+    .input-group-text {
+        background-color: #c9dff1;
+        color: white;
+    }
+
+    .input-group i::before{
+        background-color: #205aa6;
+    }
+    .row .form-group{
+        font-weight: bold;
+    }
+
     /*Modal Widht*/
     @media (min-width: 1200px) {
         .modal-dialog {
-            max-width: 90%; /* Adjust width */
+            max-width: 90%; 
         }
     }
-
-    /* Modal Header */
-    .modal-header {
-        background-color: #cecfd1;
-        color: white;
-        border-bottom: 2px solid #c0c0c0;
-        padding: 15px;
-    }
-
-    .modal-title {
-        flex-grow: 1;
-        text-align: center;
-    }
+    
 </style>
 
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const shouldOpenModal = urlParams.get("openAddCategoryModal");
+
+        if (shouldOpenModal === "1") {
+            const addCategoryModal = new bootstrap.Modal(document.getElementById('addCategoryModal'));
+            addCategoryModal.show();
+
+            // Clear the form (in case data is pre-filled)
+            const form = document.getElementById('addCategoryForm');
+            form.reset();
+
+            // Optional: Clear query string so it doesn't reopen on future reloads
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+
+
+
         const editButtons = document.querySelectorAll('.edit-category-btn');
         const form = document.getElementById('addCategoryForm');
         const nameInput = document.getElementById('id_name');
@@ -98,32 +107,45 @@
     <p class="mb-4">Manage product categories in the system.</p>
 
     <!-- Add Button -->
-    <button class="circle-btn" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
+    <!-- <button class="circle-btn" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
         <i class="bi bi-plus-lg text-light"></i>
-    </button>
+    </button> -->
+
+    <!-- Add a query param to tell the page to open modal after reload -->
+    <a href="?openAddCategoryModal=1" class="circle-btn" id="addCategoryBtn">
+        <i class="bi bi-plus-lg text-light"></i>
+    </a>
 
     <!-- Bootstrap Modal -->
     <div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addCategoryModalLabel">Add Product Category</h5>
+                <div class="modal-header bg-primary-subtle">
+                    <h5 class="modal-title text-dark fs-6" id="addCategoryModalLabel">Add Product Category</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form id="addCategoryForm" method="post" action="{% url 'manage_product_category_create' %}" class="fw-bold">
                         {% csrf_token %}
-                        
-                        <div class="row">
-                            <div class="form-group col-md-6 mb-3">
+                        <!-- {{ data.addCategoryForm.as_p }} -->
+
+                        <div class="row g-3">
+                            <div class="form-group col-md-6">
                                 {{ form.name.label_tag }}<span class="text-danger">*</span>
-                                {{ form.name }}
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-tag"></i></span>
+                                    {{ form.name }}
+                                </div>
                             </div>
-                            <div class="form-group col-md-6 mb-3">
+                            <div class="form-group col-md-6">
                                 {{ form.description.label_tag }}<span class="text-danger">*</span>
-                                {{ form.description }}
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-pencil"></i></span>
+                                    {{ form.description }}
+                                </div>
                             </div>
                         </div>
+                        
 
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary">Save</button>
@@ -142,7 +164,7 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <table class="table" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
                             <th>Name</th>
@@ -160,7 +182,7 @@
                                 <td>
                                     <a href="#" class="text-primary edit-category-btn" data-id="{{ category.id }}"data-name="{{ category.name }}"data-description="{{ category.description }}"
                                     data-action-url="{% url 'manage_product_category_edit' category.id %}">
-                                    <i class="bi bi-pencil-square"></i>
+                                    <i class="bi bi-pencil-square fs-6"></i>
                                     </a>
 
                                     <!-- Delete Form -->
@@ -168,13 +190,23 @@
                                         {% csrf_token %}
                                         <button type="submit" class="btn text-danger btn-sm"
                                             onclick="return confirm('Are you sure you want to delete this category?');">
-                                            <i class="bi bi-trash"></i>
+                                            <i class="bi bi-trash fs-6"></i>
                                         </button>
                                     </form>
 
-                                    <a href="#" class="text-primary">
-                                        <i class="bi bi-eye-slash"></i>                                    
-                                    </a>                                        
+                                    <form method="post" action="{% url 'manage_toggle_product_category_active' category.id %}" style="display:inline;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm {% if category.is_active %}text-success{% else %}text-muted{% endif %}"
+                                                title="Toggle visibility"
+                                                onclick="return confirm('Are you sure you want to toggle this category\'s visibility?');">
+                                            {% if category.is_active %}
+                                                <i class="bi bi-eye text-primary fs-6"></i>
+                                            {% else %}
+                                                <i class="bi bi-eye-slash text-danger fs-6"></i>
+                                            {% endif %}
+                                        </button>
+                                    </form>
+                                    
                                 </td>                                
                             </tr>
                         {% endfor %}
@@ -185,4 +217,110 @@
     </div>
 </div>
 
+
+<script>
+    $(document).ready(function () {
+        $('#addCategoryForm').validate({
+            rules: {
+                name: {
+                    required: true,
+                    minlength: 5,
+                    maxlength: 100
+                },
+                description: {
+                    required: true,
+                    minlength: 5,
+                    maxlength: 255
+                }
+            },
+            messages: {
+                name: {
+                    required: "Please enter a template name",
+                    minlength: "Name must be at least 5 characters.",
+                    maxlength: "Name must not exceed 100 characters"
+                },
+                description: {
+                    required: "Please enter a description",
+                    minlength: "Description must be at least 5 characters.",
+                    maxlength: "Description must not exceed 255 characters"
+                }
+            },
+            errorElement: 'div',
+            errorClass: 'text-danger d-block ms-1',
+            highlight: function (element) {
+                $(element).removeClass('is-valid').addClass('is-invalid');
+            },
+            unhighlight: function (element) {
+                $(element).removeClass('is-invalid').addClass('is-valid');
+            },
+            errorPlacement: function (error, element) {
+                if (element.parent('.input-group').length) {
+                    error.insertAfter(element.parent());
+                } else {
+                    error.insertAfter(element);
+                }
+            }
+        });
+    });
+    
+</script>
+
+
+<!-- <script>
+    $(document).ready(function () {
+        $('#addCategoryForm').validate({
+            rules: {
+                name: {
+                    required: true,
+                    minlength: 5,
+                    maxlength: 100
+                },
+                description: {
+                    required: true,
+                    minlength: 5,
+                    maxlength: 255
+                }
+            },
+            messages: {
+                name: {
+                    required: "Please enter a category name",
+                    minlength: "name must be at least 5 characters.",
+                    maxlength: "Name must not exceed 100 characters"
+                },
+                description: {
+                    required: "Please enter a description",
+                    minlength: "Description must be at least 5 characters.",
+                    maxlength: "Description must not exceed 255 characters"
+                }
+            },
+            errorElement: 'div',
+            errorClass: 'text-danger d-block ms-1',
+            highlight: function (element) {
+                $(element).addClass('is-invalid');
+            },
+            unhighlight: function (element) {
+                $(element).removeClass('is-invalid');
+            },
+            errorPlacement: function (error, element) {
+                if (element.parent('.input-group').length) {
+                    error.insertAfter(element.parent()); // for input-groups
+                } else {
+                    error.insertAfter(element);
+                }
+            }
+        });
+    });
+</script>
+ -->
+
+<style>
+    .is-invalid {
+        border-color: #dc3545 !important;
+    } 
+
+    .text-danger {
+        font-size: 1rem; /* normal font size */
+        font-weight: normal;
+    }
+</style>
 {% endblock %}
