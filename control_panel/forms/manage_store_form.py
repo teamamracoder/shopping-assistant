@@ -81,15 +81,15 @@ import re
 #     def clean_alternate_email(self):
 #         return self.validate_email(self.cleaned_data.get('alternate_email'), 'alternate email address')
 
-    contact_no = forms.CharField(
-        required=False,
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter contact number'})
-    )
+contact_no = forms.CharField(
+    required=False,
+    widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter contact number'})
+)
 
-    email = forms.CharField(
-        required=False,
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter email'})
-    )
+email = forms.CharField(
+    required=False,
+    widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter email'})
+)
 
 
 #     def clean_pin_code(self):
