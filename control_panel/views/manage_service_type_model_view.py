@@ -1,4 +1,5 @@
 # views.py
+from django.contrib import messages
 from django.views import View
 from django.shortcuts import render, redirect, get_object_or_404
 from ..models import ServiceTypeModel
@@ -48,3 +49,17 @@ class ManageServiceTypeDeleteView(View):
         service = get_object_or_404(ServiceTypeModel, id=pk)
         service.delete()
         return redirect('manage_service_type_model_create')
+    
+    
+ #TOGGLE VIEW   
+class ManageToggleServiceTypeActiveView(View):
+    def post(self,request, pk):
+        service_type = get_object_or_404(ServiceTypeModel,id=pk)
+        service_type.is_active = not service_type.is_active
+        service_type.save()
+
+        status = "activated" if service_type.is_active else "deactivated"
+        messages.success(request, f"User '{service_type.is_active}' has been {status}.")
+        
+        return redirect('manage_service_type_model_list')
+
