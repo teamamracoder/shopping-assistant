@@ -1,7 +1,7 @@
 # import services here
 from services.user_service import UserService
-from services.service_type_service import ServiceTypeModelService
-from services.service_service import ServiceService
+from services.service_type_service import ServiceTypeModelService,ServiceTypeModelAPI
+from services.service_service import ServiceService,ServiceModelAPI
 from services.service_booking_service import ServiceBookingModelService
 from services.manage_store_service import *
 from services.product_service import *
@@ -28,9 +28,9 @@ class Service:
             self.product_category_service = ProductCategoryModelService()
             self.product_sub_category_service = ProductSubCategoryModelService()
             # self.manage_product_sub_category_service = ProductSubCategoryModelService()  # optional
+            self.service_api = ServiceModelAPI()
+            self.service_type_api = ServiceTypeModelAPI()
 
 services = Service()
-
-
 
 
