@@ -19,41 +19,15 @@ class Service:
         return cls._instance
 
     def __init__(self) -> None:
-        # create instance of services
-        self.user_service=UserService()
-
-    def __init__(self) -> None:
-        # create instance of services
-        self.service_type_service=ServiceTypeModelService()
-
-    def __init__(self) -> None:
-        # create instance of services
-        self.service_service=ServiceService()
-
-    def __init__(self) -> None:
-        # create instance of services
-        self.service_booking_service=ServiceBookingModelService()
-
-
-    def __init__(self) -> None:
-        # create instance of services
-        self.service_booking_service=ServiceBookingModelService()
-
-    # def __init__(self) -> None:
-    #     # create instance of services
-    #     self.manage_product_sub_category_service=ProductSubCategoryModelService()
-
-# create service instance
-
-    def __init__(self) -> None:
-        # create instance of services
-        self.product_service = ProductModelService()
-
-    def __init__(self) -> None:
-        self.product_category_service = ProductCategoryModelService()
-
-    def __init__(self) -> None:
-        self.product_sub_category_service = ProductSubCategoryModelService()
+            # create instances of all services
+            self.user_service = UserService()
+            self.service_type_service = ServiceTypeModelService()
+            self.service_service = ServiceService()
+            self.service_booking_service = ServiceBookingModelService()
+            self.product_service = ProductModelService()
+            self.product_category_service = ProductCategoryModelService()
+            self.product_sub_category_service = ProductSubCategoryModelService()
+            # self.manage_product_sub_category_service = ProductSubCategoryModelService()  # optional
 
 services = Service()
 
