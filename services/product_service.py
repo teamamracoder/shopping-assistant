@@ -2,7 +2,7 @@ from django.db import IntegrityError
 from django.forms import ValidationError
 from control_panel.models import ProductsModel
 
-class ProductService:
+class ProductModelService:
     def get_all_products(self):
         """
         Fetch all products from the database.
