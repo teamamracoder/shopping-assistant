@@ -5,7 +5,8 @@ from services.service_service import ServiceService
 from services.service_booking_service import ServiceBookingModelService
 from services.manage_store_service import *
 # from services.manage_product_sub_category_service import ProductSubCategoryModelService
-
+from services.store_service import StoreService
+from services.store_category_service import StoreCategoryService
 
 class Service:
     _instance = None
