@@ -45,7 +45,7 @@ class UserModel(models.Model):
     REQUIRED_FIELDS = []
  
     class Meta:
-        db_table = 'users'   
+        db_table = 'users'
          
-    def _str_(self):
+    def __str__(self):
         return f"ID: {self.id}, Created at: {self.created_at}, Active: {self.is_active}"

@@ -140,3 +140,4 @@ class UserService:
         user.is_active = False
         user.save()
         return user
+user_service = UserService()
