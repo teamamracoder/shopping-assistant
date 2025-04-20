@@ -5,3 +5,7 @@ from .store_view import StoreListCreateView
 from .store_view import StoreDetailView
 from .store_category_view import StoreCategoryListCreateView
 from .store_category_view import StoreCategoryDetailView
+from .service_view import *
+from .product_view import *
+from .product_category_view import *
+from .product_sub_category_view import *
