@@ -34,6 +34,16 @@ class ProductDetailAPIView(APIView):
         updated_product = services.product_service.update_product(product, request.serializer.validated_data)
         return Res.success("S-20001", ProductSerializer(updated_product).data)
 
+    @validate_serializer(ProductSerializer)  
+    def patch(self, request, pk):
+        request.serializer.partial = True 
+        product = services.product_service.get_product_by_id(pk)
+        if not product:
+            return Res.error(data={"message": "Product not found"}, http_status=status.HTTP_404_NOT_FOUND)
+        updated_product = services.product_service.update_product(product, request.serializer.validated_data)
+        return Res.success("S-20001", ProductSerializer(updated_product).data)
+
+    
     def delete(self, request, pk):
         product = services.product_service.get_product_by_id(pk)
         if not product:

@@ -3,7 +3,7 @@ from rest_framework import status
 from decorators import validate_serializer
 from utils.response_utils import Res
 from ..serializers import ProductSubCategorySerializer
-from services import services  # Import your service manager
+from services import services  
 
 class ProductSubCategoryListCreateAPIView(APIView):
     def get(self, request):
@@ -30,6 +30,16 @@ class ProductSubCategoryDetailAPIView(APIView):
         if not sub_category:
             return Res.error(data={"message": "Sub-category not found"}, http_status=status.HTTP_404_NOT_FOUND)
         updated = services.product_sub_category_service.update_sub_category(sub_category, request.serializer.validated_data)
+        return Res.success("S-20001", ProductSubCategorySerializer(updated).data)
+
+    @validate_serializer(ProductSubCategorySerializer)
+    def patch(self, request, pk):
+        request.serializer.partial = True  
+        sub_category = services.product_sub_category_service.get_sub_category_by_id(pk)
+        if not sub_category:
+            return Res.error(data={"message": "Sub-category not found"}, http_status=status.HTTP_404_NOT_FOUND)
+        updated = services.product_sub_category_service.update_sub_category(
+            sub_category, request.serializer.validated_data)
         return Res.success("S-20001", ProductSubCategorySerializer(updated).data)
 
     def delete(self, request, pk):
