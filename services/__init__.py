@@ -4,6 +4,9 @@ from services.service_type_service import ServiceTypeModelService
 from services.service_service import ServiceService
 from services.service_booking_service import ServiceBookingModelService
 from services.manage_store_service import *
+from services.product_service import *
+from services.product_category_service import *
+from services.product_sub_category_service import *
 # from services.manage_product_sub_category_service import ProductSubCategoryModelService
 
 
@@ -41,6 +44,17 @@ class Service:
     #     self.manage_product_sub_category_service=ProductSubCategoryModelService()
 
 # create service instance
+
+    def __init__(self) -> None:
+        # create instance of services
+        self.product_service = ProductModelService()
+
+    def __init__(self) -> None:
+        self.product_category_service = ProductCategoryModelService()
+
+    def __init__(self) -> None:
+        self.product_sub_category_service = ProductSubCategoryModelService()
+
 services = Service()
 
 

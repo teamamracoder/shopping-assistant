@@ -1,53 +1,76 @@
 from django.db import IntegrityError
 from django.forms import ValidationError
-from control_panel.models import ServiceModel
+from control_panel.models import ProductsModel
 
-class ServiceService:
-    def get_all_services(self):
+class ProductService:
+    def get_all_products(self):
         """
-        Fetch all services from the database.
-        :return: Queryset of all ServiceModel instances.
+        Fetch all products from the database.
+        :return: QuerySet of all ProductsModel instances.
         """
-        return ServiceModel.objects.all()
+        return ProductsModel.objects.all()
 
-    def get_service_by_id(self, pk):
+    def get_product_by_id(self, pk):
         """
-        Fetch a service by its primary key (ID).
-        :param pk: Primary key (ID) of the service.
-        :return: ServiceModel instance if found, None otherwise.
+        Fetch a product by its primary key (ID).
+        :param pk: Primary key (ID) of the product.
+        :return: ProductsModel instance if found, None otherwise.
         """
         try:
-            return ServiceModel.objects.get(pk=pk)
-        except ServiceModel.DoesNotExist:
+            return ProductsModel.objects.get(pk=pk)
+        except ProductsModel.DoesNotExist:
             return None
 
-    def update_service(self, service, validated_data):
+    def create_product(self, validated_data):
         """
-        Update an existing service with new validated data.
-        :param service: ServiceModel instance to be updated.
-        :param validated_data: A dictionary of data to update the service with.
-        :return: Updated ServiceModel instance.
-        :raises ValidationError: If the updated data fails validation.
+        Create a new product with validated data.
+        :param validated_data: Dictionary containing product data.
+        :return: Newly created ProductsModel instance.
+        :raises ValidationError: If creation fails due to integrity issues.
         """
         try:
-            service.service_type = validated_data.get('service_type', service.service_type)
-            service.service_provider = validated_data.get('service_provider', service.service_provider)
-            service.services_charge = validated_data.get('services_charge', service.services_charge)
-            service.description = validated_data.get('description', service.description)
-            
-            service.save()
-            return service
+            return ProductsModel.objects.create(**validated_data)
         except IntegrityError:
-            raise ValidationError("Service update failed due to integrity issues.")
+            raise ValidationError("Product creation failed due to integrity constraints.")
 
-    def delete_service(self, service):
+    def update_product(self, product, validated_data):
         """
-        Delete a service.
-        :param service: ServiceModel instance to be deleted.
+        Update an existing product with new validated data.
+        :param product: ProductsModel instance to update.
+        :param validated_data: Dictionary containing new data.
+        :return: Updated ProductsModel instance.
+        :raises ValidationError: If update fails due to integrity issues.
+        """
+        try:
+            product.name = validated_data.get('name', product.name)
+            product.product_code = validated_data.get('product_code', product.product_code)
+            product.description = validated_data.get('description', product.description)
+            product.price = validated_data.get('price', product.price)
+            product.discount_per = validated_data.get('discount_per', product.discount_per)
+            product.quantity = validated_data.get('quantity', product.quantity)
+            product.maf_date = validated_data.get('maf_date', product.maf_date)
+            product.exp_date = validated_data.get('exp_date', product.exp_date)
+            product.image_urls = validated_data.get('image_urls', product.image_urls)
+            product.category = validated_data.get('category', product.category)
+            product.sub_category = validated_data.get('sub_category', product.sub_category)
+            product.others_category = validated_data.get('others_category', product.others_category)
+            product.is_active = validated_data.get('is_active', product.is_active)
+            product.updated_by = validated_data.get('updated_by', product.updated_by)
+
+            product.save()
+            return product
+        except IntegrityError:
+            raise ValidationError("Product update failed due to integrity issues.")
+
+    def delete_product(self, product):
+        """
+        Delete a product.
+        :param product: ProductsModel instance to be deleted.
         :return: None
         :raises ValidationError: If deletion fails.
         """
         try:
-            service.delete()
+            product.delete()
         except Exception as e:
-            raise ValidationError(f"Error deleting service: {str(e)}")
+            raise ValidationError(f"Error deleting product: {str(e)}")
+
