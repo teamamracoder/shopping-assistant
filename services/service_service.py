@@ -54,40 +54,8 @@ class ServiceService:
             raise ValidationError(f"Error deleting service: {str(e)}")
 
 
+
 # API Section for service table
-# class ServiceModelAPI:
-#     def get_the_all_services(self):
-#         return ServiceModel.objects.all()
-
-#     def get_the_service_by_id(self, pk):
-#         try:
-#             return ServiceModel.objects.get(id=pk)
-#         except ServiceModel.DoesNotExist:
-#             return None
-
-#     @transaction.atomic
-#     def create_the_service(self, data):
-#         service = ServiceModel(**data)
-#         service.save()
-#         return service
-
-#     @transaction.atomic
-#     def update_the_service_by_id(self, service, data):
-#         for key, value in data.items():
-#             setattr(service, key, value)
-#         service.save()
-#         return service
-
-#     @transaction.atomic
-#     def delete_the_service_by_id(self, pk):
-#         try:
-#             service = ServiceModel.objects.get(id=pk)
-#             service.delete()
-#             return service
-#         except ServiceModel.DoesNotExist:
-#             return None
-
-
 class ServiceModelAPI:
     def get_the_all_service(self):
         return ServiceModel.objects.all()
