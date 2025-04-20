@@ -1,9 +1,9 @@
 from rest_framework import serializers
-from control_panel.models import ProductSubCategoryModel
+from control_panel.models import ProductSubCategoryModel,ProductCategoryModel
 
 class ProductSubCategorySerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
-    category = serializers.IntegerField()  # ID of the related ProductCategory
+    category = serializers.PrimaryKeyRelatedField(queryset=ProductCategoryModel.objects.all(),required=True)
     name = serializers.CharField(max_length=255)
     description = serializers.CharField(required=False, allow_blank=True, allow_null=True)
     is_active = serializers.BooleanField(default=True, required=False)
