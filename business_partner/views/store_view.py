@@ -30,6 +30,7 @@ class StoreDetailView(APIView):
         serializer = StoreSerializer(store)
         return Res.success("S-20003", serializer.data)
 
+
     @validate_serializer(StoreSerializer)
     def put(self, request, pk):
         store = store_service.StoreService().get_store(pk)
@@ -38,6 +39,20 @@ class StoreDetailView(APIView):
         # updated_store = store_service.StoreService().update_store(store, request.serializer.validated_data, user=request.user) # If the frontend is ready then use this line 
         updated_store = store_service.StoreService().update_store(store, request.serializer.validated_data) 
         return Res.success("S-20004", StoreSerializer(updated_store).data)
+    
+
+    @validate_serializer(StoreSerializer)
+    def patch(self, request, pk):
+        store = store_service.StoreService().get_store(pk)
+        if not store:
+            return Res.error(data={"message": "Store not found"}, http_status=status.HTTP_404_NOT_FOUND)
+        serializer = StoreSerializer(store, data=request.data, partial=True)
+        if serializer.is_valid():
+            # updated_store = store_service.StoreService().update_store(store, serializer.validated_data, user=request.user)  # If the frontend is ready then use this line
+            updated_store = store_service.StoreService().update_store(store, request.serializer.validated_data)
+            return Res.success("S-20006", StoreSerializer(updated_store).data)
+        return Res.error(data={"message": serializer.errors}, http_status=status.HTTP_400_BAD_REQUEST)
+
 
     def delete(self, request, pk):
         store = store_service.StoreService().get_store(pk)
