@@ -7,6 +7,7 @@ from services import services
 
 class ProductListCreateAPIView(APIView):
     def get(self, request):
+        print(f"Requested path: {request.path}")
         products = services.product_service.get_all_products()
         serializer = ProductSerializer(products, many=True)
         return Res.success("S-20001", serializer.data)
