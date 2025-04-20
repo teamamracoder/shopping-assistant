@@ -32,6 +32,8 @@ class UserService:
         try:
             # Create and save a new user object
             return UserModel.objects.create(**validated_data)
+        except Exception as e:
+            raise ValidationError(f"Error creating user: {str(e)}")
         except IntegrityError:
             raise ValidationError("A user with this email already exists.")  # Handle unique constraint violations.
 
@@ -45,22 +47,13 @@ class UserService:
         """
         try:
             # Update fields based on the validated data provided
-            user.first_name = validated_data.get('first_name', user.first_name)
-            user.last_name = validated_data.get('last_name', user.last_name)
-            user.gender = validated_data.get('gender', user.gender)
-            user.dob = validated_data.get('dob', user.dob)
-            user.email = validated_data.get('email', user.email)
-            user.phone = validated_data.get('phone', user.phone)
-            user.address = validated_data.get('address', user.address)
-            user.city = validated_data.get('city', user.city)
-            user.state = validated_data.get('state', user.state)
-            user.pincode = validated_data.get('pincode', user.pincode)
-            user.is_active = validated_data.get('is_active', user.is_active)
-            user.bio = validated_data.get('bio', user.bio)
-
+            for attr, value in validated_data.items():
+                setattr(user, attr, value)
             # Save the updated user
             user.save()
             return user
+        except Exception as e:
+            raise ValidationError(f"Error updating user: {str(e)}")
         except IntegrityError:
             raise ValidationError("Email already exists, or another integrity issue occurred.") 
 
@@ -95,4 +88,23 @@ class UserService:
         user.is_active = False
         user.save()
         return user
+    
+    def user_exists(self, email):
+        """
+        Check if a user exists by email.
+        :param email: Email address to check.
+        :return: True if user exists, False otherwise.
+        """
+        return UserModel.objects.filter(email=email).exists()
+    
+    def get_user_by_email(self, email):
+        """
+        Fetch a user by their email address.
+        :param email: Email address of the user.
+        :return: UserModel instance if found, None otherwise.
+        """
+        try:
+            return UserModel.objects.get(email=email)
+        except UserModel.DoesNotExist:
+            return None
 user_service = UserService()
