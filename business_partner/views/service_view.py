@@ -1,6 +1,6 @@
 from rest_framework.views import APIView
 from rest_framework import status
-from decorators import validate_serializer
+from decorators import validate_serializer,partial_serializer
 from utils.response_utils import Res
 from ..serializers import  ServiceTypeModelSerializer,ServiceSerializer
 from services import services
@@ -32,6 +32,15 @@ class ServiceDetailAPIView(APIView):
             return Res.error(data={"message": "Service not found"}, http_status=status.HTTP_404_NOT_FOUND)
         updated_service = services.service_api.update_the_service_by_id(service, request.serializer.validated_data)
         return Res.success("S-22001", ServiceSerializer(updated_service).data)
+    
+    @partial_serializer(ServiceSerializer, partial=True)
+    def patch(self, request, pk):
+        service = services.service_api.get_the_service_by_id(pk)
+        if not service:
+            return Res.error(data={"message": "Service not found"}, http_status=status.HTTP_404_NOT_FOUND)
+        updated_service = services.service_api.update_the_service_by_id(service, request.serializer.validated_data)
+        return Res.success("S-22001", ServiceSerializer(updated_service).data)
+
 
     def delete(self, request, pk):
         service = services.service_api.get_the_service_by_id(pk)
@@ -67,6 +76,15 @@ class ServiceTypeDetailAPIView(APIView):
             return Res.error(data={"message": "Service Type not found"}, http_status=status.HTTP_404_NOT_FOUND)
         updated_service_type = services.service_type_api.update_the_service_type_by_id(service_type, request.serializer.validated_data)
         return Res.success("S-21001", ServiceTypeModelSerializer(updated_service_type).data)
+
+    @partial_serializer(ServiceTypeModelSerializer, partial=True)
+    def patch(self, request, pk):
+        service_type = services.service_type_api.get_service_type_by_id(pk)
+        if not service_type:
+            return Res.error(data={"message": "Service Type not found"}, http_status=status.HTTP_404_NOT_FOUND)
+        updated_service_type = services.service_type_api.update_the_service_type_by_id(service_type, request.serializer.validated_data)
+        return Res.success("S-21001", ServiceTypeModelSerializer(updated_service_type).data)
+
 
     def delete(self, request, pk):
         service_type = services.service_type_api.get_service_type_by_id(pk)

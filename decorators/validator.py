@@ -22,3 +22,15 @@ def validate_serializer(serializer_class, status_code: str = 'E-10001'):
             return func(self, request, *args, **kwargs)
         return wrapper
     return decorator
+
+
+def partial_serializer(serializer_class, partial=False):
+    def decorator(view_func):
+        def _wrapped_view(self, request, *args, **kwargs):
+            serializer = serializer_class(data=request.data, partial=partial)
+            if not serializer.is_valid():
+                return Res.error(data=serializer.errors, http_status=status.HTTP_400_BAD_REQUEST)
+            request.serializer = serializer
+            return view_func(self, request, *args, **kwargs)
+        return _wrapped_view
+    return decorator
