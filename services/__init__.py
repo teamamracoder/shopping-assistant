@@ -31,6 +31,8 @@ class Service:
             # self.manage_product_sub_category_service = ProductSubCategoryModelService()  # optional
             self.service_api = ServiceModelAPI()
             self.service_type_api = ServiceTypeModelAPI()
+            self.store_service = StoreService()
+            self.store_category_service = StoreCategoryService()
 
 services = Service()
 
