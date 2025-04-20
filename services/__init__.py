@@ -1,9 +1,12 @@
 # import services here
 from services.user_service import UserService
-from services.service_type_service import ServiceTypeModelService
-from services.service_service import ServiceService
+from services.service_type_service import ServiceTypeModelService,ServiceTypeModelAPI
+from services.service_service import ServiceService,ServiceModelAPI
 from services.service_booking_service import ServiceBookingModelService
 from services.manage_store_service import *
+from services.product_service import *
+from services.product_category_service import *
+from services.product_sub_category_service import *
 # from services.manage_product_sub_category_service import ProductSubCategoryModelService
 
 
@@ -16,33 +19,18 @@ class Service:
         return cls._instance
 
     def __init__(self) -> None:
-        # create instance of services
-        self.user_service=UserService()
+            # create instances of all services
+            self.user_service = UserService()
+            self.service_type_service = ServiceTypeModelService()
+            self.service_service = ServiceService()
+            self.service_booking_service = ServiceBookingModelService()
+            self.product_service = ProductModelService()
+            self.product_category_service = ProductCategoryModelService()
+            self.product_sub_category_service = ProductSubCategoryModelService()
+            # self.manage_product_sub_category_service = ProductSubCategoryModelService()  # optional
+            self.service_api = ServiceModelAPI()
+            self.service_type_api = ServiceTypeModelAPI()
 
-    def __init__(self) -> None:
-        # create instance of services
-        self.service_type_service=ServiceTypeModelService()
-
-    def __init__(self) -> None:
-        # create instance of services
-        self.service_service=ServiceService()
-
-    def __init__(self) -> None:
-        # create instance of services
-        self.service_booking_service=ServiceBookingModelService()
-
-
-    def __init__(self) -> None:
-        # create instance of services
-        self.service_booking_service=ServiceBookingModelService()
-
-    # def __init__(self) -> None:
-    #     # create instance of services
-    #     self.manage_product_sub_category_service=ProductSubCategoryModelService()
-
-# create service instance
 services = Service()
-
-
 
 

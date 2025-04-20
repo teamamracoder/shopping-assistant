@@ -1,7 +1,7 @@
 from django.db import IntegrityError
 from django.forms import ValidationError
 from control_panel.models import ServiceTypeModel
-
+from django.db import transaction
 class ServiceTypeModelService:
     def get_all_ServiceTypeModels(self):
         """
@@ -71,3 +71,37 @@ class ServiceTypeModelService:
         service_type.is_active = False
         service_type.save()
         return service_type
+    
+
+# API Section for service_type table
+class ServiceTypeModelAPI:
+    def get_all_the_service_type(self):
+        return ServiceTypeModel.objects.all()
+
+    def get_service_type_by_id(self,pk):
+        try:
+            return ServiceTypeModel.objects.get(id=pk)
+        except ServiceTypeModel.DoesNotExist:
+            return None
+
+    @transaction.atomic
+    def create_the_service_type(self,data):
+        service_type = ServiceTypeModel(**data)
+        service_type.save()
+        return service_type
+
+    @transaction.atomic
+    def update_the_service_type_by_id(self,service_type, data):
+        for key, value in data.items():
+            setattr(service_type, key, value)
+        service_type.save()
+        return service_type
+
+    @transaction.atomic
+    def delete_the_service_type_by_id(self, pk):
+        try:
+            service = ServiceTypeModel.objects.get(id=pk)
+            service.delete()
+            return service
+        except ServiceTypeModel.DoesNotExist:
+            return None
