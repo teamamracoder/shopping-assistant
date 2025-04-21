@@ -299,14 +299,14 @@
             errorElement: 'div',
             errorClass: 'text-danger d-block ms-1',
             highlight: function (element) {
-                $(element).addClass('is-invalid');
+                $(element).removeClass('is-valid').addClass('is-invalid');
             },
             unhighlight: function (element) {
-                $(element).removeClass('is-invalid');
+                $(element).removeClass('is-invalid').addClass('is-valid');
             },
             errorPlacement: function (error, element) {
                 if (element.parent('.input-group').length) {
-                    error.insertAfter(element.parent()); // for input-groups
+                    error.insertAfter(element.parent());
                 } else {
                     error.insertAfter(element);
                 }

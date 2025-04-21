@@ -1,6 +1,7 @@
 from django.db import IntegrityError
 from django.forms import ValidationError
 from control_panel.models import ServiceModel
+from django.db import transaction
 
 class ServiceService:
     def get_all_services(self):
@@ -51,3 +52,38 @@ class ServiceService:
             service.delete()
         except Exception as e:
             raise ValidationError(f"Error deleting service: {str(e)}")
+
+
+
+# API Section for service table
+class ServiceModelAPI:
+    def get_the_all_service(self):
+        return ServiceModel.objects.all()
+
+    def get_the_service_by_id(self, pk):
+        try:
+            return ServiceModel.objects.get(id=pk)
+        except ServiceModel.DoesNotExist:
+            return None
+
+    @transaction.atomic
+    def create_the_service(self, data):
+        service = ServiceModel(**data)
+        service.save()
+        return service
+
+    @transaction.atomic
+    def update_the_service_by_id(self, service, data):
+        for key, value in data.items():
+            setattr(service, key, value)
+        service.save()
+        return service
+
+    @transaction.atomic
+    def delete_the_service_by_id(self, pk):
+        try:
+            service = ServiceModel.objects.get(id=pk)
+            service.delete()
+            return service
+        except ServiceModel.DoesNotExist:
+            return None
