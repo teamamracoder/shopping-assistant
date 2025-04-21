@@ -12,3 +12,5 @@ from .service_booking_serializer import *
 from .product_serializer import *
 from .product_category_serializer import *
 from .product_sub_category_serializer import *
+from .create_user_serializer import UserCreateSerializer
+from .update_user_serializer import UserUpdateSerializer
