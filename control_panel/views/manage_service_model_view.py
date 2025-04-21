@@ -5,7 +5,7 @@ from django.views import View
 from django.contrib import messages
 
 
-# LIST VIEW (READ ALL)
+#LIST VIEW (READ ALL)
 class ManageServiceModelListView(View):
     def get(self, request):
         services_model_data = ServiceModel.objects.all()
@@ -25,7 +25,8 @@ class ManageServiceModelListView(View):
 class ManageServiceModelCreateView(View):
     def get(self, request):
         form = ServiceModelForm()
-        return render(request, 'admin/manage_service_model.html', {'form': form})
+        service_type= ServiceTypeModel.objects.all()
+        return render(request, 'admin/manage_service_model.html', {'form': form,'service_type':service_type})
     
     def post(self, request):
         form = ServiceModelForm(request.POST)
@@ -37,6 +38,8 @@ class ManageServiceModelCreateView(View):
             form.save()
             return redirect('manage_service_list')
         return render(request, 'admin/manage_service_model.html', {'form': form})
+
+
 
 
 # UPDATE VIEW

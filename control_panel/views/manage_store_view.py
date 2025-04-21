@@ -173,7 +173,7 @@ class ManageCreateStoreCategoryView(View):
                 return render(request, "admin/manage_store_category.html", {"form": form})
 
             category = form.save(commit=False)
-            user_instance = get_object_or_404(UserModel, id=11) 
+            user_instance = get_object_or_404(UserModel, id=1) 
             category.created_by = user_instance
             category.updated_by = user_instance
             category.save()

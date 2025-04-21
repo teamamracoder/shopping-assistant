@@ -83,6 +83,7 @@
                         {% csrf_token %}
                         <div class="row">
                             <div class="form-group col-md-6 mb-3">
+                                
                                 {{ form.service_type.label_tag }}<span class="text-danger">*</span>
                                 {{ form.service_type }}
                             </div>      
@@ -103,18 +104,7 @@
                             </div>
                         </div>
                 </div>
-                <div class="row">
-                    <select name="created_by" class="form-control" hidden>
-                        {% for user in form.created_by.field.queryset %}
-                        <option value="{{ user.id }}">{{ user.username }}</option>
-                        {% endfor %}
-                    </select>
-                    <select name="updated_by" class="form-control" hidden>
-                        {% for user in form.updated_by.field.queryset %}
-                        <option value="{{ user.id }}">{{ user.username }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
+               
 
                 <div class="row">
                 </div>
