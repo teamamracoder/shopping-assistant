@@ -31,8 +31,8 @@ class ManageServiceModelCreateView(View):
         form = ServiceModelForm(request.POST)
         if form.is_valid():
             service = form.save(commit=False)
-            service.created_by = request.user
-            service.updated_by = request.user
+            # service.created_by = request.user # this will required while login or sign up feature will developed
+            # service.updated_by = request.user # this will required while login or sign up feature will developed
             service.save()
             form.save()
             return redirect('manage_service_list')
