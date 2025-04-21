@@ -153,16 +153,16 @@
                         <td>{{ services_model.description }}</td>
                         <td>
                             <a href="#" class="text-primary edit-btn"
-                                data-service-type="{{ services_model.service_type.id }}"
-                                data-service-provider="{{ services_model.service_provider.id }}"
-                                data-services-charge="{{ services_model.services_charge }}"
-                                data-description="{{ services_model.description }}"
-                                data-is-active="{{ services_model.is_active }}"
-                                data-created-by="{{ services_model.created_by.id }}"
-                                data-updated-by="{{ services_model.updated_by.id }}"
-                                data-action-url="{% url 'manage_update_service_model' services_model.id %}">
-                                <i class="bi bi-pencil-square"></i>
-                            </a>
+                            data-service-type="{{ services_model.service_type.id }}"
+                            data-service-provider="{{ services_model.service_provider.id }}"
+                            data-services-charge="{{ services_model.services_charge }}"
+                            data-description="{{ services_model.description }}"
+                            data-is-active="{{ services_model.is_active }}"
+                            data-created-by="{{ services_model.created_by.id }}"
+                            data-updated-by="{{ services_model.updated_by.id }}"
+                            data-action-url="{% url 'manage_update_service_model' services_model.id %}">
+                            <i class="bi bi-pencil-square"></i>
+                        </a>
                             {% if services_model.id %}
                             <form method="post" action="{% url 'manage_delete_service_model' services_model.id %}"
                                 style="display:inline;">

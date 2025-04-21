@@ -42,6 +42,7 @@ class ManageServiceModelCreateView(View):
 # UPDATE VIEW
 class ManageServiceModelUpdateView(View):
     def get(self, request, pk):
+        print(f"Requrst for update id ========= {pk}")
         service = get_object_or_404(ServiceModel, pk=pk)
         form = ServiceModelForm(instance=service)
         return render(request, 'admin/manage_service_model.html', {'form': form, 'service': service})
