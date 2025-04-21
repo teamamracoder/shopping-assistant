@@ -1,20 +1,16 @@
-from rest_framework import serializers # type: ignore
-from control_panel.models.service_booking_model import ServiceBookingModel
+from rest_framework import serializers
+from control_panel.models import ServiceBookingModel, ServiceModel, UserModel  # ✅ make sure ServiceModel is imported
 
-class ServiceBookingModelSerializer(serializers.Serializer):
-    id = serializers.IntegerField(read_only=True)
-    service = serializers.PrimaryKeyRelatedField(queryset=ServiceBookingModel.objects.all())
-    service_provider = serializers.PrimaryKeyRelatedField(queryset=ServiceBookingModel.objects.all())
-    user = serializers.PrimaryKeyRelatedField(queryset=ServiceBookingModel.objects.all())
-    booking_charge = serializers.FloatField()
-    booking_time = serializers.DateTimeField()
-    created_at = serializers.DateTimeField(read_only=True)
-    updated_at = serializers.DateTimeField(read_only=True)
-    created_by = serializers.PrimaryKeyRelatedField(queryset=ServiceBookingModel.objects.all(), allow_null=True)
-    updated_by = serializers.PrimaryKeyRelatedField(queryset=ServiceBookingModel.objects.all(), allow_null=True)
+class ServiceBookingModelSerializer(serializers.ModelSerializer):
+    service = serializers.PrimaryKeyRelatedField(queryset=ServiceModel.objects.all())
+    service_provider = serializers.PrimaryKeyRelatedField(queryset=UserModel.objects.all())
+    user = serializers.PrimaryKeyRelatedField(queryset=UserModel.objects.all())
+    created_by = serializers.PrimaryKeyRelatedField(queryset=UserModel.objects.all(), allow_null=True, required=False)
+    updated_by = serializers.PrimaryKeyRelatedField(queryset=UserModel.objects.all(), allow_null=True, required=False)
 
-    def create(self, validated_data):
-        return ServiceBookingModel.objects.create(**validated_data)
+    class Meta:
+        model = ServiceBookingModel
+        fields = '__all__'
 
     def update(self, instance, validated_data):
         instance.service = validated_data.get('service', instance.service)

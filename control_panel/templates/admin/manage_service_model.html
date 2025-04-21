@@ -61,20 +61,16 @@
 
 
 <div class="container-fluid">
-
-    <h1 class="h3 mb-2 text-gray-800">Products</h1>
-    <p class="mb-4">Manage products in the system.</p>
-
+    <h1 class="h3 mb-2 text-gray-800">Service</h1>
+    <p class="mb-4">Manage service in the system.</p>
     <!-- Add Button (Opens Modal) -->
     <button class="circle-btn" data-bs-toggle="modal" data-bs-target="#addServiceModel">
-
         <i class="bi bi-plus-lg text-light"></i>
     </button>
 
     <!-- Bootstrap Modal  for create Service Model-->
     <div class="modal fade service-modal" id="addServiceModel" tabindex="-1" aria-labelledby="addProductModalLabel"
         aria-hidden="true">
-
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
@@ -84,25 +80,17 @@
                 <div class="modal-body">
                     <form id="addProductForm" method="post" action="{% url 'manage_create_service_model' %}"
                         class="fw-bold">
-
                         {% csrf_token %}
-
                         <div class="row">
                             <div class="form-group col-md-6 mb-3">
                                 {{ form.service_type.label_tag }}<span class="text-danger">*</span>
                                 {{ form.service_type }}
-                            </div>
+                            </div>      
                             <div class="form-group col-md-6 mb-3">
                                 {{ form.service_provider.label_tag }}<span class="text-danger">*</span>
                                 {{ form.service_provider }}
                             </div>
                         </div>
-
-                        <!-- <div class="row">
-                            <input type="text" name="services_charge" class="form-control" />
-                            <textarea name="description" class="form-control"></textarea>
-                            <input type="checkbox" name="is_active" />
-                        </div> -->
 
                         <div class="row">
                             <div class="form-group col-md-6 mb-3">
@@ -114,9 +102,6 @@
                                 {{ form.description }}
                             </div>
                         </div>
-                        
-
-
                 </div>
                 <div class="row">
                     <select name="created_by" class="form-control" hidden>
@@ -132,10 +117,6 @@
                 </div>
 
                 <div class="row">
-                    <div class="form-group col-md-6 mb-3">
-                        {{ form.is_active.label_tag }}
-                        {{ form.is_active }}
-                    </div>                    
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary">Save</button>
@@ -146,10 +127,6 @@
         </div>
     </div>
 </div>
-
-
-
-
 <!-- Product Table -->
 <div class="card shadow mb-4">
     <div class="card-header py-3">
@@ -175,7 +152,6 @@
                         <td>{{ services_model.services_charge }}</td>
                         <td>{{ services_model.description }}</td>
                         <td>
-
                             <a href="#" class="text-primary edit-btn"
                                 data-service-type="{{ services_model.service_type.id }}"
                                 data-service-provider="{{ services_model.service_provider.id }}"
@@ -187,8 +163,6 @@
                                 data-action-url="{% url 'manage_update_service_model' services_model.id %}">
                                 <i class="bi bi-pencil-square"></i>
                             </a>
-
-
                             {% if services_model.id %}
                             <form method="post" action="{% url 'manage_delete_service_model' services_model.id %}"
                                 style="display:inline;">
@@ -203,9 +177,21 @@
                                 <i class="bi bi-trash"></i>
                             </button>
                             {% endif %}
-                            <a href="#" class="text-primary">
-                                <i class="bi bi-eye-slash"></i>
-                            </a>
+
+                            <form method="post" action="{% url 'manage_toggle_service_active' services_model.id %}"
+                                style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit"
+                                    class="btn btn-sm {% if user.is_active %}text-success{% else %}text-muted{% endif %}"
+                                    title="Toggle visibility"
+                                    onclick="return confirm('Are you sure you want to toggle this user\'s visibility?');">
+                                    {% if services_model.is_active %}
+                                    <i class="bi bi-eye text-primary fs-6"></i>
+                                    {% else %}
+                                    <i class="bi bi-eye-slash text-danger fs-6"></i>
+                                    {% endif %}
+                                </button>
+                            </form>
                         </td>
                     </tr>
                     {% endfor %}
@@ -218,19 +204,15 @@
 </div>
 {% endblock %}
 
-
 <script>
     document.querySelectorAll('.edit-btn').forEach(btn => {
         btn.addEventListener('click', function (e) {
             e.preventDefault();
-
             const form = document.getElementById('addProductForm');
             const modalLabel = document.querySelector('.service-modal .modal-title');
             const modal = document.querySelector('.service-modal');
-
             form.action = this.getAttribute('data-action-url');
             modalLabel.textContent = "Edit Service";
-
             form.elements['service_type'].value = this.getAttribute('data-service-type');
             form.elements['service_provider'].value = this.getAttribute('data-service-provider');
             form.elements['services_charge'].value = this.getAttribute('data-services-charge');
@@ -238,7 +220,6 @@
             form.elements['is_active'].checked = this.getAttribute('data-is-active') === 'True';
             form.elements['created_by'].value = this.getAttribute('data-created-by');
             form.elements['updated_by'].value = this.getAttribute('data-updated-by');
-
             new bootstrap.Modal(modal).show();
         });
     });
@@ -248,15 +229,73 @@
         const form = document.getElementById('addProductForm');
         const modalLabel = document.querySelector('.service-modal .modal-title');
         const modal = document.querySelector('.service-modal');
-
         form.reset();
         form.action = "{% url 'manage_create_service_model' %}";
         modalLabel.textContent = "Add Service";
     });
 </script>
 
-
-
-
-
+<script>
+    $(document).ready(function(){
+        console.log("nkdnfbgkdfkbgndfkngjkdngjkdfngjkdfnjkgn-------");
+        
+    }
+    )
 </script>
+
+
+
+<!-- <script>
+$(document).ready(function () {
+    $('#addProductForm').validate({
+        ignore: ":hidden:not(select)",
+
+        rules: {
+            service_type: { required: true },
+            service_provider: { required: true },
+            services_charge: {
+                required: true,
+                number: true,
+                min: 0
+            },
+            description: {
+                required: true,
+                minlength: 5
+            }
+        },
+
+        messages: {
+            service_type: { required: "Please select a service type" },
+            service_provider: { required: "Please select a service provider" },
+            services_charge: {
+                required: "Please enter the service charge",
+                number: "Enter a valid number",
+                min: "Charge cannot be negative"
+            },
+            description: {
+                required: "Please provide a description",
+                minlength: "Description must be at least 5 characters"
+            }
+        },
+
+        errorClass: "text-danger fw-bold",
+        errorElement: "div",
+        highlight: function (element) {
+            $(element).addClass("is-invalid");
+        },
+        unhighlight: function (element) {
+            $(element).removeClass("is-invalid");
+        }
+    });
+
+    // Prevent submission if invalid
+    $('#addProductForm').on('submit', function (e) {
+        if (!$(this).valid()) {
+            e.preventDefault();
+        }
+    });
+});
+</script> -->
+
+
+    
