@@ -29,20 +29,18 @@ class ManageTemplateCreateView(View):
         return render(request, "temp/manage_template_create.html", {"form": form, "templates": templates})
 
     def post(self, request):
-        form = ManageTemplateForm(request.POST)
+        form = ManageTemplateForm(request.POST, request.FILES)  # Fix: include request.FILES
 
         if form.is_valid():
             template = form.save(commit=False)
 
-            # Set created_by and updated_by
             if not isinstance(request.user, AnonymousUser):
                 template.created_by = request.user
                 template.updated_by = request.user
 
-            # Save uploaded images and collect URLs
             image_urls = []
             for f in request.FILES.getlist('template_images'):
-                save_dir = os.path.join(settings.STATIC_ROOT, 'img/template')
+                save_dir = os.path.join(settings.STATICFILES_DIRS[0], 'img/template')
                 os.makedirs(save_dir, exist_ok=True)
 
                 file_path = os.path.join(save_dir, f.name)
@@ -50,8 +48,7 @@ class ManageTemplateCreateView(View):
                     for chunk in f.chunks():
                         destination.write(chunk)
 
-                # Relative URL to be saved
-                relative_url = f'static/img/template/{f.name}'
+                relative_url = os.path.join('img/template', f.name)
                 image_urls.append(relative_url)
 
             template.image_urls = image_urls
@@ -66,6 +63,7 @@ class ManageTemplateCreateView(View):
             "form": form,
             "templates": templates
         })
+
     
 
 # Update

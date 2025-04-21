@@ -1,10 +1,11 @@
 from rest_framework import serializers # type: ignore
 from control_panel.models.service_model import ServiceModel
-
+from control_panel.models.service_type_model import ServiceTypeModel
+from control_panel.models.user_model import UserModel
 class ServiceSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
-    service_type = serializers.PrimaryKeyRelatedField(queryset=ServiceModel.objects.all())
-    service_provider = serializers.PrimaryKeyRelatedField(queryset=ServiceModel.objects.all())
+    service_type = serializers.PrimaryKeyRelatedField(queryset=ServiceTypeModel.objects.all())
+    service_provider = serializers.PrimaryKeyRelatedField(queryset=UserModel.objects.all())
     services_charge = serializers.FloatField()
     description = serializers.CharField(allow_blank=True, required=False)
 
@@ -18,3 +19,5 @@ class ServiceSerializer(serializers.Serializer):
         instance.description = validated_data.get('description', instance.description)
         instance.save()
         return instance
+
+
