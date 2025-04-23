@@ -54,35 +54,30 @@
     const addButton = document.querySelector('.circle-btn');
     const form = document.getElementById('addUserForm');
     const modalLabel = document.getElementById('addUserModalLabel');
-    const modalEl = document.getElementById('addUserModal');
-    const modal = new bootstrap.Modal(modalEl); 
-
+    
     // Reset form for adding
     addButton.addEventListener('click', function () {
       form.reset();
       modalLabel.textContent = "Add Booking";
       form.action = "{% url 'manage_service_booking_create' %}";
-      modal.show(); 
-    });
+  });
 
     // Handle edit
     editButtons.forEach(btn => {
-      btn.addEventListener('click', function () {
-        modalLabel.textContent = "Edit Booking";
-        form.action = this.getAttribute('data-action-url');
+    btn.addEventListener('click', function () {
+      modalLabel.textContent = "Edit Booking";
+      form.action = this.getAttribute('data-action-url');
 
-        // Fill fields
-        document.getElementById('id_service').value = this.getAttribute('data-service-id');
-        document.getElementById('id_user').value = this.getAttribute('data-user-id');
-        document.getElementById('id_service_provider').value = this.getAttribute('data-provider-id');
-        document.getElementById('id_booking_charge').value = this.getAttribute('data-booking-charge');
-        document.getElementById('id_booking_time').value = this.getAttribute('data-booking-time');
-        document.getElementById('id_is_active').checked = this.getAttribute('data-is-active') === 'True';
-
-        modal.show(); 
-      });
+      // Fill fields
+      document.getElementById('id_service').value = this.getAttribute('data-service-id');
+      document.getElementById('id_user').value = this.getAttribute('data-user-id');
+      document.getElementById('id_service_provider').value = this.getAttribute('data-provider-id');
+      document.getElementById('id_booking_charge').value = this.getAttribute('data-booking-charge');
+      document.getElementById('id_booking_time').value = this.getAttribute('data-booking-time');
+      new bootstrap.Modal(document.getElementById('addUserModal')).show();
     });
   });
+});
 </script>
 
 <div class="container-fluid">
@@ -102,59 +97,60 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-            <form id="addUserForm" method="POST" action="{% url 'manage_service_booking_create' %}" class="fw-bold">
-              {% csrf_token %}
-              <div class="row">
+          <form id="addUserForm" method="POST" action="{% url 'manage_service_booking_create' %}" class="fw-bold">
+            {% csrf_token %}
+            <div class="row">
+              {% for field in form %}
                 <div class="form-group col-md-6 mb-3">
-                    {{ form.service.label_tag }}
-                    {{ form.service }}
-                    {% if form.service.errors %}
-                        <div class="text-danger">{{ form.service.errors }}</div>
-                    {% endif %}
+                  {{ field.label_tag }}
+                  {{ field }}
+                  {% if field.errors %}
+                    <div class="text-danger">{{ field.errors }}</div>
+                  {% endif %}
                 </div>
-            
-                <div class="form-group col-md-6 mb-3">
-                    {{ form.service_provider.label_tag }}
-                    {{ form.service_provider }}
-                    {% if form.service_provider.errors %}
-                        <div class="text-danger">{{ form.service_provider.errors }}</div>
-                    {% endif %}
-                </div>
-            
-                <div class="form-group col-md-6 mb-3">
-                    {{ form.user.label_tag }}
-                    {{ form.user }}
-                    {% if form.user.errors %}
-                        <div class="text-danger">{{ form.user.errors }}</div>
-                    {% endif %}
-                </div>
-            
-                <div class="form-group col-md-6 mb-3">
-                    {{ form.booking_charge.label_tag }}
-                    {{ form.booking_charge }}
-                    {% if form.booking_charge.errors %}
-                        <div class="text-danger">{{ form.booking_charge.errors }}</div>
-                    {% endif %}
-                </div>
-            
-                <div class="form-group col-md-6 mb-3">
-                    {{ form.booking_time.label_tag }}
-                    {{ form.booking_time }}
-                    {% if form.booking_time.errors %}
-                        <div class="text-danger">{{ form.booking_time.errors }}</div>
-                    {% endif %}
-                </div>
-            
-                <!-- Hidden fields -->
-                {{ form.created_by }}
-                {{ form.updated_by }}
+              {% endfor %}
+          
+              <div class="form-group col-md-6 mb-3">
+                {{ form.service_provider.label_tag }}
+                {{ form.service_provider }}
+                {% if form.service_provider.errors %}
+                  <div class="text-danger">{{ form.service_provider.errors }}</div>
+                {% endif %}
+              </div>
+          
+              <div class="form-group col-md-6 mb-3">
+                {{ form.user.label_tag }}
+                {{ form.user }}
+                {% if form.user.errors %}
+                  <div class="text-danger">{{ form.user.errors }}</div>
+                {% endif %}
+              </div>
+          
+              <div class="form-group col-md-6 mb-3">
+                {{ form.booking_charge.label_tag }}
+                {{ form.booking_charge }}
+                {% if form.booking_charge.errors %}
+                  <div class="text-danger">{{ form.booking_charge.errors }}</div>
+                {% endif %}
+              </div>
+          
+              <div class="form-group col-md-6 mb-3">
+                {{ form.booking_time.label_tag }}
+                {{ form.booking_time }}
+                {% if form.booking_time.errors %}
+                  <div class="text-danger">{{ form.booking_time.errors }}</div>
+                {% endif %}
+              </div>          
+              <!-- Hidden fields -->
+              {{ form.created_by }}
+              {{ form.updated_by }}
             </div>
-            
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Save</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-            </form>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-primary">Save</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+          </form>
+          
         </div>
       </div>
     </div>
@@ -193,14 +189,14 @@
               <td>
 
                 <a href="#" class="text-primary edit-btn"
-                    data-id="{{ booking.id }}"
-                    data-action-url="{% url 'manage_service_booking_update' booking.id %}"
-                    data-service-id="{{ booking.service.id }}"
-                    data-user-id="{{ booking.user.id }}"
-                    data-provider-id="{{ booking.service_provider.id }}"
-                    data-booking-charge="{{ booking.booking_charge }}"
-                    data-booking-time="{{ booking.booking_time|date:'Y-m-d\\TH:i' }}"
-                    data-is-active="{{ booking.is_active }}">
+                data-id="{{ booking.id }}"
+                data-action-url="{% url 'manage_service_booking_update' booking.id %}"
+                data-service-id="{{ booking.service.id }}"
+                data-user-id="{{ booking.user.id }}"
+                data-provider-id="{{ booking.service_provider.id }}"
+                data-booking-charge="{{ booking.booking_charge }}"
+                data-booking-time="{{ booking.booking_time|date:'Y-m-d\\TH:i' }}"
+                data-is-active="{{ booking.is_active }}">
                     <i class="bi bi-pencil-square"></i>
                   </a>
 
