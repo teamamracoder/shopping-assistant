@@ -100,7 +100,7 @@
           <form id="addUserForm" method="POST" action="{% url 'manage_service_booking_create' %}" class="fw-bold">
             {% csrf_token %}
             <div class="row">
-              {% for field in form %}
+              <!-- {% for field in form %}
                 <div class="form-group col-md-6 mb-3">
                   {{ field.label_tag }}
                   {{ field }}
@@ -108,8 +108,15 @@
                     <div class="text-danger">{{ field.errors }}</div>
                   {% endif %}
                 </div>
-              {% endfor %}
+              {% endfor %} -->
           
+              <div class="form-group col-md-6 mb-3">
+                {{ form.service.label_tag }}
+                {{ form.service }}
+                {% if form.service.errors %}
+                  <div class="text-danger">{{ form.service_provider.errors }}</div>
+                {% endif %}
+              </div>
               <div class="form-group col-md-6 mb-3">
                 {{ form.service_provider.label_tag }}
                 {{ form.service_provider }}
