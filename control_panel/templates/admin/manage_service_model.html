@@ -63,6 +63,7 @@
 <div class="container-fluid">
     <h1 class="h3 mb-2 text-gray-800">Service</h1>
     <p class="mb-4">Manage service in the system.</p>
+    
     <!-- Add Button (Opens Modal) -->
     <button class="circle-btn" data-bs-toggle="modal" data-bs-target="#addServiceModel">
         <i class="bi bi-plus-lg text-light"></i>
@@ -158,9 +159,7 @@
                             data-services-charge="{{ services_model.services_charge }}"
                             data-description="{{ services_model.description }}"
                             data-is-active="{{ services_model.is_active }}"
-                            data-created-by="{{ services_model.created_by.id }}"
-                            data-updated-by="{{ services_model.updated_by.id }}"
-                            data-action-url="{% url 'manage_update_service_model' services_model.id %}">
+                            data-action-url="{% url 'manage_service_model_update' services_model.id %}">
                             <i class="bi bi-pencil-square"></i>
                         </a>
                             {% if services_model.id %}
@@ -218,8 +217,6 @@
             form.elements['services_charge'].value = this.getAttribute('data-services-charge');
             form.elements['description'].value = this.getAttribute('data-description');
             // form.elements['is_active'].checked = this.getAttribute('data-is-active') === 'True';
-            form.elements['created_by'].value = this.getAttribute('data-created-by');
-            form.elements['updated_by'].value = this.getAttribute('data-updated-by');
             new bootstrap.Modal(modal).show();
         });
     });
