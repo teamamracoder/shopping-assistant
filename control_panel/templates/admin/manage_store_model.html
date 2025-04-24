@@ -1,0 +1,179 @@
+{% extends "../index.html" %}
+{% load static %}
+{% block title %}Manage Stores{% endblock %}
+
+{% block content %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<meta name="csrf-token" content="{{ csrf_token }}">
+
+<!-- Add Store Modal -->
+<div class="modal fade" id="storeModal" tabindex="-1" aria-labelledby="storeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <form method="POST" action="{% url 'manage_create_store' %}">
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title">Add Store</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row g-3">
+            {% for field in form.visible_fields %}
+              <div class="col-md-6">
+                <label class="form-label">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                  <div class="text-danger small">{{ field.errors|striptags }}</div>
+                {% endif %}
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Save Store</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Store Modal -->
+{% for store in stores %}
+<div class="modal fade" id="editModal{{ store.id }}" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <form method="POST" action="{% url 'manage_update_store' store.id %}">
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title">Edit: {{ store.store_name }}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label>Store Name</label>
+              <input type="text" name="store_name" class="form-control" value="{{ store.store_name }}" required>
+            </div>
+            <div class="col-md-6">
+              <label>Registration No</label>
+              <input type="text" name="registration_no" class="form-control" value="{{ store.registration_no }}">
+            </div>
+            <div class="col-md-6">
+              <label>Gst no</label>
+              <input type="text" name="gst_no" class="form-control" value="{{ store.gst_no }}">
+            </div>
+            <div class="col-md-6">
+              <label>Store category</label>
+              <input type="text" name="store_category" class="form-control" value="{{ store.store_category }}">
+            </div>
+            <div class="col-md-6">
+              <label>Contact no</label>
+              <input type="text" name="contact_no" class="form-control" value="{{ store.contact_no }}">
+            </div>
+            <div class="col-md-6">
+              <label>Email</label>
+              <input type="text" name="email" class="form-control" value="{{ store.email }}">
+            </div>
+            <div class="col-md-6">
+              <label>Owner</label>
+              <input type="text" name="owner" class="form-control" value="{{ store.owner.get_full_name }}">
+            </div>
+            <div class="col-md-6">
+              <label>Open Time</label>
+              <input type="text" name="open_time" class="form-control" value="{{ store.open_time }}">
+            </div>
+            <div class="col-md-6">
+              <label>Close Time</label>
+              <input type="text" name="close_time" class="form-control" value="{{ store.close_time }}">
+            </div>
+            <div class="col-md-6">
+              <label>Pin</label>
+              <input type="text" name="pin_code" class="form-control" value="{{ store.pin_code }}">
+            </div>
+            <!-- Add more prefilled inputs as needed -->
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Update Store</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endfor %}
+
+<!-- Validation Errors -->
+{% if form.errors %}
+<div class="alert alert-danger mt-3">
+  <ul>
+    {% for field, errors in form.errors.items %}
+      {% for error in errors %}
+        <li>{{ field|capfirst }}: {{ error }}</li>
+      {% endfor %}
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
+
+<!-- Store List Table -->
+<div class="container mt-4">
+  <h1 class="mb-4">Store Management</h1>
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+          <thead class="table-light">
+            <tr>
+              <th>Name</th>
+              <th>Owner</th>
+              <th>Category</th>
+              <th>Phone</th>
+              <th>Email</th>
+              <th class="text-end">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for store in stores %}
+            <tr>
+              <td>{{ store.store_name }}</td>
+              <td>{{ store.owner.get_full_name }}</td>
+              <td>{{ store.store_category.name }}</td>
+              <td>{{ store.contact_no }}</td>
+              <td>{{ store.email }}</td>
+              <td class="text-end">
+                <button class="btn btn-sm btn-outline-primary me-1" data-bs-toggle="modal" data-bs-target="#editModal{{ store.id }}">
+                  <i class="bi bi-pencil-square"></i>
+                </button>
+                <form method="post" action="{% url 'toggle_store_status' store.id %}" class="d-inline">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-sm btn-outline-secondary">
+                    <i class="bi {% if store.is_active %}bi-eye{% else %}bi-eye-slash-fill{% endif %}"></i>
+                  </button>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Floating Add Button -->
+<button class="btn btn-primary rounded-circle position-fixed bottom-0 end-0 m-4 shadow" data-bs-toggle="modal" data-bs-target="#storeModal">
+  <i class="bi bi-plus-lg fs-4"></i>
+</button>
+
+<script>
+document.querySelectorAll('.modal').forEach(modal => {
+  modal.addEventListener('hidden.bs.modal', () => {
+    const form = modal.querySelector('form');
+    if (form) form.reset();
+  });
+});
+</script>
+{% endblock %}

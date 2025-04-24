@@ -1,4 +1,4 @@
-{% extends "../index.html" %}
+{% comment %} {% extends "../index.html" %}
 {% block title %} Store {% endblock %}
 {% block content %}
 {% load static %}
@@ -137,16 +137,24 @@
                 }
             },
             errorElement: "span",
-            errorPlacement: function (error, element) {
-                error.addClass("invalid-feedback");
-                element.closest(".mb-3").append(error);
-            },
+            errorClass: "invalid-feedback",
             highlight: function (element) {
                 $(element).addClass("is-invalid").removeClass("is-valid");
             },
             unhighlight: function (element) {
                 $(element).removeClass("is-invalid").addClass("is-valid");
+            },
+            errorPlacement: function (error, element) {
+                if (element.parent('.input-group').length || element.is('select')) {
+                    error.insertAfter(element.parent());
+                } else {
+                    error.insertAfter(element);
+                }
             }
+        });
+    });
+    </script>
+    
 
 
 <script src="https://cdn.jsdelivr.net/jquery.validation/1.19.5/jquery.validate.min.js"></script>
@@ -229,7 +237,7 @@
             });
 
         });
-    });
+    })
     </script>
 
     <style>
@@ -448,7 +456,7 @@
 
 
 
-{% if form.errors %}
+ {% if form.errors %}
 <div class="alert alert-danger">
     <strong>Please correct the errors below:</strong>
     <ul>
@@ -459,7 +467,7 @@
         {% endfor %}
     </ul>
 </div>
-{% endif %}
+{% endif %} 
 
 
     <!-- Begin Page Content -->
@@ -780,145 +788,113 @@
         <i class="bi bi-plus-lg"></i>
     </button>
 
-        <script>
-            function previewEditImage(input, storeId) {
-                const preview = document.getElementById('imagePreviewEdit' + storeId);
-                preview.innerHTML = ''; // Clear previous previews
+    <script>
+        function previewEditImage(input, storeId) {
+            const preview = document.getElementById('imagePreviewEdit' + storeId);
+            preview.innerHTML = ''; // Clear previous previews
         
-                if (input.files && input.files.length > 0) {
-                    Array.from(input.files).forEach((file, index) => {
-                        const reader = new FileReader();
-                        reader.onload = function(e) {
-                            const wrapper = document.createElement('div');
-                            wrapper.className = 'position-relative';
-                            wrapper.style.marginRight = '10px';
+            if (input.files && input.files.length > 0) {
+                Array.from(input.files).forEach((file, index) => {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const wrapper = document.createElement('div');
+                        wrapper.className = 'position-relative';
+                        wrapper.style.marginRight = '10px';
         
-                            const img = document.createElement("img");
-                            img.src = e.target.result;
-                            img.className = "img-thumbnail";
-                            img.style.maxHeight = "100px";
+                        const img = document.createElement("img");
+                        img.src = e.target.result;
+                        img.className = "img-thumbnail";
+                        img.style.maxHeight = "100px";
         
-                            const removeBtn = document.createElement("button");
-                            removeBtn.type = "button";
-                            removeBtn.className = "btn btn-danger btn-sm position-absolute top-0 end-0 m-1";
-                            removeBtn.innerHTML = "&times;";
-                            removeBtn.onclick = function() {
-                                wrapper.remove();
+                        const removeBtn = document.createElement("button");
+                        removeBtn.type = "button";
+                        removeBtn.className = "btn btn-danger btn-sm position-absolute top-0 end-0 m-1";
+                        removeBtn.innerHTML = "&times;";
+                        removeBtn.onclick = function() {
+                            wrapper.remove();
         
-        
-                            const img = document.createElement("img");
-                            img.src = e.target.result;
-                            img.className = "img-thumbnail";
-                            img.style.maxHeight = "100px";
-        
-                            const removeBtn = document.createElement("button");
-                            removeBtn.type = "button";
-                            removeBtn.className = "btn btn-danger btn-sm position-absolute top-0 end-0 m-1";
-                            removeBtn.innerHTML = "&times;";
-                            removeBtn.onclick = function() {
-                                wrapper.remove();
-        
-
-                                // Optionally: Remove the file from the input field
-                                // Warning: This resets all files as we cannot modify FileList directly
-                                const dataTransfer = new DataTransfer();
-                                Array.from(input.files).forEach((f, i) => {
-                                    if (i !== index) {
-                                        dataTransfer.items.add(f);
-                                    }
-                                });
-                                input.files = dataTransfer.files;
-                            };
-        
-                            wrapper.appendChild(img);
-                            wrapper.appendChild(removeBtn);
-                            preview.appendChild(wrapper);
+                            // Reset file list excluding the removed file
+                            const dataTransfer = new DataTransfer();
+                            Array.from(input.files).forEach((f, i) => {
+                                if (i !== index) {
+                                    dataTransfer.items.add(f);
+                                }
+                            });
+                            input.files = dataTransfer.files;
                         };
-                        reader.readAsDataURL(file);
-                    });
-                }
-            }
-        </script>
-     
-            
-     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const fileInput = document.getElementById("store_images");
-            const previewContainer = document.getElementById("imagePreviewContainer");
-            let selectedFiles = [];
         
-            fileInput.addEventListener("change", function () {
-                const files = Array.from(fileInput.files);
-        
-                // Reset previews and file list
-                previewContainer.innerHTML = "";
-                selectedFiles = files;
-
-        
-                selectedFiles.forEach((file, index) => {
-                    const reader = new FileReader();
-                    reader.onload = function (e) {
-                        const previewDiv = document.createElement("div");
-                        previewDiv.classList.add("position-relative");
-        
-                        previewDiv.innerHTML = `
-                            <img src="${e.target.result}" class="img-thumbnail" style="height:100px;width:100px;object-fit:cover;">
-                            <button type="button" class="btn-close position-absolute top-0 end-0" aria-label="Close" data-index="${index}"></button>
-                        `;
-        
-                        previewContainer.appendChild(previewDiv);
-        
-
-        
-                selectedFiles.forEach((file, index) => {
-                    const reader = new FileReader();
-                    reader.onload = function (e) {
-                        const previewDiv = document.createElement("div");
-                        previewDiv.classList.add("position-relative");
-        
-                        previewDiv.innerHTML = `
-                            <img src="${e.target.result}" class="img-thumbnail" style="height:100px;width:100px;object-fit:cover;">
-                            <button type="button" class="btn-close position-absolute top-0 end-0" aria-label="Close" data-index="${index}"></button>
-                        `;
-        
-                        previewContainer.appendChild(previewDiv);
-        
-
-                        // Handle remove
-                        previewDiv.querySelector(".btn-close").addEventListener("click", function () {
-                            const removeIndex = parseInt(this.getAttribute("data-index"));
-                            selectedFiles.splice(removeIndex, 1);
-                            updateFileList();
-                        });
+                        wrapper.appendChild(img);
+                        wrapper.appendChild(removeBtn);
+                        preview.appendChild(wrapper);
                     };
                     reader.readAsDataURL(file);
                 });
-            });
-        
-            function updateFileList() {
-                const dataTransfer = new DataTransfer();
-                selectedFiles.forEach(file => dataTransfer.items.add(file));
-                fileInput.files = dataTransfer.files;
-                fileInput.dispatchEvent(new Event('change'));
             }
-        });
+        }
         </script>
-<!-- refresh page -->
-       <script>
-        document.querySelectorAll('.modal').forEach(modal => {
-    modal.addEventListener('hidden.bs.modal', function () {
-        const form = modal.querySelector('form');
-        if (form) form.reset();
-
-        // Optional: Clear the preview
-        const preview = modal.querySelector('[id^="imagePreviewEdit"]');
-        if (preview) preview.innerHTML = '';
-    });
-});
-
-
-       </script>
-         
+        
+     
+            
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const fileInput = document.getElementById("store_images");
+                const previewContainer = document.getElementById("imagePreviewContainer");
+                let selectedFiles = [];
+        
+                fileInput.addEventListener("change", function () {
+                    const files = Array.from(fileInput.files);
+        
+                    // Reset previews and file list
+                    previewContainer.innerHTML = "";
+                    selectedFiles = files;
+        
+                    selectedFiles.forEach((file, index) => {
+                        const reader = new FileReader();
+                        reader.onload = function (e) {
+                            const previewDiv = document.createElement("div");
+                            previewDiv.classList.add("position-relative");
+        
+                            previewDiv.innerHTML = `
+                                <img src="${e.target.result}" class="img-thumbnail" style="height:100px;width:100px;object-fit:cover;">
+                                <button type="button" class="btn-close position-absolute top-0 end-0" aria-label="Close" data-index="${index}"></button>
+                            `;
+        
+                            previewContainer.appendChild(previewDiv);
+        
+                            // Handle remove
+                            previewDiv.querySelector(".btn-close").addEventListener("click", function () {
+                                const removeIndex = parseInt(this.getAttribute("data-index"));
+                                selectedFiles.splice(removeIndex, 1);
+                                updateFileList();
+                            });
+                        };
+                        reader.readAsDataURL(file);
+                    });
+                });
+        
+                function updateFileList() {
+                    const dataTransfer = new DataTransfer();
+                    selectedFiles.forEach(file => dataTransfer.items.add(file));
+                    fileInput.files = dataTransfer.files;
+                    fileInput.dispatchEvent(new Event('change'));
+                }
+            });
+        </script>
+        
+        <!-- Refresh on modal close -->
+        <script>
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.addEventListener('hidden.bs.modal', function () {
+                    const form = modal.querySelector('form');
+                    if (form) form.reset();
+        
+                    // Optional: Clear the preview
+                    const preview = modal.querySelector('[id^="imagePreviewEdit"]');
+                    if (preview) preview.innerHTML = '';
+                });
+            });
+        </script>
+          
 
         <style> 
             .modal-content {
@@ -1289,4 +1265,4 @@ function getCookie(name) {
 }
 
 </style>
-{% endblock %}
+{% endblock %} {% endcomment %}

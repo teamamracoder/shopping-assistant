@@ -43,10 +43,10 @@ urlpatterns = [
 
 
 # store urls by priya
-    path('stores/', ManageStoreView.as_view(), name='manage_Store_list'),
-    path('stores/create/', ManageCreateStore.as_view(), name='manage_create_store'),
-    path('stores/update/<int:pk>/', ManageUpdateStoreView.as_view(), name='manage_update_store'),
-    path('toggle-store-status/<int:store_id>/', ToggleStoreStatus.as_view(), name='toggle_store_status'),
+    # path('stores/', ManageStoreView.as_view(), name='manage_Store_list'),
+    # path('stores/create/', ManageCreateStore.as_view(), name='manage_create_store'),
+    # path('stores/update/<int:pk>/', ManageUpdateStoreView.as_view(), name='manage_update_store'),
+    # path('toggle-store-status/<int:store_id>/', ToggleStoreStatus.as_view(), name='toggle_store_status'),
 
 #store category url
     path('stores/category/', ManageStoreCategoryView.as_view(), name='manage_Store_category_list'),
@@ -80,8 +80,15 @@ urlpatterns = [
 
 
     #store urls by priya
-    path('stores/', ManageStoreView.as_view(), name='manage_Store_list'),
-    path('stores/create/', ManageCreateStore.as_view(), name='manage_create_store'),
+    # path('stores/', ManageStoreView.as_view(), name='manage_Store_list'),
+    # path('stores/create/', ManageCreateStore.as_view(), name='manage_create_store'),
+    # path('stores/update/<int:pk>/', ManageUpdateStoreView.as_view(), name='manage_update_store'),
+    # path('toggle-store-status/<int:store_id>/', ToggleStoreStatus.as_view(), name='toggle_store_status'),
+    
+
+    #store urls by rahul
+    path('stores/', ManageStoreListView.as_view(), name='manage_Store_list'),
+    path('stores/create/', ManageCreateStoreView.as_view(), name='manage_create_store'),
     path('stores/update/<int:pk>/', ManageUpdateStoreView.as_view(), name='manage_update_store'),
     path('toggle-store-status/<int:store_id>/', ToggleStoreStatus.as_view(), name='toggle_store_status'),
 
