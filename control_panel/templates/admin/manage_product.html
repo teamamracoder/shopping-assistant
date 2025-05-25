@@ -259,7 +259,7 @@
                                 </div>      -->
                                                           
                                 <div class="col-md-2 mb-3">
-                                    <label for="product_images">Upload Product Images</label>
+                                    <label for="product_images">Upload Product Images</label><span class="text-danger">*</span>
                                     <div class="input-group">
                                         <span class="input-group-text"><i class="bi bi-images"></i></span>
                                         <input type="file" id="product_images" name="product_images" multiple class="form-control">
@@ -417,6 +417,10 @@
             },
             others_category: {
                 required: true
+            },
+            product_images: {
+                required: true,
+                imageExtension: true
             }
         },
         messages: {
@@ -462,7 +466,11 @@
             },
             others_category: {
                 required: "Please enter the other category."
-            }
+            },
+            product_images: {
+                required: "Product_images is required.",
+                imageExtension: "Only image files are allowed (jpg, jpeg, png, gif, etc.)."
+            }            
         },
         errorElement: "span",
         errorPlacement: function (error, element) {
