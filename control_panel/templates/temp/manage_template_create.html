@@ -1,0 +1,225 @@
+{% extends "../index.html" %}
+{% block title %}Create Email Template{% endblock %}
+{% block content %}
+
+<style>
+    .input-group-text {
+        background-color: #c9dff1;
+        color: white;
+    }
+
+    .input-group i::before{
+        background-color: #205aa6;
+    }
+    .row{
+        font-weight: bold;
+    }
+
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const imageInput = document.getElementById("template_images");
+        const previewContainer = document.getElementById("imagePreviewContainer");
+
+        imageInput.addEventListener("change", function () {
+            previewContainer.innerHTML = ""; // Clear old previews
+
+            const files = Array.from(imageInput.files);
+            files.forEach(file => {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    const img = document.createElement("img");
+                    img.src = e.target.result;
+                    img.className = "rounded border";
+                    img.style.width = "85px";
+                    img.style.height = "80px";
+                    img.style.objectFit = "cover";
+                    previewContainer.appendChild(img);
+                };
+
+                reader.readAsDataURL(file);
+            });
+        });
+    });
+</script>
+
+<div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800">Create New Email Template</h1>
+
+    <div class="card shadow">
+        <div class="card-header bg-primary-subtle py-3 text-white rounded-top">
+            <h6 class="m-0 fw-bold text-center fs-5 text-dark">Email Template Create</h6>
+        </div>
+        <div class="card-body">
+            <form id="emailTemplateForm" method="post" enctype="multipart/form-data" action="{% url 'manage_template_create' %}">
+                {% csrf_token %}
+            
+
+                <div class="row g-3">
+                    <!-- Subject -->
+                    <div class="form-group col-md-6">
+                        {{ form.subject.label_tag }}<span class="text-danger">*</span>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                            {{ form.subject }}
+                        </div>
+                    </div>
+
+                    <!-- Link -->
+                    <div class="form-group col-md-6">
+                        {{ form.link.label_tag }}
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-link-45deg"></i></span>
+                            {{ form.link }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    <!-- Body -->
+                    <div class="form-group col-6">
+                        {{ form.body.label_tag }}<span class="text-danger">*</span>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-body-text"></i></span>
+                            {{ form.body }}
+                        </div>
+                    </div>
+
+                    <!-- Payload -->
+                    <div class="form-group col-md-6">
+                        {{ form.payload.label_tag }}
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-code-slash"></i></span>
+                            {{ form.payload }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    <!-- Placeholders -->
+                    <div class="form-group col-md-6">
+                        {{ form.placeholders.label_tag }}
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-braces"></i></span>
+                            {{ form.placeholders }}
+                        </div>
+                    </div>
+
+                    <!-- Image Upload -->
+                    <div class="col-md-2 mb-3">
+                        <label for="template_images">Upload Template Images</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-images"></i></span>
+                            <input type="file" name="template_images" id="template_images" multiple class="form-control" />
+                        </div>
+                    </div>
+                    <!-- Preview Area -->
+                    <div class="col-md-6 mb-3">
+                        <div id="imagePreviewContainer" style="display: flex; flex-wrap: wrap; gap: 10px;"></div>
+                    </div>
+                </div>
+
+
+                <!-- Form Buttons -->
+                <div class="mt-4 text-end">
+                    <button type="submit" class="btn btn-primary">Create</button>
+                    <a href="{% url 'manage_template_list' %}" class="btn btn-secondary ms-2">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        // Custom method for JSON validation
+        $.validator.addMethod("json", function (value, element) {
+            if (!value) return true; // Allow empty JSON field
+            try {
+                JSON.parse(value);
+                return true;
+            } catch (e) {
+                return false;
+            }
+        }, "Please enter a valid JSON string.");
+
+        // File extension validation for images
+        $.validator.addMethod("imageExtension", function (value, element) {
+            if (!value) return true; // Allow no images
+            return (/\.(jpe?g|png|gif|bmp|webp)$/i).test(value);
+        }, "Only image files (jpg, jpeg, png, gif, bmp, webp) are allowed.");
+
+        $("#emailTemplateForm").validate({
+            rules: {
+                subject: {
+                    required: true,
+                    minlength: 3
+                },
+                link: {
+                    url: true
+                },
+                body: {
+                    required: true,
+                    minlength: 5
+                },
+                payload: {
+                    json: true
+                },
+                placeholders: {
+                    minlength: 2
+                },
+                template_images: {
+                    imageExtension: true
+                }
+            },
+            messages: {
+                subject: {
+                    required: "Subject is required.",
+                    minlength: "Subject must be at least 3 characters long."
+                },
+                link: {
+                    url: "Please enter a valid URL (starting with http:// or https://)."
+                },
+                body: {
+                    required: "Body is required.",
+                    minlength: "Body must be at least 5 characters long."
+                },
+                payload: {
+                    json: "Please enter valid JSON format."
+                },
+                placeholders: {
+                    minlength: "Placeholders must be at least 2 characters if provided."
+                },
+                template_images: {
+                    imageExtension: "Only image files are allowed (jpg, jpeg, png, gif, etc.)."
+                }
+            },
+            errorElement: "span",
+            errorPlacement: function (error, element) {
+                error.addClass("invalid-feedback");
+                element.closest(".form-group").append(error);
+            },
+            highlight: function (element) {
+                $(element).addClass("is-invalid").removeClass("is-valid");
+            },
+            unhighlight: function (element) {
+                $(element).removeClass("is-invalid").addClass("is-valid");
+            }
+        });
+    });
+</script>
+
+<style>
+    .is-invalid {
+        border-color: #dc3545 !important;
+    } 
+
+    .invalid-feedback {
+        font-size: 1rem; /* normal font size */
+        font-weight: normal;        }
+</style>
+
+
+{% endblock %}

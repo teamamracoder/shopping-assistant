@@ -58,3 +58,15 @@ class ManageProductCategoryDeleteView(View):
         category.delete()
         messages.success(request, "Product category deleted successfully!")
         return redirect("manage_product_category_list")  # Ensure this is the correct URL name
+    
+# Toggle Button
+class ManageToggleProductCategoryActiveView(View):
+    def post(self, request, pk, *args, **kwargs):
+        category = get_object_or_404(ProductCategoryModel, pk=pk)
+        category.is_active = not category.is_active
+        category.save()
+
+        status = "activated" if category.is_active else "deactivated"
+        messages.success(request, f"Category '{category.name}' has been {status}.")
+        
+        return redirect('manage_product_category_list')

@@ -90,3 +90,15 @@ class ManageProductSubCategoryDeleteView(View):
         subcategories.delete()
         messages.success(request, "Product Sub Category deleted successfully!")
         return redirect("manage_product_sub_category_list")  # Ensure this URL name is correct
+    
+# Toggle Button
+class ManageToggleProductSubCategoryActiveView(View):
+    def post(self, request, pk, *args, **kwargs):
+        subcategory = get_object_or_404(ProductSubCategoryModel, pk=pk)
+        subcategory.is_active = not subcategory.is_active
+        subcategory.save()
+
+        status = "activated" if subcategory.is_active else "deactivated"
+        messages.success(request, f"Subcategory '{subcategory.name}' has been {status}.")
+        
+        return redirect('manage_product_sub_category_list')

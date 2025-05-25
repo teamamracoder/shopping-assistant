@@ -1,7 +1,7 @@
 # 🛒 Shopping Assistant
 --------------------------
 
-## 💻 Local setup
+## 💻 Local setup.
 
 ### 1. Install required softwares
 > 🐍 Python version
