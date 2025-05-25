@@ -41,27 +41,28 @@ class ManageUserCreateView(View):
         choices_role = [{type.value: type.name} for type in Role]
 
         if form.is_valid():
+            print(f"The First Name is : {form.cleaned_data['first_name']}")
             user_data = UserModel.objects.create(
-                first_name=form.cleaned_data['first_name'],
-                last_name=form.cleaned_data['last_name'],
-                email=form.cleaned_data['email'],
-                dob=form.cleaned_data['dob'],
-                gender=form.cleaned_data['gender'],
-                roles=form.cleaned_data['roles'],
-                phone=form.cleaned_data['phone'],
-                address=form.cleaned_data['address'],
-                location=form.cleaned_data['location'],
-                city=form.cleaned_data['city'],
-                district=form.cleaned_data['district'],
-                state=form.cleaned_data['state'],
-                pincode=form.cleaned_data['pincode'],
+            first_name=form.cleaned_data['first_name'],
+            last_name=form.cleaned_data['last_name'],
+            email=form.cleaned_data['email'],
+            dob=form.cleaned_data['dob'],
+            gender=form.cleaned_data['gender'],
+            phone=form.cleaned_data['phone'],
+            address=form.cleaned_data['address'],
+            location=form.cleaned_data['location'],
+            city=form.cleaned_data['city'],
+            district=form.cleaned_data['district'],
+            state=form.cleaned_data['state'],
+            pincode=form.cleaned_data['pincode'],
+            roles=form.cleaned_data['roles']
             )
             print("User created with ID:", user_data.id)
             messages.success(request, 'User created successfully.')
             form = ManageUserForm()  # reset the form
-
         else:
             print("Form errors:", form.errors)
+            print("=+=+=+=+=+=+=+=+=+=+=+=+=Form errors:", form.errors)
 
         return render(request, "admin/manage_all_user.html", {
             'users': users,
@@ -109,13 +110,16 @@ class ManageUserDeleteView(View):
 class ManageUserUpdateView(UpdateView):
     model = UserModel
     form_class = ManageUserForm
+    print(f"The First Name is : {0000000000000000000000}")
     success_url = reverse_lazy('manage_user_list')  # Redirect to user list after success
 
     def form_valid(self, form):
+        print(f"The First Name is : {0000000000000000000000}")
         return super().form_valid(form)
 
     def get(self, request, *args, **kwargs):
         # You can override this to customize if necessary
+        print(f"The First Name is : {0000000000000000000000}")
         return super().get(request, *args, **kwargs)
      
 

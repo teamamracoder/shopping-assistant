@@ -73,7 +73,7 @@ class ManageUserForm(forms.Form):
         widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date'})
     )
     gender = forms.ChoiceField(
-        choices=[(g.name, g.value) for g in Gender],
+        choices=[(g.value, g.name) for g in Gender],
         widget=forms.Select(attrs={'class': 'form-control'})
     )
     phone = forms.CharField(

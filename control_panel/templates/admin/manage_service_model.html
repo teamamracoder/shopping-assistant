@@ -205,8 +205,8 @@
 
 <script>
     document.querySelectorAll('.edit-btn').forEach(btn => {
-        btn.addEventListener('click', function (e) {
-            e.preventDefault();
+        btn.addEventListener('click', function () {
+            // e.preventDefault();
             const form = document.getElementById('addProductForm');
             const modalLabel = document.querySelector('.service-modal .modal-title');
             const modal = document.querySelector('.service-modal');
