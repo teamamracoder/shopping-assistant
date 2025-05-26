@@ -12,59 +12,55 @@
     <title>SA Admin Dashboard</title>
 
     <!-- Bootstrap CSS -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom fonts for this template-->
     <link rel="stylesheet" href="{% static 'control_panel/vendor/fontawesome-free/css/all.min.css' %}">
-    <link
-        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
     <!-- Custom styles for this template-->
     <link rel="stylesheet" href="{% static 'control_panel/css/sb-admin-2.min.css' %}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
+    <!-- Custom styles for this template -->
 
-<!-- Custom styles for this template -->
+    <!-- Custom styles for this page -->
+    <link rel="stylesheet" href="{% static 'control_panel/vendor/datatables/dataTables.bootstrap4.min.css' %}">
 
+    <!-- /table css -->
 
-<!-- Custom styles for this page -->
-<link rel="stylesheet" href="{% static 'control_panel/vendor/datatables/dataTables.bootstrap4.min.css' %}">
+    <!-- modal link-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
- <!-- /table css -->
+    <!-- Bootstrap core JavaScript-->
+    <script src="{% static 'control_panel/vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'control_panel/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    
+    <!-- Core plugin JavaScript-->
+    <script src="{% static 'control_panel/vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+    
+    <!-- Custom scripts for all pages-->
+    <script src="{% static 'control_panel/js/sb-admin-2.min.js' %}"></script>
+    
+    <!-- Page level plugins -->
+    <script src="{% static 'control_panel/vendor/chart.js/Chart.min.js' %}"></script>
+    <!-- Page level custom scripts -->
+    <script src="{% static 'control_panel/js/demo/chart-area-demo.js' %}"></script>
+    <script src="{% static 'control_panel/js/demo/chart-pie-demo.js' %}"></script>
+    <!-- table js -->
+    <script src="{% static 'control_panel/vendor/datatables/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'control_panel/vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'control_panel/js/demo/datatables-demo.js' %}"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- modal link-->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- jQuery (only once, and FIRST!) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-     <!-- Bootstrap core JavaScript-->
-     <script src="{% static 'control_panel/vendor/jquery/jquery.min.js' %}"></script>
-     <script src="{% static 'control_panel/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-     
-     <!-- Core plugin JavaScript-->
-     <script src="{% static 'control_panel/vendor/jquery-easing/jquery.easing.min.js' %}"></script>
-     
-     <!-- Custom scripts for all pages-->
-     <script src="{% static 'control_panel/js/sb-admin-2.min.js' %}"></script>
-     
-     
-     <!-- Page level plugins -->
-     <script src="{% static 'control_panel/vendor/chart.js/Chart.min.js' %}"></script>
-     <!-- Page level custom scripts -->
-     <script src="{% static 'control_panel/js/demo/chart-area-demo.js' %}"></script>
-     <script src="{% static 'control_panel/js/demo/chart-pie-demo.js' %}"></script>
+    <!-- jQuery Validation Plugin -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
 
-     <!-- table js -->
-     <script src="{% static 'control_panel/vendor/datatables/jquery.dataTables.min.js' %}"></script>
-     <script src="{% static 'control_panel/vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
-     <script src="{% static 'control_panel/js/demo/datatables-demo.js' %}"></script>
-     
-     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-
-<!-- jQuery (only once, and FIRST!) -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-<!-- jQuery Validation Plugin -->
-<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+    <!-- SweetAlert2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
 </head>
@@ -161,10 +157,10 @@
                 </div>
             </li>
 
-            <div class="sidebar-heading">
+            <!-- <div class="sidebar-heading">
                 Service Controls
             </div>
-            <!-- Nav Item - Utilities Collapse Menu -->
+
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOne"
                     aria-expanded="true" aria-controls="collapseOne">
@@ -174,12 +170,12 @@
                 <div id="collapseOne" class="collapse" aria-labelledby="headingUtilities"
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <!-- <h6 class="collapse-header">Custom Utilities:</h6> -->
+
                         <a class="collapse-item" href="/control-panel/service-type/">Service Type</a>
                         
                     </div>
                 </div>
-            </li>
+            </li> -->
 
             <div class="sidebar-heading">
                 Service Controls
@@ -218,33 +214,6 @@
                     </div>
                 </div>
             </li>
-
-
-            <!-- <div class="sidebar-heading">
-                Template Controls
-            </div>
-            
-            <li class="nav-item">
-                <a class="nav-link d-flex justify-content-between align-items-center" 
-                   data-bs-toggle="collapse" 
-                   href="#collapseTemplates" 
-                   role="button" 
-                   aria-expanded="false" 
-                   aria-controls="collapseTemplates">
-                    <span>
-                        <i class="fas fa-fw fa-envelope"></i>
-                        Email Templates
-                    </span>
-                    <i class="fas fa-angle-down rotate-icon"></i>
-                </a>
-                <div class="collapse" id="collapseTemplates" data-bs-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="{% url 'manage_template_list' %}">Templates</a>
-                        <a class="collapse-item" href="{#% url 'manage_template_create' %#}">Create Template</a>
-                    </div>
-                </div>
-            </li> -->
-            
 
             <!-- Divider
             <hr class="sidebar-divider"> -->

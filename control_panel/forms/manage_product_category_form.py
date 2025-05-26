@@ -6,7 +6,7 @@ class ManageProductCategoryForm(forms.ModelForm):
     
     class Meta:
         model = ProductCategoryModel
-        fields = ['name', 'description', 'is_active']
+        fields = '__all__'  # Ensure all fields are included
         
         widgets = {
             'name': forms.TextInput(attrs={"class": "form-control",'name': 'name','id': 'id_name', "placeholder": "Enter category name"}),

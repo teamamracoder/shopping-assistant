@@ -3,6 +3,12 @@
 {% block content %}
 
 <style>
+    .modal-title {
+        font-weight: bold;
+        flex-grow: 1;
+        text-align: center;
+    }
+
     .circle-btn {
         width: 50px;
         height: 50px;
@@ -26,26 +32,24 @@
         background-color: darkblue;
     }
 
-    /* Modal Width */
+   .input-group-text {
+        background-color: #c9dff1;
+        color: white;
+    }
+
+    .input-group i::before{
+        background-color: #205aa6;
+    }
+    .row .form-group{
+        font-weight: bold;
+    }
+
+    /*Modal Widht*/
     @media (min-width: 1200px) {
         .modal-dialog {
-            max-width: 90%; /* Adjust width */
+            max-width: 90%; 
         }
     }
-
-    /* Modal Header */
-    .modal-header {
-        background-color: #cecfd1;
-        color: white;
-        border-bottom: 2px solid #c0c0c0;
-        padding: 15px;
-    }
-
-    .modal-title {
-        flex-grow: 1;
-        text-align: center;
-    }
-    
 </style>
 
 <script>
@@ -66,9 +70,7 @@
     editButtons.forEach(btn => {
         btn.addEventListener('click', function () {
             form.action = this.getAttribute('data-action-url');  // Set form action for edit
-            
             modalLabel.textContent = "Edit User";  // Change modal title to "Edit User"
-
             // Set form field values with the user's existing data
             form.elements['first_name'].value = this.getAttribute('data-first-name');
             form.elements['last_name'].value = this.getAttribute('data-last-name');
@@ -82,7 +84,6 @@
             form.elements['district'].value = this.getAttribute('data-district');
             form.elements['state'].value = this.getAttribute('data-state');
             form.elements['pincode'].value = this.getAttribute('data-pincode');
-
             // Show modal
             new bootstrap.Modal(document.getElementById('addUserModal')).show();
         });
@@ -90,23 +91,19 @@
 });
 
 </script>
-
 <div class="container-fluid">
-
     <h1 class="h3 mb-2 text-gray-800">Users</h1>
     <p class="mb-4">Manage users in the system.</p>
-
     <!-- Add Button (Opens Modal) -->
     <button class="circle-btn" data-bs-toggle="modal" data-bs-target="#addUserModal">
         <i class="bi bi-plus-lg text-light"></i>
     </button>
-
     <!-- Bootstrap Modal -->
     <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title fw-bold" id="addUserModalLabel">Add User</h5>
+                <div class="modal-header bg-primary-subtle">
+                    <h5 class="modal-title text-dark fs-6" id="addUserModalLabel">Add User</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -115,80 +112,128 @@
                         <div class="row">
                             <div class="form-group col-md-6 mb-3">
                                 {{ form.first_name.label_tag }}<span class="text-danger">*</span>
-                                {{ form.first_name }}
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-person"></i></span>
+                                    {{ form.first_name }}
+                                </div>
                             </div>
                             <div class="form-group col-md-6 mb-3">
                                 {{ form.last_name.label_tag }}<span class="text-danger">*</span>
-                                {{ form.last_name }}
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-person"></i></span>
+                                    {{ form.last_name }}
+                                </div>
                             </div>
                         </div>
+                        
 
                         <div class="row">
                             <div class="form-group col-md-6 mb-3">
                                 {{ form.email.label_tag }}<span class="text-danger">*</span>
-                                {{ form.email }}
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                                    {{ form.email }}
+                                </div>
                             </div>
                             <div class="form-group col-md-6 mb-3">
                                 {{ form.dob.label_tag }}<span class="text-danger">*</span>
-                                {{ form.dob }}
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-calendar-event"></i></span>
+                                    {{ form.dob }}
+                                </div>
                             </div>
                         </div>
+                        
                         <div class="row">
                             <div class="form-group col-md-6 mb-3">
                                 {{ form.gender.label_tag }}
-                                <select id="gender" name="gender" class="form-select">
-                                    <option value="" selected>Select Gender</option>
-                                    {% for gender in choices_gender %}
-                                    {% for name, value in gender.items %}
-                                        <option value="{{ name }}" {% if user.gender == value %}selected{% endif %}>{{ value }}</option>
-                                    {% endfor %}
-                                    {% endfor %}
-                                </select>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-gender-ambiguous"></i></span>
+                                    <select id="gender" name="gender" class="form-select">
+                                        <option value="" selected>Select Gender</option>
+                                        {% for gender in choices_gender %}
+                                        {% for name, value in gender.items %}
+                                            <option value="{{ name }}" {% if user.gender == value %}selected{% endif %}>{{ value }}</option>
+                                        {% endfor %}
+                                        {% endfor %}
+                                    </select>
+                                </div>
                             </div>
-                            <div class="form-group col-md-6 mb-3">{{ form.phone.label_tag }} {{ form.phone }}</div>
+
+                            <div class="form-group col-md-6 mb-3">
+                                {{ form.phone.label_tag }}
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+                                    {{ form.phone }}
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="form-group col-md-6 mb-3">
-                            {{ form.roles.label_tag }}
-                            <select id="role" name="role" class="form-select">
-                                <option value="" selected>Select Roles</option>
-                                {% for role in choices_role %}
-                                {% for name, value in role.items %}
-                                    <option value="{{ name }}" {% if user.gender == value %}selected{% endif %}>{{ value }}</option>
-                                {% endfor %}
-                                {% endfor %}
-                            </select>
-                        </div>
                         <div class="row">
+                            <div class="form-group col-md-6 mb-3">
+                                {{ form.roles.label_tag }}
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-person-badge"></i></span>
+                                    <select id="role" name="roles" class="form-select">
+                                        <option value="" selected>Select Roles</option>
+                                        {% for role in choices_role %}
+                                        {% for name, value in role.items %}
+                                            <option value="{{ name }}" {% if user.role == value %}selected{% endif %}>{{ value }}</option>
+                                        {% endfor %}
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            
                             <div class="form-group col-md-6 mb-3">
                                 {{ form.address.label_tag }}<span class="text-danger">*</span>
-                                {{ form.address }}
-                            </div>
-                            <div class="form-group col-md-6 mb-3">
-                                {{ form.location.label_tag }}<span class="text-danger">*</span>
-                                {{ form.location }}
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="form-group col-md-6 mb-3">
-                                {{ form.city.label_tag }}<span class="text-danger">*</span>
-                                {{ form.city }}
-                            </div>
-                            <div class="form-group col-md-6 mb-3">
-                                {{ form.district.label_tag }}<span class="text-danger">*</span>
-                                {{ form.district }}
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
+                                    {{ form.address }}
+                                </div>
                             </div>
                         </div>
+                        
 
                         <div class="row">
-                            <div class="form-group col-md-6 mb-3">
-                                {{ form.state.label_tag }}<span class="text-danger">*</span>
-                                {{ form.state }}
-                            </div>
                             <div class="form-group col-md-6 mb-3">
                                 {{ form.pincode.label_tag }}<span class="text-danger">*</span>
-                                {{ form.pincode }}
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-123"></i></span>
+                                    {{ form.pincode }}
+                                </div>
+                            </div>                            
+                            <div class="form-group col-md-6 mb-3">
+                                {{ form.city.label_tag }}<span class="text-danger">*</span>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-buildings"></i></span>
+                                    {{ form.city }}
+                                </div>
+                            </div>                            
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group col-md-6 mb-3">
+                                {{ form.district.label_tag }}<span class="text-danger">*</span>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-map"></i></span>
+                                    {{ form.district }}
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6 mb-3">
+                                {{ form.state.label_tag }}<span class="text-danger">*</span>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-map"></i></span>
+                                    {{ form.state }}
+                                </div>
+                            </div>                           
+                        </div>
+
+                        <div class="form-group col-md-12 mb-3">
+                            {{ form.location.label_tag }}<span class="text-danger">*</span>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
+                                {{ form.location }}
                             </div>
                         </div>
 
@@ -209,7 +254,7 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <table class="table " id="dataTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
                             <th>First Name</th>
@@ -223,6 +268,7 @@
                     <tbody>
                         {% for user in users %}
                             <tr>
+                                <td>{{ user.id }}</td>
                                 <td>{{ user.first_name }}</td>
                                 <td>{{ user.last_name }}</td>
                                 <td>{{ user.email }}</td>
@@ -260,9 +306,19 @@
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 {% endif %}
-                                <a href="#" class="text-primary">
-                                    <i class="bi bi-eye-slash"></i>                                    
-                                </a>  
+
+                                <form method="post" action="{% url 'manage_toggle_user_active' user.id %}" style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm {% if user.is_active %}text-success{% else %}text-muted{% endif %}"
+                                            title="Toggle visibility"
+                                            onclick="return confirm('Are you sure you want to toggle this user\'s visibility?');">
+                                        {% if user.is_active %}
+                                            <i class="bi bi-eye text-primary fs-6"></i>
+                                        {% else %}
+                                            <i class="bi bi-eye-slash text-danger fs-6"></i>
+                                        {% endif %}
+                                    </button>
+                                </form>                        
                                 </td>
                             </tr>
                         {% endfor %}
@@ -272,5 +328,155 @@
         </div>
     </div>
 </div>
+
+<script>
+    $(document).ready(function () {
+        $("#addUserForm").validate({
+            rules: {
+                first_name: {
+                    required: true,
+                    minlength: 3,
+                    maxlength: 30
+                },
+                last_name: {
+                    required: true,
+                    minlength: 3,
+                    maxlength: 20
+                },
+                email: {
+                    required: true,
+                    email: true
+                },
+                phone: {
+                    required: true,
+                    digits: true,
+                    minlength: 10,
+                    maxlength: 15
+                },
+                password: {
+                    required: true,
+                    minlength: 6
+                },
+                confirm_password: {
+                    required: true,
+                    equalTo: "#id_password"
+                },
+                gender: {
+                    required: true
+                },
+                roles: {
+                    required: true
+                },
+                dob: {
+                    required: true,
+                    date: true
+                },
+                address: {
+                    required: true,
+                    minlength: 5
+                },
+                pincode: {
+                    required: true,
+                    digits: true,
+                    minlength: 4
+                },
+                city: {
+                    required: true
+                },
+                district: {
+                    required: true
+                },
+                state: {
+                    required: true
+                },
+                location: {
+                    required: true,
+                    minlength: 3
+                }
+            },
+            messages: {
+                first_name: {
+                    required: "Please enter first name.",
+                    minlength: "First name must be at least 3 characters."
+                },
+                last_name: {
+                    required: "Please enter last name.",
+                    minlength: "Last name must be at least 3 characters."
+                },
+                email: {
+                    required: "Please enter an email address.",
+                    email: "Please enter a valid email address."
+                },
+                phone: {
+                    required: "Please enter phone number.",
+                    digits: "Only digits allowed.",
+                    minlength: "Minimum 10 digits.",
+                    maxlength: "Maximum 15 digits."
+                },
+                password: {
+                    required: "Please enter a password.",
+                    minlength: "Password must be at least 6 characters."
+                },
+                confirm_password: {
+                    required: "Please confirm your password.",
+                    equalTo: "Passwords do not match."
+                },
+                gender: {
+                    required: "Please select gender."
+                },
+                roles: {
+                    required: "Please select user role."
+                },
+                dob: {
+                    required: "Please select date of birth.",
+                    date: "Please enter a valid date."
+                },
+                address: {
+                    required: "Please enter address.",
+                    minlength: "Address must be at least 5 characters."
+                },
+                pincode: {
+                    required: "Please enter pincode.",
+                    digits: "Only digits allowed.",
+                    minlength: "Minimum 4 digits."
+                },
+                city: {
+                    required: "Please enter city."
+                },
+                district: {
+                    required: "Please enter district."
+                },
+                state: {
+                    required: "Please enter state."
+                },
+                location: {
+                    required: "Please enter location.",
+                    minlength: "Location must be at least 3 characters."
+                }
+            },
+            errorElement: "span",
+            errorPlacement: function (error, element) {
+                error.addClass("invalid-feedback");
+                element.closest(".form-group").append(error);
+            },
+            highlight: function (element) {
+                $(element).addClass("is-invalid").removeClass("is-valid");
+            },
+            unhighlight: function (element) {
+                $(element).addClass("is-valid").removeClass("is-invalid");
+            }
+        });
+    });
+</script>
+
+<style>
+    .is-invalid {
+        border-color: #dc3545 !important;
+    } 
+
+    .invalid-feedback {
+        font-size: 1rem; /* normal font size */
+        font-weight: normal;        }
+</style>
 
 {% endblock %}

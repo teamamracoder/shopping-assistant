@@ -33,8 +33,8 @@
                     const img = document.createElement("img");
                     img.src = e.target.result;
                     img.className = "rounded border";
-                    img.style.width = "85px";
-                    img.style.height = "80px";
+                    img.style.width = "75px";
+                    img.style.height = "60px";
                     img.style.objectFit = "cover";
                     previewContainer.appendChild(img);
                 };
@@ -107,7 +107,8 @@
                         </div>
                     </div>
 
-                    <!-- Image Upload -->
+
+                      <!-- Image Upload -->
                     <div class="col-md-2 mb-3">
                         <label for="template_images">Upload Template Images</label>
                         <div class="input-group">
@@ -115,10 +116,11 @@
                             <input type="file" name="template_images" id="template_images" multiple class="form-control" />
                         </div>
                     </div>
+
                     <!-- Preview Area -->
-                    <div class="col-md-6 mb-3">
+                    <div class="col-md-4 mb-3">
                         <div id="imagePreviewContainer" style="display: flex; flex-wrap: wrap; gap: 10px;"></div>
-                    </div>
+                    </div>                    
                 </div>
 
 
@@ -158,6 +160,7 @@
                     minlength: 3
                 },
                 link: {
+                    required: true,
                     url: true
                 },
                 body: {
@@ -165,12 +168,15 @@
                     minlength: 5
                 },
                 payload: {
+                    required: true,
                     json: true
                 },
                 placeholders: {
+                    required: true,
                     minlength: 2
                 },
                 template_images: {
+                    required: true,
                     imageExtension: true
                 }
             },
@@ -180,6 +186,7 @@
                     minlength: "Subject must be at least 3 characters long."
                 },
                 link: {
+                    required: "Link is required.",
                     url: "Please enter a valid URL (starting with http:// or https://)."
                 },
                 body: {
@@ -187,12 +194,15 @@
                     minlength: "Body must be at least 5 characters long."
                 },
                 payload: {
+                    required: "Payload is required.",
                     json: "Please enter valid JSON format."
                 },
                 placeholders: {
+                    required: "Placeholders is required.",
                     minlength: "Placeholders must be at least 2 characters if provided."
                 },
                 template_images: {
+                    required: "Template_images is required.",
                     imageExtension: "Only image files are allowed (jpg, jpeg, png, gif, etc.)."
                 }
             },

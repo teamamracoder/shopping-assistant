@@ -7,66 +7,104 @@ from ..forms import ManageProductCategoryForm
 from django.http import JsonResponse
 from django.urls import reverse_lazy
 from django.views.generic import UpdateView
+from django.forms import ValidationError
+from ..models import ProductCategoryModel
+from ..forms import ManageProductCategoryForm
+from services.product_category_service import ProductCategoryModelService
 
 
-#List
+category_service = ProductCategoryModelService()
+
+# List View
 class ManageProductCategoryListView(View):
     def get(self, request):
-        categories = ProductCategoryModel.objects.all()
+        categories = category_service.get_all_categories()
         form = ManageProductCategoryForm()
-        return render(request, 'admin/manage_product_category.html', {"categories": categories, "form": form})
+        return render(request, 'admin/manage_product_category.html', {
+            "categories": categories,
+            "form": form
+        })
 
-
-# Create
+# Create View
 class ManageProductCategoryCreateView(View):
     def post(self, request):
         form = ManageProductCategoryForm(request.POST)
         if form.is_valid():
-            category = form.save(commit=False)
-
-            # Only assign user if they are authenticated
-            if not isinstance(request.user, AnonymousUser):
-                category.created_by = request.user
-                category.updated_by = request.user
-
-            category.save()
+            data = form.cleaned_data
+            try:
+                if not isinstance(request.user, AnonymousUser):
+                    data['created_by'] = request.user
+                    data['updated_by'] = request.user
+                category_service.create_category(data)
+                messages.success(request, "Category added successfully!")
+                return redirect('manage_product_category_list')
+            except ValidationError as e:
+                messages.error(request, str(e))
+        else:
             messages.success(request, "Category added successfully!")
-            return redirect('manage_product_category_list')
 
-        messages.error(request, "Please correct the errors below.")
-        return render(request, "admin/manage_product_category.html", {"form": form})
+        categories = category_service.get_all_categories()
+        return render(request, "admin/manage_product_category.html", {
+            "form": form,
+            "categories": categories
+        })
 
-
-# Update
+# Update View
 class ManageProductCategoryEditView(UpdateView):
     model = ProductCategoryModel
     form_class = ManageProductCategoryForm
     success_url = reverse_lazy('manage_product_category_list')
 
+    def form_valid(self, form):
+        category = self.get_object()
+        data = form.cleaned_data
+        if not isinstance(self.request.user, AnonymousUser):
+            data['updated_by'] = self.request.user
+        try:
+            category_service.update_category(category, data)
+            messages.success(self.request, "Category updated successfully!")
+        except ValidationError as e:
+            messages.error(self.request, str(e))
+        return super().form_valid(form)
+
     def form_invalid(self, form):
-        categories = ProductCategoryModel.objects.all()
+        categories = category_service.get_all_categories()
         return self.render_to_response(self.get_context_data(form=form, categories=categories))
     
 
-# Delete
+# Delete View
 class ManageProductCategoryDeleteView(View):
-    """Handles product category deletion."""
-
     def post(self, request, pk, *args, **kwargs):
-        """Deletes a product category and redirects to the category list."""
-        category = get_object_or_404(ProductCategoryModel, pk=pk)
-        category.delete()
-        messages.success(request, "Product category deleted successfully!")
-        return redirect("manage_product_category_list")  # Ensure this is the correct URL name
-    
-# Toggle Button
+        category = category_service.get_category_by_id(pk)
+        if not category:
+            messages.error(request, "Category not found.")
+            return redirect("manage_product_category_list")
+
+        try:
+            category_service.delete_category(category)
+            messages.success(request, "Product category deleted successfully!")
+        except ValidationError as e:
+            messages.error(request, str(e))
+
+        return redirect("manage_product_category_list")    
+
+
+# Toggle Active Status
 class ManageToggleProductCategoryActiveView(View):
     def post(self, request, pk, *args, **kwargs):
-        category = get_object_or_404(ProductCategoryModel, pk=pk)
-        category.is_active = not category.is_active
-        category.save()
+        category = category_service.get_category_by_id(pk)
+        if not category:
+            messages.error(request, "Category not found.")
+            return redirect("manage_product_category_list")
 
-        status = "activated" if category.is_active else "deactivated"
-        messages.success(request, f"Category '{category.name}' has been {status}.")
-        
-        return redirect('manage_product_category_list')
+        try:
+            new_status = not category.is_active
+            category_service.update_category(category, {'is_active': new_status})
+            status_text = "activated" if new_status else "deactivated"
+            messages.success(request, f"Category '{category.name}' has been {status_text}.")
+        except ValidationError as e:
+            messages.error(request, str(e))
+
+        return redirect("manage_product_category_list")
+    
+    

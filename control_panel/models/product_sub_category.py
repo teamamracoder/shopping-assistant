@@ -3,10 +3,8 @@ from django.db import models
 
 class ProductSubCategoryModel(models.Model):
     id = models.AutoField(primary_key=True)
-    category = models.ForeignKey(
-        'ProductCategoryModel',
-          on_delete=models.CASCADE,related_name='fk_product_sub_categories_id')  # FK to Category model
-    name = models.CharField(max_length=255)
+    category = models.ForeignKey('ProductCategoryModel', on_delete=models.CASCADE,related_name='fk_product_sub_categories_id')  # FK to Category model
+    name = models.CharField(max_length=255, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
 
     is_active = models.BooleanField(db_default=True, blank=True)
