@@ -130,9 +130,8 @@
           {% for data in services %}
           <tbody>
             <tr>
-              <!-- <td>{{data.id}}</td> -->
+              <td>{{data.id}}</td>
               <td>{{ data.service_name}}</td>
-
               <td>
                 <a href="#" class="text-primary edit-btn" data-id="{{ data.id }}"
                   data-service-name="{{ data.service_name }}"
@@ -178,38 +177,34 @@
   </div>
 </div>
 
-
-<!-- jQuery -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-<!-- jQuery Validation Plugin -->
-<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
-
-
 <script>
   $(document).ready(function () {
-      $('#addUserForm').validate({
-          rules: {
-              service_name: {
-                  required: true
-              }
-          },
-          messages: {
-              service_name: {
-                  required: "Please enter a service name"
-              }
-          },
-          errorClass: "text-danger fw-bold",  // Error text style
-          errorElement: "div",  // Error element
-          highlight: function (element) {
-              $(element).addClass("is-invalid");  // Add invalid class
-          },
-          unhighlight: function (element) {
-              $(element).removeClass("is-invalid");  // Remove invalid class
-          }
-      });
+    $("#addUserForm").validate({
+      rules: {
+    service_name: {
+      required: true,
+      minlength: 2,
+      pattern: /^[a-zA-Z0-9\s]+$/   // allow only letters, numbers, and space
+    }
+  },
+  messages: {
+    service_name: {
+      required: "Please enter the service name",
+      minlength: "Must be at least 2 characters long",
+      pattern: "Only letters, numbers, and spaces are allowed"
+    }
+  },
+      errorElement: "div",
+      errorClass: "text-danger",
+      highlight: function (element) {
+        $(element).addClass("is-invalid");
+      },
+      unhighlight: function (element) {
+        $(element).removeClass("is-invalid");
+      }
+    });
   });
-  </script>
+</script>
   
 
 {% endblock %}

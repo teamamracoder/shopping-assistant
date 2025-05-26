@@ -44,6 +44,7 @@ class ManageServiceBookingCreateView(View):
 class ManageServiceBookingUpdateView(View):
     def post(self, request, pk):
         booking = get_object_or_404(ServiceBookingModel, pk=pk)
+        print(f"Requrst for update id ========= {pk}")
         form = ManageServiceBookingForm(request.POST, instance=booking)
         if form.is_valid():
             form.save()

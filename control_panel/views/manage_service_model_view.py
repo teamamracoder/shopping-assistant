@@ -31,8 +31,8 @@ class ManageServiceModelCreateView(View):
         form = ServiceModelForm(request.POST)
         if form.is_valid():
             service = form.save(commit=False)
-            service.created_by = request.user
-            service.updated_by = request.user
+            # service.created_by = request.user # this will required while login or sign up feature will developed
+            # service.updated_by = request.user # this will required while login or sign up feature will developed
             service.save()
             form.save()
             return redirect('manage_service_list')
@@ -42,6 +42,7 @@ class ManageServiceModelCreateView(View):
 # UPDATE VIEW
 class ManageServiceModelUpdateView(View):
     def get(self, request, pk):
+        print(f"Requrst for update id ========= {pk}")
         service = get_object_or_404(ServiceModel, pk=pk)
         form = ServiceModelForm(instance=service)
         return render(request, 'admin/manage_service_model.html', {'form': form, 'service': service})

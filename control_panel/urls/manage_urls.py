@@ -22,7 +22,7 @@ urlpatterns = [
 # service_model urls by tufan
     path('services_model/', ManageServiceModelListView.as_view(), name='manage_service_list'),
     path('services_model/create/', ManageServiceModelCreateView.as_view(), name='manage_create_service_model'),
-    path('services_model/update/<int:pk>/', ManageServiceModelUpdateView.as_view(), name='manage_update_service_model'),
+    path('services_model/update/<int:pk>/', ManageServiceModelUpdateView.as_view(), name='manage_service_model_update'),
     path('services_model/delete/<int:pk>/', ManageServiceModelDeleteView.as_view(), name='manage_delete_service_model'),
     path('services_model/toggle/<int:pk>/', ManageToggleServiceModelActiveView.as_view(), name='manage_toggle_service_active'),
     
