@@ -1,104 +1,115 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
-from ..forms import ManageProductSubCategoryForm
-from ..models import ProductSubCategoryModel  # Import the ProductSubCategory model
 from django.contrib import messages
 from django.http import JsonResponse
 from django.urls import reverse_lazy
-from django.views.generic import UpdateView
+from django.forms import ValidationError
+from ..forms import ManageProductSubCategoryForm
+from services.product_sub_category_service import ProductSubCategoryModelService
 
 
-#List
+subcategory_service = ProductSubCategoryModelService()
+
+# List View
 class ManageProductSubCategoryListView(View):
     def get(self, request):
-        subcategories = ProductSubCategoryModel.objects.all()
+        subcategories = subcategory_service.get_all_sub_categories()
         form = ManageProductSubCategoryForm()
-        return render(request, 'admin/manage_product_sub_category.html', {"subcategories": subcategories, "form": form})
+        return render(request, 'admin/manage_product_sub_category.html', {
+            "subcategories": subcategories,
+            "form": form
+        })
 
-#Create
+
+# Create View
 class ManageProductSubCategoryCreateView(View):
     def get(self, request):
-        """Handle GET request before data retrieval."""
         form = ManageProductSubCategoryForm()
-        subcategories = ProductSubCategoryModel.objects.all()
+        subcategories = subcategory_service.get_all_sub_categories()
         return render(request, "admin/manage_product_sub_category.html", {
             "form": form,
             "subcategories": subcategories
         })
 
     def post(self, request):
-        """Handle form submission and save data to the database."""
         form = ManageProductSubCategoryForm(request.POST)
         if form.is_valid():
-            form.save()  # Save to database
-            return redirect("manage_product_sub_category_list")  # Ensure URL name matches
+            try:
+                subcategory_service.create_sub_category(form.cleaned_data)
+                messages.success(request, "Subcategory added successfully!")
+                return redirect("manage_product_sub_category_list")
+            except ValidationError as e:
+                messages.error(request, str(e))
+        else:
+            messages.error(request, "Please correct the errors below.")
 
-        # If the form is invalid, reload with existing subcategories
-        subcategories = ProductSubCategoryModel.objects.all()
+        subcategories = subcategory_service.get_all_sub_categories()
         return render(request, "admin/manage_product_sub_category.html", {
             "form": form,
             "subcategories": subcategories
         })
 
 
-# class ManageProductSubCategoryEditView(View):
-#     def post(self, request, *args, **kwargs):
-#         subcategory_id = request.POST.get('subcategory_id')  # Corrected key name
-#         instance = None
-
-#         if subcategory_id:
-#             instance = get_object_or_404(ProductSubCategoryModel, pk=subcategory_id)
-
-#         form = ManageProductSubCategoryForm(request.POST, instance=instance)
-
-#         if form.is_valid():
-#             form.save()
-#             return redirect('manage_product_sub_category_list')
-#         else:
-#             return render(request, 'control_panel/product_subcategory_list.html', {
-#                 'form': form,
-#                 'subcategories': ProductSubCategoryModel.objects.all(),
-#                 'errors': form.errors
-#             })
-
-
+# Edit View
 class ManageProductSubCategoryEditView(View):
     def post(self, request, *args, **kwargs):
         subcategory_id = kwargs.get('pk') or request.POST.get('subcategory_id')
         instance = None
 
         if subcategory_id:
-            instance = get_object_or_404(ProductSubCategoryModel, pk=subcategory_id)
+            instance = subcategory_service.get_sub_category_by_id(subcategory_id)
+            if not instance:
+                messages.error(request, "Subcategory not found.")
+                return redirect('manage_product_sub_category_list')
 
         form = ManageProductSubCategoryForm(request.POST, instance=instance)
-
         if form.is_valid():
-            form.save()
-            return redirect('manage_product_sub_category_list')
+            try:
+                subcategory_service.update_sub_category(instance, form.cleaned_data)
+                messages.success(request, "Subcategory updated successfully!")
+                return redirect('manage_product_sub_category_list')
+            except ValidationError as e:
+                messages.error(request, str(e))
         else:
-            return render(request, 'control_panel/product_subcategory_list.html', {
-                'form': form,
-                'subcategories': ProductSubCategoryModel.objects.all(),
-                'errors': form.errors
-            })
-#Delete
-class ManageProductSubCategoryDeleteView(View):
-    """Handles product subcategory deletion."""
+            messages.error(request, "Please correct the errors below.")
 
+        return render(request, 'admin/manage_product_sub_category.html', {
+            'form': form,
+            'subcategories': subcategory_service.get_all_sub_categories()
+        })
+
+
+# Delete View
+class ManageProductSubCategoryDeleteView(View):
     def post(self, request, pk, *args, **kwargs):
-        subcategories = get_object_or_404(ProductSubCategoryModel, pk=pk)
-        subcategories.delete()
-        messages.success(request, "Product Sub Category deleted successfully!")
-        return redirect("manage_product_sub_category_list")  # Ensure this URL name is correct
-    
-# Toggle Button
+        subcategory = subcategory_service.get_sub_category_by_id(pk)
+        if not subcategory:
+            messages.error(request, "Subcategory not found.")
+            return redirect("manage_product_sub_category_list")
+
+        try:
+            subcategory_service.delete_sub_category(subcategory)
+            messages.success(request, "Subcategory deleted successfully!")
+        except Exception as e:
+            messages.error(request, f"Failed to delete subcategory: {str(e)}")
+
+        return redirect("manage_product_sub_category_list")
+
+
+# Toggle Active View
 class ManageToggleProductSubCategoryActiveView(View):
     def post(self, request, pk, *args, **kwargs):
-        subcategory = get_object_or_404(ProductSubCategoryModel, pk=pk)
-        subcategory.is_active = not subcategory.is_active
-        subcategory.save()
+        subcategory = subcategory_service.get_sub_category_by_id(pk)
+        if not subcategory:
+            messages.error(request, "Subcategory not found.")
+            return redirect("manage_product_sub_category_list")
 
-        status = "activated" if subcategory.is_active else "deactivated"
-        messages.success(request, f"Subcategory '{subcategory.name}' has been {status}.")
-        
-        return redirect('manage_product_sub_category_list')
+        try:
+            new_status = not subcategory.is_active
+            subcategory_service.update_sub_category(subcategory, {'is_active': new_status})
+            status_text = "activated" if new_status else "deactivated"
+            messages.success(request, f"Subcategory '{subcategory.name}' has been {status_text}.")
+        except ValidationError as e:
+            messages.error(request, str(e))
+
+        return redirect("manage_product_sub_category_list")
