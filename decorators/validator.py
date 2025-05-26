@@ -15,10 +15,26 @@ def validate_serializer(serializer_class, status_code: str = 'E-10001'):
             serializer = serializer_class(data=request.data)
             if not serializer.is_valid():
                 print_log(serializer.errors)
-                return Res.error(status_code, http_status=status.HTTP_400_BAD_REQUEST)
+                return Res.error(
+                    status_code=status_code,
+                    http_status=status.HTTP_400_BAD_REQUEST,
+                    data=serializer.errors  # Pass field-level errors as 'data'
+                )
             
             # Attach the validated serializer to the request object
             request.serializer = serializer
             return func(self, request, *args, **kwargs)
         return wrapper
+    return decorator
+
+
+def partial_serializer(serializer_class, partial=False):
+    def decorator(view_func):
+        def _wrapped_view(self, request, *args, **kwargs):
+            serializer = serializer_class(data=request.data, partial=partial)
+            if not serializer.is_valid():
+                return Res.error(data=serializer.errors, http_status=status.HTTP_400_BAD_REQUEST)
+            request.serializer = serializer
+            return view_func(self, request, *args, **kwargs)
+        return _wrapped_view
     return decorator

@@ -28,14 +28,14 @@ class UserModel(models.Model):
     roles = ArrayField(
         models.IntegerField(
             choices=[(type.value, type.name) for type in Role],
-            db_default=Role.END_USER.value,
+            default=Role.END_USER.value,
             blank=True
         ),
         blank=True
     )
     bio = models.TextField(blank=True, null=True)
 
-    is_active = models.BooleanField(db_default=True, blank=True)
+    is_active = models.BooleanField(default=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True, blank=True)
     created_by = models.ForeignKey('UserModel', on_delete=models.CASCADE, blank=True, null=True, related_name='fk_create_users_user_id')
@@ -45,7 +45,7 @@ class UserModel(models.Model):
     REQUIRED_FIELDS = []
  
     class Meta:
-        db_table = 'users'   
+        db_table = 'users'
          
-    def _str_(self):
+    def __str__(self):
         return f"ID: {self.id}, Created at: {self.created_at}, Active: {self.is_active}"
