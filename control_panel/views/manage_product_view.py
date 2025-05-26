@@ -3,116 +3,146 @@ from django.conf import settings
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.contrib import messages
-from ..models import ProductsModel, UserModel
-from ..forms import ManageProductForm
 from django.contrib.auth.models import AnonymousUser
-from django.urls import reverse_lazy
-from django.views.generic import UpdateView
+from ..forms import ManageProductForm
+from services.product_service import ProductModelService
+from django.core.exceptions import ValidationError
 
 
-#List
+product_service = ProductModelService()
+
+# List View
 class ManageProductListView(View):
     def get(self, request):
-        products = ProductsModel.objects.all()
+        products = product_service.get_all_products()
+        print(products)
         form = ManageProductForm()
         return render(request, 'admin/manage_product.html', {"products": products, "form": form})
 
 
-#Create
+# Create View
 class ManageProductCreateView(View):
-    """Handles product creation with proper debugging."""
-
     def get(self, request): 
         form = ManageProductForm()
-        products = ProductsModel.objects.all()
+        products = product_service.get_all_products()
         return render(request, "admin/manage_product.html", {"form": form, "products": products})
 
     def post(self, request):
         form = ManageProductForm(request.POST)
 
         if form.is_valid():
-            product = form.save(commit=False)
+            product_data = form.cleaned_data
 
-            # Only assign user if they are authenticated
+            # Attach created_by and updated_by if user is authenticated
             if not isinstance(request.user, AnonymousUser):
-                product.created_by = request.user
-                product.updated_by = request.user
+                product_data['created_by'] = request.user
+                product_data['updated_by'] = request.user
 
-            # Handle multiple uploaded files manually
+            # Handle file upload
             image_urls = []
             for f in request.FILES.getlist('product_images'):
-                # ✅ Use MEDIA_ROOT not STATIC_ROOT
                 save_dir = os.path.join(settings.MEDIA_ROOT, 'img/product')
                 os.makedirs(save_dir, exist_ok=True)
-
                 save_path = os.path.join(save_dir, f.name)
                 with open(save_path, 'wb+') as destination:
                     for chunk in f.chunks():
                         destination.write(chunk)
-
-                # ✅ Save correct relative media URL
                 relative_url = f'media/img/product/{f.name}'
                 image_urls.append(relative_url)
 
-            product.image_urls = image_urls
-            product.save()
+            product_data['image_urls'] = image_urls
 
-            messages.success(request, "Product created successfully!")
-            return redirect("manage_product_list")
-        
+            try:
+                product_service.create_product(product_data)
+                messages.success(request, "Product added successfully!")
+                return redirect("manage_product_list")
+            except ValidationError as e:
+                messages.error(request, str(e))
+
         messages.error(request, "Please correct the errors below.")
-        return render(request, "admin/manage_product.html", {"form": form})
+        return render(request, "admin/manage_product.html", {
+            "form": form,
+            "products": product_service.get_all_products()
+        })
 
 
+# Edit View
 class ManageProductEditView(View):
     def post(self, request, pk):
-        product = get_object_or_404(ProductsModel, pk=pk)
-        print("cgbfvhgvhv",product)
+        product = product_service.get_product_by_id(pk)
+        if not product:
+            messages.error(request, "Product not found.")
+            return redirect("manage_product_list")
+
         form = ManageProductForm(request.POST, request.FILES, instance=product)
 
         if form.is_valid():
-            updated_product = form.save(commit=False)
+            updated_data = form.cleaned_data
 
-            # Check if new image is uploaded
-            if 'product_images' in request.FILES:
-                uploaded_file = request.FILES['product_images']
-                save_path = os.path.join(settings.STATIC_ROOT, 'img/product', uploaded_file.name)
-                os.makedirs(os.path.dirname(save_path), exist_ok=True)
+            # Handle image file upload if present
+            image_urls = product.image_urls or []
+
+            for f in request.FILES.getlist('product_images'):
+                save_dir = os.path.join(settings.MEDIA_ROOT, 'img/product')
+                os.makedirs(save_dir, exist_ok=True)
+                save_path = os.path.join(save_dir, f.name)
                 with open(save_path, 'wb+') as destination:
-                    for chunk in uploaded_file.chunks():
+                    for chunk in f.chunks():
                         destination.write(chunk)
-                relative_url = f'static/img/product/{uploaded_file.name}'
-                updated_product.product_images = relative_url
+                relative_url = f'media/img/product/{f.name}'
+                image_urls.append(relative_url)
 
-            updated_product.save()
-            messages.success(request, "product updated successfully!")
-            return redirect('manage_product_list')
-        else:
-            product_list = ProductsModel.objects.all()
-            messages.error(request, "Please correct the errors below.")
-            return render(request, "admin/manage_product.html", {"form": form, "product_list": product_list})
+            updated_data['image_urls'] = image_urls
+
+            # Attach updater info
+            if not isinstance(request.user, AnonymousUser):
+                updated_data['updated_by'] = request.user
+
+            try:
+                product_service.update_product(product, updated_data)
+                messages.success(request, "Product updated successfully!")
+                return redirect("manage_product_list")
+            except ValidationError as e:
+                messages.error(request, str(e))
+
+        messages.error(request, "Please correct the errors below.")
+        return render(request, "admin/manage_product.html", {
+            "form": form,
+            "products": product_service.get_all_products()
+        })
 
 
-# Delete     
+# Delete View
 class ManageProductDeleteView(View):
-    """Handles product deletion."""
-
     def post(self, request, pk, *args, **kwargs):
-        """Deletes a product and redirects to the product list."""
-        product = get_object_or_404(ProductsModel, pk=pk)
-        product.delete()
-        messages.success(request, "Product deleted successfully!")
-        return redirect("manage_product_list")  # Ensure this is the correct URL name
-    
-    
-# Toggle Button
+        product = product_service.get_product_by_id(pk)
+        if not product:
+            messages.error(request, "Product not found.")
+            return redirect("manage_product_list")
+
+        try:
+            product_service.delete_product(product)
+            messages.success(request, "Product deleted successfully!")
+        except ValidationError as e:
+            messages.error(request, str(e))
+
+        return redirect("manage_product_list")
+
+
+# Toggle Active/Inactive View
 class ManageToggleProductActiveView(View):
     def post(self, request, pk, *args, **kwargs):
-        product = get_object_or_404(ProductsModel, pk=pk)
-        product.is_active = not product.is_active
-        product.save()
+        product = product_service.get_product_by_id(pk)
+        if not product:
+            messages.error(request, "Product not found.")
+            return redirect("manage_product_list")
 
-        status = "activated" if product.is_active else "deactivated"
-        messages.success(request, f"Product '{product.name}' has been {status}.")
-        
-        return redirect('manage_product_list')
+        new_status = not product.is_active
+        try:
+            product_service.update_product(product, {"is_active": new_status})
+            status = "activated" if new_status else "deactivated"
+            messages.success(request, f"Product '{product.name}' has been {status}.")
+        except ValidationError as e:
+            messages.error(request, str(e))
+
+        return redirect("manage_product_list")
