@@ -3,6 +3,7 @@ from .home_view import IndexView
 from .manage_dashboard_view import ManageDashboardView
 from .manage_user_view import ManageUserCreateView,ManageUserDeleteView,ManageUserUpdateView,ManageUserListView
 from .manage_store_view import *
+from .manage_store_category_view import *
 
 
 from .manage_service_model_view import ManageServiceModelListView,ManageServiceModelCreateView,ManageServiceModelUpdateView,ManageServiceModelDeleteView
