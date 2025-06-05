@@ -48,12 +48,14 @@ class ManageUserCreateView(View):
             gender=form.cleaned_data['gender'],
             phone=form.cleaned_data['phone'],
             address=form.cleaned_data['address'],
+            country = form.cleaned_data['country'],
             location=form.cleaned_data['location'],
             city=form.cleaned_data['city'],
             district=form.cleaned_data['district'],
             state=form.cleaned_data['state'],
             pincode=form.cleaned_data['pincode'],
             roles=form.cleaned_data['roles']
+
             )
             messages.success(request, 'User created successfully.')
             form = ManageUserForm()  # reset the form

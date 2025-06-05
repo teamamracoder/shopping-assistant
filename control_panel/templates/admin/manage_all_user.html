@@ -230,6 +230,13 @@
                         </div>
 
                         <div class="form-group col-md-12 mb-3">
+                                {{ form.country.label_tag }}<span class="text-danger">*</span>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-buildings"></i></span>
+                                    {{ form.country }}
+                                </div>                        
+
+
                             {{ form.location.label_tag }}<span class="text-danger">*</span>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
@@ -262,18 +269,26 @@
                             <th>Email</th>
                             <th>Contact</th>
                             <th>Location</th>
-                            <th>Actions</th>                      
+                            <th>gender</th>                     
+                            <th>address</th> 
+                            <th>DOB</th> 
+                            <th>Actions</th> 
+                             
+
                         </tr>
                     </thead>
                     <tbody>
                         {% for user in users %}
                             <tr>
-                                <td>{{ user.id }}</td>
+                                <!-- <td>{{ user.id }}</td> -->
                                 <td>{{ user.first_name }}</td>
                                 <td>{{ user.last_name }}</td>
                                 <td>{{ user.email }}</td>
                                 <td>{{ user.phone }}</td>
                                 <td>{{ user.location }}</td>
+                                <td>{{ user.gender }}</td>
+                                <td>{{ user.address }}</td>
+                                <td>{{ user.dob }}</td>
                                 <td>
                                     <a href="#" class="text-primary edit-btn"
                                     data-id="{{ user.id }}"
@@ -389,10 +404,10 @@
                 state: {
                     required: true
                 },
-                location: {
-                    required: true,
-                    minlength: 3
-                }
+                // location: {
+                //     required: true,
+                //     minlength: 3
+                // }
             },
             messages: {
                 first_name: {
@@ -449,10 +464,10 @@
                 state: {
                     required: "Please enter state"
                 },
-                location: {
-                    required: "Please enter location",
-                    minlength: "Location must be at least 3 characters"
-                }
+                // location: {
+                //     required: "Please enter location",
+                //     minlength: "Location must be at least 3 characters"
+                // }
             },
             errorElement: "span",
             errorPlacement: function (error, element) {

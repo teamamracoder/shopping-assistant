@@ -83,6 +83,9 @@ class ManageUserForm(forms.Form):
     address = forms.CharField(
         widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your address'})
     )
+    country = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'form-control','palceholder': 'Enter your country'})
+    )
     location = forms.CharField(
         widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your location'})
     )

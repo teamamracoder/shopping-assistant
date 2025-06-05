@@ -18,6 +18,7 @@ class UserModel(models.Model):
     address = models.TextField(blank=True, null=True)
     location = models.CharField(max_length=255, blank=True, null=True)
     city = models.CharField(max_length=100, blank=True, null=True)
+    country = models.CharField(max_length=100,blank=True,null=True) # new field added
     district = models.CharField(max_length=100, blank=True, null=True)
     state = models.CharField(max_length=100, blank=True, null=True)
     pincode = models.IntegerField(blank=True, null=True)
