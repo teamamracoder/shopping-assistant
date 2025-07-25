@@ -63,7 +63,7 @@
 <div class="container-fluid">
     <h1 class="h3 mb-2 text-gray-800">Service</h1>
     <p class="mb-4">Manage service in the system.</p>
-    
+
     <!-- Add Button (Opens Modal) -->
     <button class="circle-btn" data-bs-toggle="modal" data-bs-target="#addServiceModel">
         <i class="bi bi-plus-lg text-light"></i>
@@ -86,7 +86,7 @@
                             <div class="form-group col-md-6 mb-3">
                                 {{ form.service_type.label_tag }}<span class="text-danger">*</span>
                                 {{ form.service_type }}
-                            </div>      
+                            </div>
                             <div class="form-group col-md-6 mb-3">
                                 {{ form.service_provider.label_tag }}<span class="text-danger">*</span>
                                 {{ form.service_provider }}
@@ -154,14 +154,14 @@
                         <td>{{ services_model.description }}</td>
                         <td>
                             <a href="#" class="text-primary edit-btn"
-                            data-service-type="{{ services_model.service_type.id }}"
-                            data-service-provider="{{ services_model.service_provider.id }}"
-                            data-services-charge="{{ services_model.services_charge }}"
-                            data-description="{{ services_model.description }}"
-                            data-is-active="{{ services_model.is_active }}"
-                            data-action-url="{% url 'manage_service_model_update' services_model.id %}">
-                            <i class="bi bi-pencil-square"></i>
-                        </a>
+                                data-service-type="{{ services_model.service_type.id }}"
+                                data-service-provider="{{ services_model.service_provider.id }}"
+                                data-services-charge="{{ services_model.services_charge }}"
+                                data-description="{{ services_model.description }}"
+                                data-is-active="{{ services_model.is_active }}"
+                                data-action-url="{% url 'manage_service_model_update' services_model.id %}">
+                                <i class="bi bi-pencil-square"></i>
+                            </a>
                             {% if services_model.id %}
                             <form method="post" action="{% url 'manage_delete_service_model' services_model.id %}"
                                 style="display:inline;">
@@ -200,8 +200,8 @@
         </div>
     </div>
 </div>
-</div>
-{% endblock %}
+
+
 
 <script>
     document.querySelectorAll('.edit-btn').forEach(btn => {
@@ -236,7 +236,7 @@
     $(document).ready(function () {
         $('#addProductForm').validate({
             ignore: ":hidden:not(select)",
-    
+
             rules: {
                 service_type: { required: true },
                 service_provider: { required: true },
@@ -250,7 +250,7 @@
                     minlength: 5
                 }
             },
-    
+
             messages: {
                 service_type: { required: "Please select a service type" },
                 service_provider: { required: "Please select a service provider" },
@@ -264,10 +264,10 @@
                     minlength: "Description must be at least 5 characters"
                 }
             },
-    
+
             errorClass: "text-danger fw-bold",
             errorElement: "div",
-    
+
             highlight: function (element) {
                 $(element).addClass("is-invalid");
             },
@@ -275,13 +275,13 @@
                 $(element).removeClass("is-invalid");
             }
         });
-    
+
         $('#addProductForm').on('submit', function (e) {
             if (!$(this).valid()) {
                 e.preventDefault();  // Block submission
             }
         });
     });
-    </script>
-    
-    
+</script>
+
+{% endblock %}
