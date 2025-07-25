@@ -32,65 +32,37 @@
         background-color: darkblue;
     }
 
-   .input-group-text {
+    .input-group-text {
         background-color: #c9dff1;
         color: white;
     }
 
-    .input-group i::before{
+    .input-group i::before {
         background-color: #205aa6;
     }
-    .row .form-group{
+
+    .row .form-group {
         font-weight: bold;
     }
 
     /*Modal Widht*/
     @media (min-width: 1200px) {
         .modal-dialog {
-            max-width: 90%; 
+            max-width: 90%;
         }
+    }
+
+    .is-invalid {
+        border-color: #dc3545 !important;
+    }
+
+    .invalid-feedback {
+        font-size: 1rem;
+        /* normal font size */
+        font-weight: normal;
     }
 </style>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-    const editButtons = document.querySelectorAll('.edit-btn');
-    const addButton = document.querySelector('.circle-btn'); // Add button
-    const form = document.getElementById('addUserForm');
-    const modalLabel = document.getElementById('addUserModalLabel');
-    
-    // Clear form fields when clicking the "Add" button
-    addButton.addEventListener('click', function () {
-        form.reset();  // Reset the form fields
-        modalLabel.textContent = "Add User";  // Change modal title to "Add User"
-        form.action = "{% url 'manage_user_create' %}";  // Set form action to create (or reset the action URL)
-    });
-    
-    // Edit button functionality
-    editButtons.forEach(btn => {
-        btn.addEventListener('click', function () {
-            form.action = this.getAttribute('data-action-url');  // Set form action for edit
-            modalLabel.textContent = "Edit User";  // Change modal title to "Edit User"
-            // Set form field values with the user's existing data
-            form.elements['first_name'].value = this.getAttribute('data-first-name');
-            form.elements['last_name'].value = this.getAttribute('data-last-name');
-            form.elements['email'].value = this.getAttribute('data-email');
-            form.elements['dob'].value = this.getAttribute('data-dob');
-            form.elements['gender'].value = this.getAttribute('data-gender');
-            form.elements['phone'].value = this.getAttribute('data-phone');
-            form.elements['address'].value = this.getAttribute('data-address');
-            form.elements['location'].value = this.getAttribute('data-location');
-            form.elements['city'].value = this.getAttribute('data-city');
-            form.elements['district'].value = this.getAttribute('data-district');
-            form.elements['state'].value = this.getAttribute('data-state');
-            form.elements['pincode'].value = this.getAttribute('data-pincode');
-            // Show modal
-            new bootstrap.Modal(document.getElementById('addUserModal')).show();
-        });
-    });
-});
-
-</script>
 <div class="container-fluid">
     <h1 class="h3 mb-2 text-gray-800">Users</h1>
     <p class="mb-4">Manage users in the system.</p>
@@ -125,7 +97,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
 
                         <div class="row">
                             <div class="form-group col-md-6 mb-3">
@@ -143,22 +115,23 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="row">
                             <div class="form-group col-md-6 mb-3">
-                                {{ form.gender.label_tag }}
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-gender-ambiguous"></i></span>
-                                    <select id="gender" name="gender" class="form-select">
-                                        <option value="" selected>Select Gender</option>
-                                        {% for gender in choices_gender %}
+                            {{ form.gender.label_tag }}
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-gender-ambiguous"></i></span>
+                                <select id="gender" name="gender" class="form-select">
+                                    <option value="" selected>Select Gender</option>
+                                    {% for gender in choices_gender %}
                                         {% for name, value in gender.items %}
-                                            <option value="{{ name }}" {% if user.gender == value %}selected{% endif %}>{{ value }}</option>
+                                            <option value="{{ name }}" {% if user.gender == name %}selected{% endif %}>{{ value }}</option>
                                         {% endfor %}
-                                        {% endfor %}
-                                    </select>
-                                </div>
+                                    {% endfor %}
+                                </select>
                             </div>
+                        </div>
+
 
                             <div class="form-group col-md-6 mb-3">
                                 {{ form.phone.label_tag }}
@@ -177,14 +150,15 @@
                                     <select id="role" name="roles" class="form-select">
                                         <option value="" selected>Select Roles</option>
                                         {% for role in choices_role %}
-                                        {% for name, value in role.items %}
-                                            <option value="{{ name }}" {% if user.role == value %}selected{% endif %}>{{ value }}</option>
-                                        {% endfor %}
+                                            {% for name, value in role.items %}
+                                                <option value="{{ name }}" {% if user.role == name %}selected{% endif %}>{{ value }}</option>
+                                            {% endfor %}
                                         {% endfor %}
                                     </select>
                                 </div>
                             </div>
-                            
+
+
                             <div class="form-group col-md-6 mb-3">
                                 {{ form.address.label_tag }}<span class="text-danger">*</span>
                                 <div class="input-group">
@@ -193,7 +167,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
 
                         <div class="row">
                             <div class="form-group col-md-6 mb-3">
@@ -202,14 +176,14 @@
                                     <span class="input-group-text"><i class="bi bi-123"></i></span>
                                     {{ form.pincode }}
                                 </div>
-                            </div>                            
+                            </div>
                             <div class="form-group col-md-6 mb-3">
                                 {{ form.city.label_tag }}<span class="text-danger">*</span>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-buildings"></i></span>
                                     {{ form.city }}
                                 </div>
-                            </div>                            
+                            </div>
                         </div>
 
                         <div class="row">
@@ -226,15 +200,15 @@
                                     <span class="input-group-text"><i class="bi bi-map"></i></span>
                                     {{ form.state }}
                                 </div>
-                            </div>                           
+                            </div>
                         </div>
 
                         <div class="form-group col-md-12 mb-3">
-                                {{ form.country.label_tag }}<span class="text-danger">*</span>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-buildings"></i></span>
-                                    {{ form.country }}
-                                </div>                        
+                            {{ form.country.label_tag }}<span class="text-danger">*</span>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-buildings"></i></span>
+                                {{ form.country }}
+                            </div>
 
 
                             {{ form.location.label_tag }}<span class="text-danger">*</span>
@@ -261,7 +235,7 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table " id="dataTable" width="100%" cellspacing="0">
+                <table class="table" id="dataTable">
                     <thead>
                         <tr>
                             <th>First Name</th>
@@ -269,26 +243,18 @@
                             <th>Email</th>
                             <th>Contact</th>
                             <th>Location</th>
-                            <th>gender</th>                     
-                            <th>address</th> 
-                            <th>DOB</th> 
-                            <th>Actions</th> 
-                             
-
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for user in users %}
                             <tr>
-                                <!-- <td>{{ user.id }}</td> -->
+                                <td>{{ user.id }}</td>
                                 <td>{{ user.first_name }}</td>
                                 <td>{{ user.last_name }}</td>
                                 <td>{{ user.email }}</td>
                                 <td>{{ user.phone }}</td>
                                 <td>{{ user.location }}</td>
-                                <td>{{ user.gender }}</td>
-                                <td>{{ user.address }}</td>
-                                <td>{{ user.dob }}</td>
                                 <td>
                                     <a href="#" class="text-primary edit-btn"
                                     data-id="{{ user.id }}"
@@ -338,13 +304,53 @@
                             </tr>
                         {% endfor %}
                     </tbody>
+
                 </table>
+
             </div>
         </div>
     </div>
 </div>
 
 <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const editButtons = document.querySelectorAll('.edit-btn');
+        const addButton = document.querySelector('.circle-btn'); // Add button
+        const form = document.getElementById('addUserForm');
+        const modalLabel = document.getElementById('addUserModalLabel');
+
+        // Clear form fields when clicking the "Add" button
+        addButton.addEventListener('click', function () {
+            form.reset();  // Reset the form fields
+            modalLabel.textContent = "Add User";  // Change modal title to "Add User"
+            form.action = "{% url 'manage_user_create' %}";  // Set form action to create (or reset the action URL)
+        });
+
+        // Edit button functionality
+        editButtons.forEach(btn => {
+            btn.addEventListener('click', function () {
+                form.action = this.getAttribute('data-action-url');  // Set form action for edit
+                modalLabel.textContent = "Edit User";  // Change modal title to "Edit User"
+                // Set form field values with the user's existing data
+                form.elements['first_name'].value = this.getAttribute('data-first-name');
+                form.elements['last_name'].value = this.getAttribute('data-last-name');
+                form.elements['email'].value = this.getAttribute('data-email');
+                form.elements['dob'].value = this.getAttribute('data-dob');
+                form.elements['gender'].value = this.getAttribute('data-gender');
+                form.elements['phone'].value = this.getAttribute('data-phone');
+                form.elements['address'].value = this.getAttribute('data-address');
+                form.elements['location'].value = this.getAttribute('data-location');
+                form.elements['city'].value = this.getAttribute('data-city');
+                form.elements['district'].value = this.getAttribute('data-district');
+                form.elements['state'].value = this.getAttribute('data-state');
+                form.elements['pincode'].value = this.getAttribute('data-pincode');
+                // Show modal
+                new bootstrap.Modal(document.getElementById('addUserModal')).show();
+            });
+        });
+    });
+
+
     $(document).ready(function () {
         $("#addUserForm").validate({
             rules: {
@@ -404,70 +410,70 @@
                 state: {
                     required: true
                 },
-                // location: {
-                //     required: true,
-                //     minlength: 3
-                // }
+                location: {
+                    required: true,
+                    minlength: 3
+                }
             },
             messages: {
                 first_name: {
-                    required: "Please enter first name",
-                    minlength: "First name must be at least 3 characters"
+                    required: "Please enter first name.",
+                    minlength: "First name must be at least 3 characters."
                 },
                 last_name: {
-                    required: "Please enter last name",
-                    minlength: "Last name must be at least 3 characters"
+                    required: "Please enter last name.",
+                    minlength: "Last name must be at least 3 characters."
                 },
                 email: {
-                    required: "Please enter an email address",
-                    email: "Please enter a valid email address"
+                    required: "Please enter an email address.",
+                    email: "Please enter a valid email address."
                 },
                 phone: {
-                    required: "Please enter phone number",
-                    digits: "Only digits allowed",
-                    minlength: "Minimum 10 digits",
-                    maxlength: "Maximum 15 digits"
+                    required: "Please enter phone number.",
+                    digits: "Only digits allowed.",
+                    minlength: "Minimum 10 digits.",
+                    maxlength: "Maximum 15 digits."
                 },
                 password: {
-                    required: "Please enter a password",
-                    minlength: "Password must be at least 6 characters"
+                    required: "Please enter a password.",
+                    minlength: "Password must be at least 6 characters."
                 },
                 confirm_password: {
-                    required: "Please confirm your password",
-                    equalTo: "Passwords do not match"
+                    required: "Please confirm your password.",
+                    equalTo: "Passwords do not match."
                 },
                 gender: {
-                    required: "Please select gender"
+                    required: "Please select gender."
                 },
                 roles: {
-                    required: "Please select user role"
+                    required: "Please select user role."
                 },
                 dob: {
-                    required: "Please select date of birth",
-                    date: "Please enter a valid date"
+                    required: "Please select date of birth.",
+                    date: "Please enter a valid date."
                 },
                 address: {
-                    required: "Please enter address",
-                    minlength: "Address must be at least 5 characters"
+                    required: "Please enter address.",
+                    minlength: "Address must be at least 5 characters."
                 },
                 pincode: {
-                    required: "Please enter pincode",
-                    digits: "Only digits allowed",
-                    minlength: "Minimum 4 digits"
+                    required: "Please enter pincode.",
+                    digits: "Only digits allowed.",
+                    minlength: "Minimum 4 digits."
                 },
                 city: {
-                    required: "Please enter city"
+                    required: "Please enter city."
                 },
                 district: {
-                    required: "Please enter district"
+                    required: "Please enter district."
                 },
                 state: {
-                    required: "Please enter state"
+                    required: "Please enter state."
                 },
-                // location: {
-                //     required: "Please enter location",
-                //     minlength: "Location must be at least 3 characters"
-                // }
+                location: {
+                    required: "Please enter location.",
+                    minlength: "Location must be at least 3 characters."
+                }
             },
             errorElement: "span",
             errorPlacement: function (error, element) {
@@ -483,15 +489,5 @@
         });
     });
 </script>
-
-<style>
-    .is-invalid {
-        border-color: #dc3545 !important;
-    } 
-
-    .invalid-feedback {
-        font-size: 1rem; /* normal font size */
-        font-weight: normal;        }
-</style>
 
 {% endblock %}
