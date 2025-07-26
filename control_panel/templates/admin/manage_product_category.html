@@ -228,17 +228,21 @@
     });
 </script>
 
-{% endblock %}
-// SweetAlert Messages from Django
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
         {% if messages %}
             {% for message in messages %}
-               Swal.fire({
-                    icon: "{% if message.tags == 'success' %}success{% elif message.tags == 'error' %}error{% else %}info{% endif %}",
-                    title: "Good job..!",
-                    text: "{{ message|escapejs }}",
-                    showConfirmButton: false,
+                Swal.fire({
+                    icon: '{% if message.tags == "success" %}success{% elif message.tags == "error" or message.tags == "danger" %}error{% else %}info{% endif %}',
+                    title: "Success",
+                    text: '{{ message|escapejs }}',
                     timer: 3000,
+                    showConfirmButton: false,
                     timerProgressBar: true
                 });
             {% endfor %}
         {% endif %}
+    });
+</script>
+
+{% endblock %}
