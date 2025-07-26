@@ -3,8 +3,6 @@ from ..models import ServiceModel,ServiceTypeModel,UserModel
 from ..forms .manage_service_model_form  import *
 from django.views import View
 from django.contrib import messages
-# from django.contrib.auth.decorators import login_required
-# from django.utils.decorators import method_decorator
 
 
 # LIST VIEW (READ ALL)
