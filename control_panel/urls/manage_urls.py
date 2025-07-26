@@ -16,7 +16,6 @@ urlpatterns = [
     path('users/create/', ManageUserCreateView.as_view(), name='manage_user_create'),
     path('admin/users/update/<int:pk>/', ManageUserUpdateView.as_view(), name='manage_user_update'),
     path('users/delete/<int:user_id>/', ManageUserDeleteView.as_view(), name="manage_user_delete"),
-    # path('users/toggle-active/<int:pk>/', ManageToggleUserActiveView.as_view(), name='manage_toggle_user_active'),
     path('manage/user/toggle/<int:pk>/', ManageToggleUserActiveView.as_view(), name='manage_toggle_user_active'),
 
 # service_model urls by tufan
