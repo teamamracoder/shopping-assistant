@@ -205,6 +205,12 @@
                                 <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
                                 {{ form.location }}
                             </div>
+
+                            {{ form.country.label_tag }}<span class="text-danger">*</span>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
+                                {{ form.country }}
+                            </div>
                         </div>
 
                         <div class="modal-footer">
@@ -251,13 +257,15 @@
                                     data-email="{{ user.email }}"
                                     data-dob="{{ user.dob }}"
                                     data-gender="{{ user.gender }}"
-                                    data-phone="{{ user.contact }}"
+                                    data-phone="{{ user.phone }}"
                                     data-address="{{ user.address }}"
+                                    data-country="{{ user.country }}"
                                     data-location="{{ user.location }}"
                                     data-city="{{ user.city }}"
                                     data-district="{{ user.district }}"
                                     data-state="{{ user.state }}"
                                     data-pincode="{{ user.pincode }}"
+                                    data-roles="{{ user.roles }}"  
                                     data-action-url="{% url 'manage_user_update' user.id %}">
                                     <i class="bi bi-pencil-square"></i>
                                 </a>
@@ -265,12 +273,9 @@
                                 {% if user.id %}
                                 <form method="post" action="{% url 'manage_user_delete' user.id %}" style="display:inline;">
                                     {% csrf_token %}
-                                    <button type="submit" 
-                                        class="btn text-danger btn-sm delete-btn"
-                                        data-url="{% url 'manage_user_delete' user.id %}">
-                                    
-                                        <!-- onclick="return confirm('Are you sure you want to delete this user?');"> -->
-                                        <i class="bi bi-trash" fs-6></i>
+                                    <button type="submit" class="btn text-danger btn-sm"
+                                        onclick="return confirm('Are you sure you want to delete this user?');">
+                                        <i class="bi bi-trash"></i>
                                     </button>
                                 </form>
                                 {% else %}
@@ -302,7 +307,6 @@
 </div>
 
 <script>
-
     document.addEventListener('DOMContentLoaded', function () {
     const editButtons = document.querySelectorAll('.edit-btn');
     const addButton = document.querySelector('.circle-btn'); // Add button
@@ -319,7 +323,7 @@
     // Edit button functionality
     editButtons.forEach(btn => {
         btn.addEventListener('click', function () {
-            form.action = this.getAttribute('data-action-url');  // Set form action for edit
+            form.action = this.getAttribute('data-action-url');  // retrive the url name to send requests
             modalLabel.textContent = "Edit User";  // Change modal title to "Edit User"
             // Set form field values with the user's existing data
             form.elements['first_name'].value = this.getAttribute('data-first-name');
@@ -329,11 +333,14 @@
             form.elements['gender'].value = this.getAttribute('data-gender');
             form.elements['phone'].value = this.getAttribute('data-phone');
             form.elements['address'].value = this.getAttribute('data-address');
+            form.elements['country'].value = this.getAttribute('data-country');
             form.elements['location'].value = this.getAttribute('data-location');
             form.elements['city'].value = this.getAttribute('data-city');
             form.elements['district'].value = this.getAttribute('data-district');
             form.elements['state'].value = this.getAttribute('data-state');
             form.elements['pincode'].value = this.getAttribute('data-pincode');
+
+            form.elements['roles'].value = this.getAttribute('data-roles');
             // Show modal
             new bootstrap.Modal(document.getElementById('addUserModal')).show();
         });
@@ -478,48 +485,6 @@ $(document).ready(function () {
         }
     });
 });
-
-// SweetAlert DELETE
-        document.querySelectorAll('.delete-btn').forEach(button => {
-        button.addEventListener('click', function () {
-            const formUrl = this.getAttribute('data-url');
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "This will permanently delete the product.",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Yes, delete it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    const form = document.createElement('form');
-                    form.method = 'POST';
-                    form.action = formUrl;
-
-                    const csrfToken = '{{ csrf_token }}';
-                    form.innerHTML = `<input type="hidden" name="csrfmiddlewaretoken" value="${csrfToken}">`;
-
-                    document.body.appendChild(form);
-                    form.submit();
-                }
-            });
-        });
-            // SweetAlert TOGGLE
-            document.querySelectorAll('.toggle-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    Swal.fire({
-                        title: 'Are you sure?',
-                        text: "Do you want to change this subcategory's visibility?",
-                        icon: 'question',
-                        showCancelButton: true,
-                        confirmButtonText: 'Yes',
-                    }).then(result => {
-                        if (result.isConfirmed) btn.closest('form').submit();
-                    });
-                });
-            });
-        });
 </script>
 
 {% endblock %}

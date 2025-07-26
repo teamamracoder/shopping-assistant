@@ -52,12 +52,7 @@ class ManageServiceModelUpdateView(View):
         service = get_object_or_404(ServiceModel, pk=pk)
         form = ServiceModelForm(request.POST, instance=service)
         if form.is_valid():
-            service = form.save(commit=False)
-            if request.user.is_authenticated:
-                service.updated_by = request.user
-            else:
-                # Optional: Handle anonymous user case
-                return HttpResponse("You must be logged in to update services.")
+            form.save(commit=False)
             service.save()
             return redirect('manage_service_list')
     

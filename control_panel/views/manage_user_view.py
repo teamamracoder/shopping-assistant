@@ -14,6 +14,14 @@ from django.contrib import messages
 from django.urls import reverse_lazy
 from django.db import IntegrityError
 
+# ---------------------------
+from django.views.generic import UpdateView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse_lazy
+from ..models import UserModel
+from ..forms import ManageUserForm
+from django.contrib import messages
+
 
 #List (READ ALL)
 class ManageUserListView(View):
@@ -105,7 +113,36 @@ class ManageUserDeleteView(View):
         return redirect("manage_user_list")
     
     
+
+
+    
 #UPDATE VIEW
+# class ManageUserUpdateView(LoginRequiredMixin, UpdateView):
+#     model = UserModel
+#     form_class = ManageUserForm
+#     template_name = 'users/manage_user_form.html'  # Specify your template
+#     success_url = reverse_lazy('manage_user_list')
+
+#     def form_valid(self, form):
+#         try:
+#             # Optionally, set updated_by to the current user
+#             form.instance.updated_by = self.request.user
+#             response = super().form_valid(form)
+#             messages.success(self.request, "User updated successfully.")
+#             return response
+#         except Exception as e:
+#             messages.error(self.request, f"Error updating user: {str(e)}")
+#             return self.form_invalid(form)
+
+#     def form_invalid(self, form):
+#         messages.error(self.request, "Please correct the errors below.")
+#         return super().form_invalid(form)
+
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context['title'] = 'Update User'
+#         return context
+
 class ManageUserUpdateView(UpdateView):
     model = UserModel
     form_class = ManageUserForm
