@@ -66,6 +66,7 @@ class ProductModelService:
         """
         Soft-delete a product by setting is_active to False.
         """
+        
         try:
             product.is_active = False
             product.save()
