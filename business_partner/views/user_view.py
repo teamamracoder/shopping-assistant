@@ -11,6 +11,7 @@ class UserListCreateAPIView(APIView):
         users = user_service.get_all_users()
         serializer = UserSerializer(users, many=True)
         return Res.success("S-10001", serializer.data)
+    
 
     @validate_serializer(UserCreateSerializer)
     def post(self, request):
@@ -32,24 +33,29 @@ class UserDetailAPIView(APIView):
             return Res.error(data={"message": "User not found"}, http_status=status.HTTP_404_NOT_FOUND)
         serializer = UserSerializer(user)
         return Res.success("S-10001", serializer.data)
-
-    @validate_serializer(UserUpdateSerializer)
-    def put(self, request, pk):
-        user = user_service.get_user_by_id(pk)
-        if not user:
-            return Res.error(data={"message": "User not found"}, http_status=status.HTTP_404_NOT_FOUND)
-        updated_user = user_service.update_user(user, request.serializer.validated_data)
-        return Res.success("S-10001", UserSerializer(updated_user).data)
     
-    @validate_serializer(UserUpdateSerializer)
-    def patch(self, request, pk):
+
+    def update_user(self, request, pk, partial=False):
         user = user_service.get_user_by_id(pk)
         if not user:
             return Res.error(data={"message": "User not found"}, http_status=status.HTTP_404_NOT_FOUND)
+
+        serializer = UserUpdateSerializer(
+            instance=user,
+            data=request.data,
+            partial=partial,
+            context={'request': request}
+        )
         
-        # Using `partial=True` to allow partial updates
-        updated_user = user_service.update_user(user, request.serializer.validated_data)
+        serializer.is_valid(raise_exception=True)
+        updated_user = serializer.save()
         return Res.success("S-10001", UserSerializer(updated_user).data)
+
+    def put(self, request, pk):
+        return self.update_user(request, pk, partial=False)
+
+    def patch(self, request, pk):
+        return self.update_user(request, pk, partial=True)
 
     def delete(self, request, pk):
         user = user_service.get_user_by_id(pk)
@@ -57,3 +63,17 @@ class UserDetailAPIView(APIView):
             return Res.error(data={"message": "User not found"}, http_status=status.HTTP_404_NOT_FOUND)
         user_service.delete_user(user)
         return Res.success("S-10003", {"message": "User deleted successfully"}, http_status=status.HTTP_204_NO_CONTENT)
+
+
+class MyCustomerListAPIView(APIView):
+    def get(self, request):
+        user = request.user
+        if not user.is_seller:
+            return Res.error(
+                data={"message": "You must be a seller to view customers"},
+                http_status=status.HTTP_403_FORBIDDEN
+            )
+        
+        customers = user_service.get_my_customers(user)
+        serializer = UserSerializer(customers, many=True)
+        return Res.success("S-10001", serializer.data)
