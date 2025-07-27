@@ -9,4 +9,6 @@ from .email_track_model import *
 from .product_sub_category import *
 from .product_category import *
 from .product_model import *
+from .customer_providers_model import *
+
 
