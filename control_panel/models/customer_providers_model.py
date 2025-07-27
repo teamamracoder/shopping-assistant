@@ -8,11 +8,14 @@ class CustomerProvider(models.Model):
     provider = models.ForeignKey(UserModel, on_delete=models.CASCADE, related_name='fk_provider_users_user_id')
     relationship_type = models.IntegerField(
         choices=[(type.value, type.name) for type in RELATIONSHIP_TYPE],    
-        blank=True,null=True
+        blank=False, null=False
     )    
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         db_table = 'customer_providers'
-        unique_together = ('customer', 'provider')  # Prevent duplicate links
+        unique_together = ('customer', 'provider', 'relationship_type')  # Prevent duplicate links
+        
+    def __str__(self):
+        return f"Customer: {self.customer.id}, Provider: {self.provider.id}, Type: {self.relationship_type}"    

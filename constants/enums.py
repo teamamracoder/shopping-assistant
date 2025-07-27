@@ -14,3 +14,4 @@ class Role(Enum):
 class RELATIONSHIP_TYPE(Enum):
     SELLER = 1
     SERVICE_PROVIDER = 2
+
