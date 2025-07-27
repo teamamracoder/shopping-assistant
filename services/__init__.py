@@ -8,7 +8,7 @@ from services.product_service import *
 from services.product_category_service import *
 from services.product_sub_category_service import *
 # from services.manage_product_sub_category_service import ProductSubCategoryModelService
-from services.store_service import StoreService
+from services.store_service import storeModelService
 from services.store_category_service import StoreCategoryService
 
 class Service:
@@ -31,7 +31,7 @@ class Service:
             # self.manage_product_sub_category_service = ProductSubCategoryModelService()  # optional
             self.service_api = ServiceModelAPI()
             self.service_type_api = ServiceTypeModelAPI()
-            self.store_service = StoreService()
+            self.store_service = storeModelService()
             self.store_category_service = StoreCategoryService()
 
 services = Service()

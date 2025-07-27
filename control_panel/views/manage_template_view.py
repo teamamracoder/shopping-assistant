@@ -54,7 +54,7 @@ class ManageTemplateCreateView(View):
             template.image_urls = image_urls
             template.save()
 
-            messages.success(request, "Template created successfully!")
+            messages.success(request, "Email Template added successfully!")
             return redirect("manage_template_list")
 
         messages.error(request, "Please correct the errors below.")

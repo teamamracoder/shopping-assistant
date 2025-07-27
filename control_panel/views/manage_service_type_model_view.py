@@ -62,4 +62,3 @@ class ManageToggleServiceTypeActiveView(View):
         messages.success(request, f"User '{service_type.is_active}' has been {status}.")
         
         return redirect('manage_service_type_model_list')
-

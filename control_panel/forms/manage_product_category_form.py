@@ -19,14 +19,3 @@ class ManageProductCategoryForm(forms.ModelForm):
             'description': "Description",
             'is_active': "Active",
         }
-
-    # Corrected Name Field Validation
-    # name = forms.CharField(
-    #     min_length=3,
-    #     max_length=50,
-    #     validators=[
-    #         MinLengthValidator(3, message="Category name must be at least 3 characters long."),
-    #         MaxLengthValidator(50, message="Category name cannot exceed 50 characters."),  # Fixed max length message
-    #     ],
-    #     widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "Enter category name"})
-    # )

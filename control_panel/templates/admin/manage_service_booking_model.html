@@ -100,17 +100,7 @@
           <form id="addUserForm" method="POST" action="{% url 'manage_service_booking_create' %}" class="fw-bold">
             {% csrf_token %}
             <div class="row">
-              <!-- {% for field in form %}
-                <div class="form-group col-md-6 mb-3">
-                  {{ field.label_tag }}
-                  {{ field }}
-                  {% if field.errors %}
-                    <div class="text-danger">{{ field.errors }}</div>
-                  {% endif %}
-                </div>
-              {% endfor %} -->
-          
-              <div class="form-group col-md-6 mb-3">
+             <div class="form-group col-md-6 mb-3">
                 {{ form.service.label_tag }}
                 {{ form.service }}
                 {% if form.service.errors %}
@@ -202,7 +192,7 @@
                 data-user-id="{{ booking.user.id }}"
                 data-provider-id="{{ booking.service_provider.id }}"
                 data-booking-charge="{{ booking.booking_charge }}"
-                data-booking-time="{{ booking.booking_time|date:'Y-m-d\\TH:i' }}"
+                data-booking-time="{{ booking.booking_time|date:'Y-m-d' }}"
                 data-is-active="{{ booking.is_active }}">
                     <i class="bi bi-pencil-square"></i>
                   </a>
