@@ -10,3 +10,7 @@ class Role(Enum):
     SELLER = 2
     SERVICE_PROVIDER = 3
     ADMIN = 4
+
+class RELATIONSHIP_TYPE(Enum):
+    SELLER = 1
+    SERVICE_PROVIDER = 2
