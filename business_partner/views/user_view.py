@@ -67,7 +67,7 @@ class UserDetailAPIView(APIView):
 
 class MyCustomerListAPIView(APIView):
     def get(self, request):
-        user = request.user
+        user = user_service.get_user_by_id(5)
         if not user.is_seller:
             return Res.error(
                 data={"message": "You must be a seller to view customers"},

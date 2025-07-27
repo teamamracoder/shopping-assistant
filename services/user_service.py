@@ -1,7 +1,7 @@
-from control_panel.models import UserModel
+from control_panel.models import UserModel, CustomerProvider
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
-from constants.enums import Role
+from constants.enums import Role, RELATIONSHIP_TYPE
 
 class UserService:
     
@@ -109,13 +109,18 @@ class UserService:
         except UserModel.DoesNotExist:
             return None
         
-    def get_my_customers(user):
+    def get_my_customers(self, user):
         """
         Fetch customers associated with the Business Partner .
         :param user: Business Partner UserModel instance.
         :return: Queryset of UserModel instances representing customers.
         """
+        customer_ids = CustomerProvider.objects.filter(
+            provider=user,
+            relationship_type=RELATIONSHIP_TYPE.SELLER.value,
+            is_active=True
+        ).values_list('customer_id', flat=True)
 
-        return UserModel.objects.filter(is_seller=False, is_service_provider=False).exclude(roles__contains=[Role.ADMIN.value])
+        return UserModel.objects.filter(id__in=customer_ids, is_active=True)
         
 user_service = UserService()
