@@ -4,6 +4,7 @@ from django.urls import path
 # from control_panel.views import ManageServiceTypeListView,ServiceBookingCreateView, ManageServiceTypeCreateView, ManageServiceTypeUpdateView,ManageServiceTypeDeleteView,ServiceBookingUpdateView,ManageToggleServiceTypeActiveView
 # from control_panel.views import IndexView,ManageStoreView,ServiceBookingDeleteView,ManageServiceModelDeleteView,ManageServiceModelUpdateView,ManageServiceModelListView,ManageServiceModelCreateView,ManageDashboardView,ManageServiceTypeView,ManageUserCreateView,ManageUserDeleteView,ManageUserUpdateView,IndexView,ManageDashboardView,ManageProductSubCategoryListView,ManageProductSubCategoryCreateView,ManageProductCategoryEditView,ManageProductSubCategoryDeleteView,ManageToggleProductSubCategoryActiveView,ManageProductListView,ManageProductCreateView,ManageProductDeleteView,ManageToggleProductActiveView,ManageProductCategoryListView,ManageProductCategoryCreateView,ManageProductCategoryDeleteView,ManageToggleProductCategoryActiveView,ManageUserListView,ManageTemplateListView,ManageTemplateCreateView,ManageTemplateEditView,ManageTemplateDeleteView,ManageToggletemplatesActiveView
 from control_panel.views import *
+from control_panel.views.manage_user_profile_view import ManageUserProfileView
 
 # app_name = 'user_management'  # Set the app namespace here
 
@@ -88,5 +89,8 @@ urlpatterns = [
     path("templates/edit/<int:pk>/", ManageTemplateEditView.as_view(), name="manage_template_edit"),
     path('templates/delete/<int:pk>/', ManageTemplateDeleteView.as_view(), name='manage_template_delete'),
     path("templates/<int:pk>/toggle/", ManageToggletemplatesActiveView.as_view(), name="manage_toggle_template_active"),
+
+    # User Profile URL
+    path('profile/', ManageUserProfileView.as_view(), name='manage_user_profile'),
 
 ]

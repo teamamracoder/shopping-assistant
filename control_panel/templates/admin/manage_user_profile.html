@@ -1,0 +1,215 @@
+{% extends 'index.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">{{ page_title }}</h1>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'manage_dashboard' %}">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ breadcrumb }}</li>
+        </ol>
+    </nav>
+</div>
+
+<!-- Profile Form -->
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <div class="row">
+                    <div class="col-md-12">
+                        {% if user.profile_image %}
+                        <div class="d-flex justify-content-start mb-3">
+                            <img src="{{ user.profile_image.url }}" alt="Profile Image" class="rounded-circle"
+                                style="width: 120px; height: 120px; object-fit: cover; border: 2px solid #007bff;">
+                        </div>
+                        {% else %}
+                        <div class="d-flex justify-content-start mb-3">
+                            <img src="https://images.pexels.com/photos/674010/pexels-photo-674010.jpeg?cs=srgb&dl=pexels-anjana-c-169994-674010.jpg&fm=jpg" alt="Default Profile Image" class="rounded-circle"
+                                style="width: 120px; height: 120px; object-fit: cover; border: 2px solid #007bff;">
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <h6 class="m-0 font-weight-bold text-primary">
+                    <i class="fas fa-user fa-sm fa-fw mr-2"></i>
+                    Profile Information
+                </h6>
+            </div>
+            <div class="card-body">
+                <!-- Display Messages -->
+                {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                {% endfor %}
+                {% endif %}
+
+                <form method="post" id="profileForm">
+                    {% csrf_token %}
+
+                    <!-- Personal Information Section -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h5 class="text-primary border-bottom pb-2 mb-3">
+                                <i class="fas fa-user-circle mr-2"></i>Personal Information
+                            </h5>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="first_name" class="form-label">First Name <span
+                                    class="text-danger">*</span></label>
+                            {{ form.first_name }}
+                            {% if form.first_name.errors %}
+                            <div class="text-danger small">{{ form.first_name.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="last_name" class="form-label">Last Name <span
+                                    class="text-danger">*</span></label>
+                            {{ form.last_name }}
+                            {% if form.last_name.errors %}
+                            <div class="text-danger small">{{ form.last_name.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="email" class="form-label">Email Address <span
+                                    class="text-danger">*</span></label>
+                            {{ form.email }}
+                            {% if form.email.errors %}
+                            <div class="text-danger small">{{ form.email.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="phone" class="form-label">Phone Number</label>
+                            {{ form.phone }}
+                            {% if form.phone.errors %}
+                            <div class="text-danger small">{{ form.phone.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="dob" class="form-label">Date of Birth</label>
+                            {{ form.dob }}
+                            {% if form.dob.errors %}
+                            <div class="text-danger small">{{ form.dob.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="gender" class="form-label">Gender</label>
+                            {{ form.gender }}
+                            {% if form.gender.errors %}
+                            <div class="text-danger small">{{ form.gender.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Professional Information Section -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h5 class="text-primary border-bottom pb-2 mb-3">
+                                <i class="fas fa-briefcase mr-2"></i>Professional Information
+                            </h5>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="designation" class="form-label">Designation</label>
+                            {{ form.designation }}
+                            {% if form.designation.errors %}
+                            <div class="text-danger small">{{ form.designation.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-12 mb-3">
+                            <label for="bio" class="form-label">Bio</label>
+                            {{ form.bio }}
+                            {% if form.bio.errors %}
+                            <div class="text-danger small">{{ form.bio.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Address Information Section -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h5 class="text-primary border-bottom pb-2 mb-3">
+                                <i class="fas fa-map-marker-alt mr-2"></i>Address Information
+                            </h5>
+                        </div>
+                        <div class="col-12 mb-3">
+                            <label for="address" class="form-label">Address</label>
+                            {{ form.address }}
+                            {% if form.address.errors %}
+                            <div class="text-danger small">{{ form.address.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="country" class="form-label">Country</label>
+                            {{ form.country }}
+                            {% if form.country.errors %}
+                            <div class="text-danger small">{{ form.country.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="state" class="form-label">State</label>
+                            {{ form.state }}
+                            {% if form.state.errors %}
+                            <div class="text-danger small">{{ form.state.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="city" class="form-label">City</label>
+                            {{ form.city }}
+                            {% if form.city.errors %}
+                            <div class="text-danger small">{{ form.city.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="district" class="form-label">District</label>
+                            {{ form.district }}
+                            {% if form.district.errors %}
+                            <div class="text-danger small">{{ form.district.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="location" class="form-label">Location</label>
+                            {{ form.location }}
+                            {% if form.location.errors %}
+                            <div class="text-danger small">{{ form.location.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="pincode" class="form-label">Pincode</label>
+                            {{ form.pincode }}
+                            {% if form.pincode.errors %}
+                            <div class="text-danger small">{{ form.pincode.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="d-flex justify-content-end">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save mr-1"></i>Update Profile
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Auto-hide alerts after 5 seconds
+    setTimeout(function () {
+        $('.alert').fadeOut('slow');
+    }, 5000);
+</script>
+
+{% endblock %}
