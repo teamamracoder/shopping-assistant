@@ -10,8 +10,12 @@ class CustomerProvider(models.Model):
         choices=[(type.value, type.name) for type in RELATIONSHIP_TYPE],    
         blank=False, null=False
     )    
+    
+    is_active = models.BooleanField(db_default=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    created_by = models.ForeignKey('UserModel', on_delete=models.CASCADE, blank=True, null=True, related_name='fk_create_customer_providers_user_id')
+    updated_by = models.ForeignKey('UserModel', on_delete=models.CASCADE, blank=True, null=True, related_name='fk_update_customer_providers_user_id')
 
     class Meta:
         db_table = 'customer_providers'
