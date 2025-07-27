@@ -16,7 +16,6 @@ urlpatterns = [
     path('users/create/', ManageUserCreateView.as_view(), name='manage_user_create'),
     path('admin/users/update/<int:pk>/', ManageUserUpdateView.as_view(), name='manage_user_update'),
     path('users/delete/<int:user_id>/', ManageUserDeleteView.as_view(), name="manage_user_delete"),
-    # path('users/toggle-active/<int:pk>/', ManageToggleUserActiveView.as_view(), name='manage_toggle_user_active'),
     path('manage/user/toggle/<int:pk>/', ManageToggleUserActiveView.as_view(), name='manage_toggle_user_active'),
 
 # service_model urls by tufan
@@ -39,22 +38,6 @@ urlpatterns = [
     path('service-bookings/update/<int:pk>/', ManageServiceBookingUpdateView.as_view(), name='manage_service_booking_update'),
     path('service-bookings/delete/<int:pk>/', ManageServiceBookingDeleteView.as_view(), name='manage_service_booking_delete'),
     path('service-bookings/toggle/<int:pk>/', ManageToggleServiceBookingActiveView.as_view(), name='manage_service_booking_active'),
-
-
-
-# store urls by priya
-    path('stores/', ManageStoreView.as_view(), name='manage_Store_list'),
-    path('stores/create/', ManageCreateStore.as_view(), name='manage_create_store'),
-    path('stores/update/<int:pk>/', ManageUpdateStoreView.as_view(), name='manage_update_store'),
-    path('toggle-store-status/<int:store_id>/', ToggleStoreStatus.as_view(), name='toggle_store_status'),
-
-#store category url
-    path('stores/category/', ManageStoreCategoryView.as_view(), name='manage_Store_category_list'),
-    path('store-category/create/', ManageCreateStoreCategoryView.as_view(), name='manage_create_store_category'),
-    path("store-category/delete/<int:category_id>/", ManageDeleteStoreCategoryView.as_view(), name="delete_store_category"),
-    path('toggle-store-category-status/<int:category_id>/', ToggleStoreCategoryStatus.as_view(), name='toggle_store_cetegory_status'),
-  
-
 
 # product_sub_category
     path('product_sub_category/', ManageProductSubCategoryListView.as_view(), name='manage_product_sub_category_list'),
@@ -79,23 +62,23 @@ urlpatterns = [
 
 
 
-    #store urls by priya
-    path('stores/', ManageStoreView.as_view(), name='manage_Store_list'),
-    path('stores/create/', ManageCreateStore.as_view(), name='manage_create_store'),
-    path('stores/update/<int:pk>/', ManageUpdateStoreView.as_view(), name='manage_update_store'),
-    path('toggle-store-status/<int:store_id>/', ToggleStoreStatus.as_view(), name='toggle_store_status'),
+#store 
+    path('stores/', ManageStoreListView.as_view(), name='manage_store_list'),
+    path('stores/create/', ManageStoreCreateView.as_view(), name='manage_store_create'),
+    path('stores/edit/<int:pk>/', ManageStoreEditView.as_view(), name='manage_store_edit'),
+    path('stores/delete/<int:pk>/', ManageStoreDeleteView.as_view(), name='manage_store_delete'),
+    path('stores/toggle-active/<int:pk>/', ManageToggleStoreActiveView.as_view(), name='manage_toggle_store_active'),
+
+#store category url
+    path('store_categories/', ManageStoreCategoryListView.as_view(), name='manage_store_category_list'),
+    path("store_categories/create/", ManageStoreCategoryCreateView.as_view(), name="manage_store_category_create"),
+    path("store_categories/edit/<int:pk>/", ManageStoreCategoryEditView.as_view(), name="manage_store_category_edit"),
+    path("store_categories/delete/<int:pk>/", ManageStoreCategoryDeleteView.as_view(), name="manage_store_category_delete"),
+    path('store_categories/toggle-active/<int:pk>/', ManageToggleStoreCategoryActiveView.as_view(), name='manage_toggle_store_category_active'),
 
 
-    #store category url
-    path('stores/category/', ManageStoreCategoryView.as_view(), name='manage_Store_category_list'),
-    path('store-category/create/', ManageCreateStoreCategoryView.as_view(), name='manage_create_store_category'),
-    path("store-category/delete/<int:category_id>/", ManageDeleteStoreCategoryView.as_view(), name="delete_store_category"),
-    path('toggle-store-category-status/<int:category_id>/', ToggleStoreCategoryStatus.as_view(), name='toggle_store_cetegory_status'),
 
-    path('stores/category/update/<int:pk>/',ManageCategoryUpdateStoreView.as_view(), name='manage_update_store_category'),
-
-
-    #service type url by Rahul
+    #service type url by Rahul -- no need of this urls
     path('service-type/', ManageServiceTypeView.as_view(), name='manage_service_type_list'),
     path('service-type/create', ManageCreateServiceTypeView.as_view(), name='manage_create_service_type'),
 

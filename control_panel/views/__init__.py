@@ -1,8 +1,20 @@
 # from .demo_view import DemoView
 from .home_view import IndexView
 from .manage_dashboard_view import ManageDashboardView
+<<<<<<< HEAD
 from .manage_store_view import *
 from .manage_store_category_view import *
+=======
+from .manage_store_view import (ManageStoreListView,ManageStoreCreateView,ManageStoreEditView,ManageStoreDeleteView,ManageToggleStoreActiveView)
+
+from .manage_store_category_view import (
+    ManageStoreCategoryListView,
+    ManageStoreCategoryCreateView,
+    ManageStoreCategoryEditView,
+    ManageStoreCategoryDeleteView,
+    ManageToggleStoreCategoryActiveView
+)
+>>>>>>> b679a55a6a8788e5c05397e8d9bb6abc9da56047
 
 from .manage_user_view import ManageUserCreateView,ManageUserDeleteView,ManageUserUpdateView,ManageUserListView,ManageToggleUserActiveView
 

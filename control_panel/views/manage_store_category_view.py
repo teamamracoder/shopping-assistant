@@ -1,91 +1,103 @@
-from django.shortcuts import render
-from django.views import View
-from ..forms .manage_store_form import *
-from ..forms .manage_store_category_form import *
-from django.shortcuts import render, redirect,get_object_or_404
-from django.contrib import messages
-from ..models import UserModel,StoreModel,StoreCategoryModel
-from services import *
-from django.http import HttpResponseRedirect
-from django.views.generic.edit import UpdateView
-from django.urls import reverse_lazy
-from django.urls import reverse
-from django.http import JsonResponse
-from django.http import HttpResponseForbidden
-import os
-from services import manage_store_service
-from django.views import View
 from django.shortcuts import render, redirect, get_object_or_404
+from django.views import View
 from django.contrib import messages
-from django.utils.timezone import now
-from django.core.files.storage import default_storage
-from django.conf import settings
+from django.contrib.auth.models import AnonymousUser
+from ..models import StoreCategoryModel
+from ..forms import ManageStoreCategoryForm
+from django.http import JsonResponse
+from django.urls import reverse_lazy
+from django.views.generic import UpdateView
+from django.forms import ValidationError
+from ..models import StoreCategoryModel
+from services.store_category_service import StoreCategoryService
 
+store_category_service = StoreCategoryService()
 
+class ManageStoreCategoryListView(View):
+    def get(self, request):
+        store_categories = store_category_service.get_all_store_categories()
+        form = ManageStoreCategoryForm()
+        return render(request, 'admin/manage_store_category.html', {
+            "categories": store_categories,
+            "form": form
+        })
 
-class ManageStoreCategoryView(View):
-    def get(self,request):
-        form = StoreCategoryForm()
-        store_category=StoreCategoryModel.objects.all() 
-        return render(request, "admin/manage_store_category.html", {"form": form, "store_category": store_category})   
-
-
-class ManageCreateStoreCategoryView(View):
-    def post(self, request, *args, **kwargs):
-        form = StoreCategoryForm(request.POST)
+# Create View
+class ManageStoreCategoryCreateView(View):
+    def post(self, request):
+        form = ManageStoreCategoryForm(request.POST)
         if form.is_valid():
-            category_name = form.cleaned_data['name']
-            
-            # Check if category already exists
-            if StoreCategoryModel.objects.filter(name=category_name).exists():
-                messages.error(request, "Category with this name already exists.")
-                return render(request, "admin/manage_store_category.html", {"form": form})
-
-            category = form.save(commit=False)
-            user_instance = get_object_or_404(UserModel, id=1) 
-            category.created_by = user_instance
-            category.updated_by = user_instance
-            category.save()
-
-            messages.success(request, "Store category created successfully!")
-            return redirect('manage_Store_category_list')  
+            data = form.cleaned_data
+            try:
+                if not isinstance(request.user, AnonymousUser):
+                    data['created_by'] = request.user
+                    data['updated_by'] = request.user
+                store_category_service.create_store_category(data)
+                messages.success(request, "Store category added successfully!")
+                return redirect('manage_store_category_list')
+            except ValidationError as e:
+                messages.error(request, str(e))
         else:
-            messages.error(request, "Please correct the errors below.")
-            return render(request, "admin/manage_store_category.html", {"form": form})
-        
+            messages.success(request, "Store Category added successfully!")
 
+        store_categories = store_category_service.get_all_store_categories()
+        return render(request, 'admin/manage_store_category.html', {
+            "form": form,
+            "categories": store_categories
+        })
 
-class ManageDeleteStoreCategoryView(View):
-    def get(self, request, category_id, *args, **kwargs):
-        category = get_object_or_404(StoreCategoryModel, id=category_id)
-        category.delete()
-        messages.success(request, "Store category deleted successfully!")
-        return redirect("manage_Store_category_list")  # Re
+# Update View
+class ManageStoreCategoryEditView(UpdateView):
+    model = StoreCategoryModel
+    form_class = ManageStoreCategoryForm
+    success_url = reverse_lazy('manage_store_category_list')
 
+    def form_valid(self, form):
+        store_category = self.get_object()
+        data = form.cleaned_data
+        if not isinstance(self.request.user, AnonymousUser):
+            data['updated_by'] = self.request.user        
+        try:
+            store_category_service.update_store_category(store_category, data)
+            messages.success(self.request, "Store category updated successfully!")
+        except ValidationError as e:
+            messages.error(self.request, str(e))
+        return super().form_valid(form)
 
-class ToggleStoreCategoryStatus(View):
-    def post(self, request, category_id):
-        category = get_object_or_404(StoreCategoryModel, id=category_id)
-        category.is_active = not category.is_active
-        category.save()
-        return redirect('manage_Store_category_list') 
+    def form_invalid(self, form):
+        store_categories = store_category_service.get_all_store_categories()
+        return self.render_to_response(self.get_context_data(form=form, store_categories=store_categories))
 
-class ManageCategoryUpdateStoreView(View):
+# Delete View
+class ManageStoreCategoryDeleteView(View):
+    def post(self, request, pk, *args, **kwargs):
+        store_category = store_category_service.get_store_category_by_id(pk)
+        if not store_category:
+            messages.error(request, "Store category not found.")
+            return redirect("manage_store_category_list")
+
+        try:
+            store_category_service.delete_store_category(store_category)
+            messages.success(request, "Store category deleted successfully!")
+        except ValidationError as e:
+            messages.error(request, str(e))
+
+        return redirect("manage_store_category_list")
+
+# Toggle Active Status
+class ManageToggleStoreCategoryActiveView(View):
     def post(self, request, pk):
-        store = get_object_or_404(StoreCategoryModel, pk=pk)
-        form = StoreCategoryForm(request.POST, instance=store)
+        category = store_category_service.get_store_category_by_id(pk)
+        if not category:
+            messages.error(request, "Store category not found.")
+            return redirect("manage_store_category_list")
 
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Store updated successfully!")
-            return redirect('manage_Store_category_list')  # Ensure the URL name is correct
-        else:
-            messages.error(request, "Please correct the errors below.")
-            
-            # Ensure form errors are passed back to the template
-            store_category_list = StoreCategoryModel.objects.all()
-            return render(request, "admin/manage_store_category.html", {
-                "form": form,
-                "store_list": store_category_list,
-                "store": store,  # Ensure the store object is passed
-            })        
+        try:
+            new_status = not category.is_active
+            store_category_service.update_store_category(category, {'is_active': new_status})
+            status = "activated" if new_status else "deactivated"
+            messages.success(request, f"Category '{category.name}' has been {status}.")
+        except ValidationError as e:
+            messages.error(request, str(e))
+
+        return redirect("manage_store_category_list")

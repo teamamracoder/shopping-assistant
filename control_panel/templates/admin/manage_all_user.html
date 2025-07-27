@@ -44,7 +44,7 @@
         font-weight: bold;
     }
 
-    /*Modal Widht*/
+   
     @media (min-width: 1200px) {
         .modal-dialog {
             max-width: 90%; 
@@ -140,20 +140,22 @@
                         </div>
 
                         <div class="row">
-                            <div class="form-group col-md-6 mb-3">
-                                {{ form.roles.label_tag }}
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-person-badge"></i></span>
-                                    <select id="role" name="roles" class="form-select">
-                                        <option value="" selected>Select Roles</option>
-                                        {% for role in choices_role %}
-                                        {% for name, value in role.items %}
-                                            <option value="{{ name }}" {% if user.role == value %}selected{% endif %}>{{ value }}</option>
+                             <div class="form-group col-md-6 mb-3">
+                            {{ form.roles.label_tag }}
+                            <div class="input-group">
+                                 <span class="input-group-text">Role</span>
+                                <select id="role" name="roles" class="form-select" multiple>
+                                    {% for role in choices_role %}
+                                        {% for value, name in role.items %}
+                                            <option value="{{ value }}"
+                                                {% if value in user_model.roles %}selected{% endif %}>
+                                                {{ name }}
+                                            </option>
                                         {% endfor %}
-                                        {% endfor %}
-                                    </select>
-                                </div>
+                                    {% endfor %}
+                                </select>
                             </div>
+                        </div>
                             
                             <div class="form-group col-md-6 mb-3">
                                 {{ form.address.label_tag }}<span class="text-danger">*</span>
@@ -199,13 +201,23 @@
                             </div>                           
                         </div>
 
-                        <div class="form-group col-md-12 mb-3">
-                            {{ form.location.label_tag }}<span class="text-danger">*</span>
+                        <div class="row">
+                            <div class="form-group col-md-6 mb-3">
+                                {{ form.location.label_tag }}<span class="text-danger">*</span>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
                                 {{ form.location }}
+                                </div>
                             </div>
-                        </div>
+                            <div class="form-group col-md-6 mb-3">
+                              {{ form.country.label_tag }}<span class="text-danger">*</span>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
+                                {{ form.country }}
+                                </div>
+                            </div>                           
+                        </div>                   
+            
 
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary">Save</button>
@@ -225,32 +237,76 @@
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table" id="dataTable">
-    <thead>
-        <tr>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Email</th>
-            <th>Contact</th>
-            <th>Location</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for user in users %}
-        <tr data-id="{{ user.id }}">
-            <td>{{ user.first_name }}</td>
-            <td>{{ user.last_name }}</td>
-            <td>{{ user.email }}</td>
-            <td>{{ user.phone }}</td>
-            <td>{{ user.location }}</td>
-            <td>
-                <!-- Your buttons/forms -->
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+                    <thead class="table-primary">
+                        <tr>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Email</th>
+                            <th>Contact</th>
+                            <th>Location</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr data-id="{{ user.id }}">
+                            <td>{{ user.first_name }}</td>
+                            <td>{{ user.last_name }}</td>
+                            <td>{{ user.email }}</td>
+                            <td>{{ user.phone }}</td>
+                            <td>{{ user.location }}</td>
+                            <td>                               
+                                <a href="#" class="text-primary edit-btn"
+                                    data-id="{{ user.id }}"
+                                    data-first-name="{{ user.first_name }}"
+                                    data-last-name="{{ user.last_name }}"
+                                    data-email="{{ user.email }}"
+                                    data-dob="{{ user.dob|date:'Y-m-d' }}"
+                                    data-gender="{{ user.gender }}"
+                                    data-phone="{{ user.phone }}"
+                                    data-address="{{ user.address }}"
+                                    data-country="{{ user.country }}"
+                                    data-location="{{ user.location }}"
+                                    data-city="{{ user.city }}"
+                                    data-district="{{ user.district }}"
+                                    data-state="{{ user.state }}"
+                                    data-pincode="{{ user.pincode }}"
+                                    data-roles="{{ user.roles|safe }}"
+                                    data-action-url="{% url 'manage_user_update' user.id %}">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                            
+                                {% if user.id %}
+                                <form method="post" action="{% url 'manage_user_delete' user.id %}" style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn text-danger btn-sm"
+                                        onclick="return confirm('Are you sure you want to delete this user?');">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                                {% else %}
+                                    <button class="btn btn-danger btn-sm" disabled>
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                {% endif %}
 
+                                <form method="post" action="{% url 'manage_toggle_user_active' user.id %}" style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm {% if user.is_active %}text-success{% else %}text-muted{% endif %}"
+                                            title="Toggle visibility"
+                                            onclick="return confirm('Are you sure you want to toggle this user\'s visibility?');">
+                                        {% if user.is_active %}
+                                            <i class="bi bi-eye text-primary fs-6"></i>
+                                        {% else %}
+                                            <i class="bi bi-eye-slash text-danger fs-6"></i>
+                                        {% endif %}
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -273,7 +329,7 @@
     // Edit button functionality
     editButtons.forEach(btn => {
         btn.addEventListener('click', function () {
-            form.action = this.getAttribute('data-action-url');  // Set form action for edit
+            form.action = this.getAttribute('data-action-url');  // retrive the url name to send requests
             modalLabel.textContent = "Edit User";  // Change modal title to "Edit User"
             // Set form field values with the user's existing data
             form.elements['first_name'].value = this.getAttribute('data-first-name');
@@ -283,11 +339,30 @@
             form.elements['gender'].value = this.getAttribute('data-gender');
             form.elements['phone'].value = this.getAttribute('data-phone');
             form.elements['address'].value = this.getAttribute('data-address');
+            form.elements['country'].value = this.getAttribute('data-country');
             form.elements['location'].value = this.getAttribute('data-location');
             form.elements['city'].value = this.getAttribute('data-city');
             form.elements['district'].value = this.getAttribute('data-district');
             form.elements['state'].value = this.getAttribute('data-state');
             form.elements['pincode'].value = this.getAttribute('data-pincode');
+
+            form.elements['roles'].value = this.getAttribute('data-roles');
+
+                        // Parse roles from data attribute and update checkboxes
+            const roles = JSON.parse(this.getAttribute('data-roles').replace(/'/g, '"'));
+
+            // First, uncheck all
+            document.querySelectorAll('input[name="roles"]').forEach(cb => {
+                cb.checked = false;
+            });
+
+            // Then check those that match
+            document.querySelectorAll('input[name="roles"]').forEach(cb => {
+                if (roles.includes(parseInt(cb.value))) {
+                    cb.checked = true;
+                }
+            });
+
             // Show modal
             new bootstrap.Modal(document.getElementById('addUserModal')).show();
         });

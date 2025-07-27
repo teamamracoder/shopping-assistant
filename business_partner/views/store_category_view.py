@@ -8,7 +8,7 @@ from services import store_category_service
 
 class StoreCategoryListCreateView(APIView):
     def get(self, request):
-        categories = store_category_service.StoreCategoryService().list_store_categories()
+        categories = store_category_service.StoreCategoryService().get_all_store_categories()
         serializer = StoreCategorySerializer(categories, many=True)
         return Res.success("S-30001", serializer.data)
     

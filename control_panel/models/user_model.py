@@ -18,6 +18,7 @@ class UserModel(models.Model):
     address = models.TextField(blank=True, null=True)
     location = models.CharField(max_length=255, blank=True, null=True)
     city = models.CharField(max_length=100, blank=True, null=True)
+    country = models.CharField(max_length=100,blank=True,null=True) # new field added
     district = models.CharField(max_length=100, blank=True, null=True)
     state = models.CharField(max_length=100, blank=True, null=True)
     pincode = models.IntegerField(blank=True, null=True)
@@ -47,5 +48,5 @@ class UserModel(models.Model):
     class Meta:
         db_table = 'users'
          
-    def __str__(self):
+    def _str_(self):
         return f"ID: {self.id}, Created at: {self.created_at}, Active: {self.is_active}"

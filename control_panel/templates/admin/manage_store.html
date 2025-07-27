@@ -1,8 +1,8 @@
 {% extends "../index.html" %}
-{% block title %} Store {% endblock %}
+{% block title %} Stores {% endblock %}
 {% block content %}
-{% load static %}
 
+<<<<<<< HEAD
 <script>
     $(document).ready(function () {
         $('#storeForm').validate({
@@ -232,11 +232,15 @@
     });
 </script>
 
+=======
+>>>>>>> b679a55a6a8788e5c05397e8d9bb6abc9da56047
 <style>
-    .invalid-feedback {
-        color: red;
-        font-size: 0.875em;
+    .modal-title {
+        font-weight: bold;
+        flex-grow: 1;
+        text-align: center;
     }
+<<<<<<< HEAD
 </style>
 
 <div class="modal fade" id="storeModal" tabindex="-1" aria-labelledby="storeModalLabel" aria-hidden="true">
@@ -1234,6 +1238,9 @@
         position: fixed;
         bottom: 20px;
         right: 20px;
+=======
+    .circle-btn {
+>>>>>>> b679a55a6a8788e5c05397e8d9bb6abc9da56047
         width: 50px;
         height: 50px;
         border-radius: 50%;
@@ -1243,17 +1250,18 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 28px;
+        font-size: 24px;
         cursor: pointer;
-        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
-        transition: background-color 0.3s ease, transform 0.2s ease;
-        z-index: 1000;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        transition: background-color 0.3s ease;
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
     }
-
-    .floating-btn:hover {
+    .circle-btn:hover {
         background-color: darkblue;
-        transform: scale(1.1);
     }
+<<<<<<< HEAD
 
     /* Common styles for icons */
     /* Common button styles */
@@ -1292,6 +1300,517 @@
     .view-btn:hover {
         background-color: darkblue;
         transform: scale(1.1);
+=======
+    .input-group-text {
+        background-color: #c9dff1;
+        color: white;
+    }
+    .input-group i::before {
+        background-color: #205aa6;
+    }    
+    .row .form-group {
+        font-weight: bold;
+    }
+    @media (min-width: 1200px) {
+        .modal-dialog {
+            max-width: 90%;
+        }
+    }
+
+    .invalid-feedback {
+        font-size: 0.875rem;
+        color: #dc3545;
+        display: block;
+        margin-top: 0.25rem;
+    }
+    .is-invalid {
+        border-color: #dc3545 !important;
+    }
+    .text-danger {
+        font-size: 1rem;
+        font-weight: normal;
+>>>>>>> b679a55a6a8788e5c05397e8d9bb6abc9da56047
     }
 </style>
+
+<!-- PAGE CONTENT -->
+<div class="container-fluid">
+    <h1 class="h3 mb-2 text-gray-800">Stores</h1>
+    <p class="mb-4">Manage stores in the system.</p>
+
+    <!-- Add Store Button -->
+    <button class="circle-btn" id="addStoreCategoryBtn">
+        <i class="bi bi-plus-lg text-light"></i>
+    </button>
+
+    <!-- Store Modal (Shared for Add/Edit) -->
+    <div class="modal fade" id="addStoreModal" tabindex="-1" aria-labelledby="addStoreModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header bg-primary-subtle">
+                    <h5 class="modal-title fs-6" id="addStoreModalLabel">Add Store</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addStoreForm" method="post" enctype="multipart/form-data" action="{% url 'manage_store_create' %}" class="fw-bold" novalidate>
+                        {% csrf_token %}
+                        <input type="hidden" name="store_id" id="store_id">
+
+                        <div class="row">
+                            <div class="form-group col-md-6 mb-3">
+                                {{ form.store_name.label_tag }}<span class="text-danger">*</span>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-tag"></i></span>
+                                    {{ form.store_name }}
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6 mb-3">
+                                {{ form.registration_no.label_tag }}<span class="text-danger">*</span>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-123"></i></span>
+                                    {{ form.registration_no }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group col-md-6 mb-3">
+                                {{ form.gst_no.label_tag }}<span class="text-danger">*</span>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-receipt"></i></span>
+                                    {{ form.gst_no }}
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6 mb-3">
+                                {{ form.contact_no.label_tag }}<span class="text-danger">*</span>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+                                    {{ form.contact_no }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group col-md-6 mb-3">
+                                {{ form.email.label_tag }}<span class="text-danger">*</span>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                                    {{ form.email }}
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6 mb-3">
+                                {{ form.open_time.label_tag }}<span class="text-danger">*</span>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-clock"></i></span>
+                                    {{ form.open_time }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group col-md-6 mb-3">
+                                {{ form.close_time.label_tag }}<span class="text-danger">*</span>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-clock-history"></i></span>
+                                    {{ form.close_time }}
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6 mb-3">
+                                {{ form.pin_code.label_tag }}<span class="text-danger">*</span>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-geo"></i></span>
+                                    {{ form.pin_code }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group col-md-6 mb-3">
+                                {{ form.owner.label_tag }}<span class="text-danger">*</span>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-person"></i></span>
+                                    {{ form.owner }}
+                                </div>
+                            </div>
+                            <div class="form-group col-md-2 mb-3">
+                                <label for="store_images">Upload Store Images</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-images"></i></span>
+                                    <input type="file" id="store_images" name="store_images" multiple class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div id="imagePreviewContainer" style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px;"></div>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Save</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Stores</h6>
+    </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table" id="dataTable" width="100%" cellspacing="0">
+                    <thead class="table-primary">
+                        <tr>
+                            <th>Store Name</th>
+                            <th>Registration No</th>
+                            <th>GST No</th>
+                            <th>Open Time</th>
+                            <th>Close Time</th>
+                            <th>Pin Code</th>
+                            <th>Owner</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>            
+                    <tbody>
+                        {% for store in stores %}
+                        <tr>
+                            <td>{{ store.store_name }}</td>
+                            <td>{{ store.registration_no }}</td>
+                            <td>{{ store.gst_no }}</td>
+                            <td>{{ store.open_time }}</td>
+                            <td>{{ store.close_time }}</td>
+                            <td>{{ store.pin_code }}</td>
+                            <td>{{ store.owner }}</td>
+                            <td>
+
+                                <!-- Edit -->
+                                <a href="#" class="text-primary edit-btn"
+                                    data-id="{{ store.id }}"
+                                    data-name="{{ store.store_name }}"
+                                    data-registration-no="{{ store.registration_no }}"
+                                    data-gst-no="{{ store.gst_no }}"
+                                    data-contact-no="{{ store.contact_no }}"
+                                    data-email="{{ store.email }}"
+                                    data-pin-code="{{ store.pin_code }}"
+                                    data-open-time="{{ store.open_time|date:'Y-m-d\\TH:i' }}"
+                                    data-close-time="{{ store.close_time|date:'Y-m-d\\TH:i' }}"
+                                    data-owner="{{ store.owner.id }}"
+                                    data-store-category="{{ store.store_category.id }}"
+                                    data-store-image-urls="{{ store.store_image_urls }}"
+                                    data-is-active="{{ store.is_active }}"
+                                    data-action-url="{% url 'manage_store_edit' store.id %}">
+                                        <i class="bi bi-pencil-square fs-6"></i>
+                                </a>
+                                <!-- Delete -->
+                                <button type="button"
+                                    class="btn text-danger btn-sm delete-btn"
+                                    data-url="{% url 'manage_store_delete' store.id %}">
+                                    <i class="bi bi-trash fs-6"></i>
+                                </button>
+
+                                <!-- Toggle -->
+                                <form method="post" action="{% url 'manage_toggle_store_active' store.id %}" class="toggle-form d-inline">
+                                    {% csrf_token %}
+                                    <button type="button" class="btn btn-sm {% if store.is_active %}text-success{% else %}text-muted{% endif %} toggle-btn" title="Toggle visibility">
+                                        {% if store.is_active %}
+                                            <i class="bi bi-eye text-primary fs-6"></i>
+                                        {% else %}
+                                            <i class="bi bi-eye-slash text-danger fs-6"></i>
+                                        {% endif %}
+                                    </button>
+                                </form>
+
+                            </td>
+
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SCRIPTS -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const addStoreBtn = document.getElementById('addStoreCategoryBtn');
+        const addStoreModalEl = document.getElementById('addStoreModal');
+        const addStoreModal = new bootstrap.Modal(addStoreModalEl);
+        const imageInput = document.getElementById('store_images');
+        const previewContainer = document.getElementById('imagePreviewContainer');
+        const storeForm = document.getElementById('addStoreForm');
+
+        function resetStoreForm() {
+            // Reset the form and internal field values
+            storeForm.reset();
+
+            // Reset validation using jQuery Validate
+            if ($("#addStoreForm").data('validator')) {
+                $("#addStoreForm").validate().resetForm();
+            }
+
+            // Remove validation classes (including 'is-valid')
+            $('#addStoreForm')
+                .find('.is-invalid, .is-valid').removeClass('is-invalid is-valid').end()
+                .find('.text-danger, .invalid-feedback').remove();
+
+            // Clear hidden field for edit
+            document.getElementById('store_id').value = '';
+
+            // Set action to 'Add' URL
+            storeForm.action = "{% url 'manage_store_create' %}";
+
+            // Reset modal title
+            document.getElementById('addStoreModalLabel').innerText = 'Add Store';
+
+            // Clear preview images
+            previewContainer.innerHTML = '';
+
+            // Remove error summary if present
+            $('#form-error-summary').remove();
+        }
+
+
+        // Open modal for adding store
+        if (addStoreBtn) {
+            addStoreBtn.addEventListener('click', function () {
+                resetStoreForm();
+                addStoreModal.show();
+            });
+        }
+
+        // Open modal for editing store
+        document.querySelectorAll('.edit-btn').forEach(button => {
+            button.addEventListener('click', function (e) {
+                e.preventDefault();
+                const data = this.dataset;
+
+                // Reset form
+                storeForm.reset();
+
+                // Clear validation states
+                $('#addStoreForm')
+                    .find('.is-invalid').removeClass('is-invalid').end()
+                    .find('.text-danger').remove();
+
+                $('#form-error-summary').remove();
+
+                // Fill form fields
+                document.getElementById('store_id').value = data.id;
+                storeForm.action = data.actionUrl;
+                document.getElementById('addStoreModalLabel').innerText = 'Update Store';
+
+                document.getElementById('id_store_name').value = data.name;
+                document.getElementById('id_registration_no').value = data.registrationNo;
+                document.getElementById('id_gst_no').value = data.gstNo;
+                document.getElementById('id_contact_no').value = data.contactNo;
+                document.getElementById('id_email').value = data.email;
+                document.getElementById('id_pin_code').value = data.pinCode;
+                document.getElementById('id_open_time').value = data.openTime;
+                document.getElementById('id_close_time').value = data.closeTime;
+                document.getElementById('id_owner').value = data.owner;
+
+                // Image preview
+                previewContainer.innerHTML = '';
+                const imageUrls = data.storeImageUrls.split(',');
+                imageUrls.forEach(url => {
+                    const img = document.createElement('img');
+                    img.src = url.trim();
+                    img.style.width = '100px';
+                    img.style.height = '100px';
+                    img.style.objectFit = 'cover';
+                    img.style.borderRadius = '5px';
+                    previewContainer.appendChild(img);
+                });
+
+                addStoreModal.show();
+            });
+        });
+
+
+        // Image preview on select
+        if (imageInput) {
+            imageInput.addEventListener('change', function () {
+                previewContainer.innerHTML = '';
+                const files = Array.from(imageInput.files);
+                files.forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.style.width = '100px';
+                        img.style.height = '100px';
+                        img.style.objectFit = 'cover';
+                        img.style.borderRadius = '5px';
+                        previewContainer.appendChild(img);
+                    };
+                    reader.readAsDataURL(file);
+                });
+            });
+        }
+
+        // DELETE confirmation
+        document.querySelectorAll('.delete-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                const formUrl = this.getAttribute('data-url');
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "This will permanently delete the store.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = formUrl;
+                        form.innerHTML = `<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">`;
+                        document.body.appendChild(form);
+                        form.submit();
+                    }
+                });
+            });
+        });
+
+        // TOGGLE status
+        document.querySelectorAll('.toggle-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "Do you want to change this store's visibility?",
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes',
+                }).then(result => {
+                    if (result.isConfirmed) btn.closest('form').submit();
+                });
+            });
+        });
+
+        // jQuery Validation
+        $(document).ready(function () {
+            $("#addStoreForm").validate({
+                rules: {
+                    store_name: {
+                        required: true,
+                        minlength: 3
+                    },
+                    registration_no: {
+                        required: true,
+                        maxlength:16
+                    },
+                    gst_no: {
+                        required: true
+                    },
+                    contact_no: {
+                        required: true,
+                        digits: true,
+                        minlength:10,
+                        maxlength:15
+                    },
+                    pin_code: {
+                        required: true,
+                        digits: true,
+                        minlength:4,
+                        maxlength:6
+                    },
+                    email: {
+                        required: true,
+                        email: true
+                    },
+                    open_time: {
+                        required: true
+                    },
+                    close_time: {
+                        required: true
+                    },
+                    owner: {
+                        required: true
+                    }
+                },
+                messages: {
+                    store_name: {
+                        required: "Please enter the store name",
+                        minlength: "Store name must be at least 3 characters long"
+                    },
+                    registration_no: {
+                        required: "Please enter the registration number",
+                        maxlength:"registration no must be maximum 16 degits"
+
+                    },
+                    gst_no: {
+                        required: "Please enter the GST number"
+                    },
+                    contact_no: {
+                        required: "Please enter a contact number",
+                        digits: "Only digits allowed",
+                        minlength:"contact no must be minimum 10 digits",
+                        maxlength:"contact no must be maximum 15 degits"
+                    },
+                    pin_code: {
+                        required: "Please enter a pin code",
+                        digits: "Only digits allowed",
+                        minlength: "pin code must be minimum 4 digits",
+                        maxlength:"pin code must be maximum 6 degits"
+                    },
+                    email: {
+                        required: "Please enter an email address",
+                        email: "Please enter a valid email"
+                    },
+                    open_time: {
+                        required: "Please select opening time"
+                    },
+                    close_time: {
+                        required: "Please select closing time"
+                    },
+                    owner: {
+                        required: "Please select an owner"
+                    }
+                },
+                errorElement: 'div',
+                errorClass: 'text-danger d-block ms-1',
+                errorPlacement: function (error, element) {
+                    error.addClass("invalid-feedback");
+                    element.closest(".form-group").append(error);
+                },
+                highlight: function (element, errorClass, validClass) {
+                    $(element).addClass("is-invalid").removeClass("is-valid");
+                },
+                unhighlight: function (element, errorClass, validClass) {
+                    $(element).addClass("is-valid").removeClass("is-invalid");
+                },
+                submitHandler: function (form) {
+                    const storeId = $("#store_id").val();
+                    if (storeId) {
+                        form.action = `/control-panel/stores/edit/${storeId}/`;
+                    } else {
+                        form.action = "{% url 'manage_store_create' %}";
+                    }
+                    form.submit();
+                }
+            });
+
+            // Auto-show modal on form error
+            {% if form.errors %}
+                const storeId = "{{ request.POST.store_id|default:'' }}".trim();
+                if (storeId !== "") {
+                    document.getElementById('store_id').value = storeId;
+                    storeForm.action = `/control-panel/stores/edit/${storeId}/`;
+                    document.getElementById('addStoreModalLabel').innerText = 'Update Store';
+                } else {
+                    storeForm.action = "{% url 'manage_store_create' %}";
+                    document.getElementById('addStoreModalLabel').innerText = 'Add Store';
+                }
+                addStoreModal.show();
+            {% endif %}
+        });
+    });
+</script>
+
+
 {% endblock %}
