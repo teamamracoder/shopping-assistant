@@ -20,7 +20,6 @@ class ManageUserForm(forms.ModelForm):
             'country': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your country'}),
             'location': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your location'}),
             'city': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your city'}),
-            # 'city': forms.CharField(label='City/Vill:',widget=forms.TextInput(attrs={'class': 'form-control','placeholder': 'Enter your city'})),
             'district': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your district'}),
             'state': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your state'}),
             'pincode': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Enter your pincode', 'max-length': 6}),

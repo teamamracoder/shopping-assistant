@@ -22,7 +22,7 @@ class ManageUserListView(View):
         users = services.manage_user_service.get_all_users()
 
         # Initialize an empty form for user creation or management
-        form = ManageUserForm(initial={'country':'India'})
+        form = ManageUserForm()
 
         # Generate gender choices from the Gender enum (as a list of dictionaries)
         choices_gender = [{type.value : type.name} for type in Gender]
@@ -43,7 +43,7 @@ class ManageUserListView(View):
 class ManageUserCreateView(View):
     def get(self, request):
         users = services.manage_user_service.get_all_users()
-        form = ManageUserForm(initial={'country':'India'})
+        form = ManageUserForm()
         choices_gender = [{type.value : type.name} for type in Gender]
         choices_role = [{type.value : type.name} for type in Role]
         return render(request, "admin/manage_all_user.html", {'users': users, 'form': form, 'choices_gender': choices_gender, 'choices_role' : choices_role })
