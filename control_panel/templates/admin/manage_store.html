@@ -230,17 +230,6 @@
 
         });
     });
-    </script>
-
-    <style>
-        .is-invalid {
-            border-color: #dc3545 !important;
-        } 
-    
-        .invalid-feedback {
-            font-size: 1rem; /* normal font size */
-            font-weight: normal;        }
-    </style>
 </script>
 
 <style>
@@ -259,7 +248,8 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form method="POST" id="storeForm" enctype="multipart/form-data" action="{% url 'manage_create_store' %}" id="storeForm" >
+                <form method="POST" enctype="multipart/form-data" action="{% url 'manage_create_store' %}"
+                    id="storeForm">
                     {% csrf_token %}
                     <div class="row">
                         <!-- Store Name -->
@@ -343,14 +333,14 @@
                             </div>
                         </div>
 
-<!-- Store Category -->
-<div class="col-md-4 mb-3">
-    <label for="id_store_category">Store Category</label>
-    <div class="input-group">
-        <span class="input-group-text"><i class="bi bi-tags"></i></span>
-        {{ form.store_category }}
-    </div>
-</div>
+                        <!-- Store Category -->
+                        <div class="col-md-4 mb-3">
+                            <label for="id_store_category">Store Category</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-tags"></i></span>
+                                {{ form.store_category }}
+                            </div>
+                        </div>
 
                         <!-- Location -->
                         <div class="col-md-4 mb-3">
@@ -893,119 +883,31 @@
         fileInput.addEventListener("change", function () {
             const files = Array.from(fileInput.files);
 
-        <script>
-            function previewEditImage(input, storeId) {
-                const preview = document.getElementById('imagePreviewEdit' + storeId);
-                preview.innerHTML = ''; // Clear previous previews
-        
-                if (input.files && input.files.length > 0) {
-                    Array.from(input.files).forEach((file, index) => {
-                        const reader = new FileReader();
-                        reader.onload = function(e) {
-                            const wrapper = document.createElement('div');
-                            wrapper.className = 'position-relative';
-                            wrapper.style.marginRight = '10px';
-        
-                            const img = document.createElement("img");
-                            img.src = e.target.result;
-                            img.className = "img-thumbnail";
-                            img.style.maxHeight = "100px";
-        
-                            const removeBtn = document.createElement("button");
-                            removeBtn.type = "button";
-                            removeBtn.className = "btn btn-danger btn-sm position-absolute top-0 end-0 m-1";
-                            removeBtn.innerHTML = "&times;";
-                            removeBtn.onclick = function() {
-                                wrapper.remove();
-        
-        
-                            const img = document.createElement("img");
-                            img.src = e.target.result;
-                            img.className = "img-thumbnail";
-                            img.style.maxHeight = "100px";
-        
-                            const removeBtn = document.createElement("button");
-                            removeBtn.type = "button";
-                            removeBtn.className = "btn btn-danger btn-sm position-absolute top-0 end-0 m-1";
-                            removeBtn.innerHTML = "&times;";
-                            removeBtn.onclick = function() {
-                                wrapper.remove();
-        
+            // Reset previews and file list
+            previewContainer.innerHTML = "";
+            selectedFiles = files;
 
-                                // Optionally: Remove the file from the input field
-                                // Warning: This resets all files as we cannot modify FileList directly
-                                const dataTransfer = new DataTransfer();
-                                Array.from(input.files).forEach((f, i) => {
-                                    if (i !== index) {
-                                        dataTransfer.items.add(f);
-                                    }
-                                });
-                                input.files = dataTransfer.files;
-                            };
-        
-                            wrapper.appendChild(img);
-                            wrapper.appendChild(removeBtn);
-                            preview.appendChild(wrapper);
-                        };
-                        reader.readAsDataURL(file);
+            selectedFiles.forEach((file, index) => {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const previewDiv = document.createElement("div");
+                    previewDiv.classList.add("position-relative");
+
+                    previewDiv.innerHTML = `
+                            <img src="${e.target.result}" class="img-thumbnail" style="height:100px;width:100px;object-fit:cover;">
+                            <button type="button" class="btn-close position-absolute top-0 end-0" aria-label="Close" data-index="${index}"></button>
+                        `;
+
+                    previewContainer.appendChild(previewDiv);
+
+                    // Handle remove
+                    previewDiv.querySelector(".btn-close").addEventListener("click", function () {
+                        const removeIndex = parseInt(this.getAttribute("data-index"));
+                        selectedFiles.splice(removeIndex, 1);
+                        updateFileList();
                     });
-                }
-            }
-        </script>
-     
-            
-     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const fileInput = document.getElementById("store_images");
-            const previewContainer = document.getElementById("imagePreviewContainer");
-            let selectedFiles = [];
-        
-            fileInput.addEventListener("change", function () {
-                const files = Array.from(fileInput.files);
-        
-                // Reset previews and file list
-                previewContainer.innerHTML = "";
-                selectedFiles = files;
-
-        
-                selectedFiles.forEach((file, index) => {
-                    const reader = new FileReader();
-                    reader.onload = function (e) {
-                        const previewDiv = document.createElement("div");
-                        previewDiv.classList.add("position-relative");
-        
-                        previewDiv.innerHTML = `
-                            <img src="${e.target.result}" class="img-thumbnail" style="height:100px;width:100px;object-fit:cover;">
-                            <button type="button" class="btn-close position-absolute top-0 end-0" aria-label="Close" data-index="${index}"></button>
-                        `;
-        
-                        previewContainer.appendChild(previewDiv);
-        
-
-        
-                selectedFiles.forEach((file, index) => {
-                    const reader = new FileReader();
-                    reader.onload = function (e) {
-                        const previewDiv = document.createElement("div");
-                        previewDiv.classList.add("position-relative");
-        
-                        previewDiv.innerHTML = `
-                            <img src="${e.target.result}" class="img-thumbnail" style="height:100px;width:100px;object-fit:cover;">
-                            <button type="button" class="btn-close position-absolute top-0 end-0" aria-label="Close" data-index="${index}"></button>
-                        `;
-        
-                        previewContainer.appendChild(previewDiv);
-        
-
-                        // Handle remove
-                        previewDiv.querySelector(".btn-close").addEventListener("click", function () {
-                            const removeIndex = parseInt(this.getAttribute("data-index"));
-                            selectedFiles.splice(removeIndex, 1);
-                            updateFileList();
-                        });
-                    };
-                    reader.readAsDataURL(file);
-                });
+                };
+                reader.readAsDataURL(file);
             });
         });
 
@@ -1016,120 +918,8 @@
             fileInput.dispatchEvent(new Event('change'));
         }
     });
-});
-
-
-       </script>
-         
-
-        <style> 
-            .modal-content {
-                background: rgba(255, 255, 255, 0.9);
-                border-radius: 1rem;
-                backdrop-filter: blur(8px);
-                border: 1px solid #e3e3e3;
-                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            }
-            textarea.form-control {
-                height: calc(2.25rem + 2px);
-                resize: none;
-            }
-            .modal-header {
-                background: linear-gradient(135deg, #4e54c8, #8f94fb);
-                color: white;
-                padding: 1rem 1.5rem;
-                border-radius: 1rem 1rem 0 0;
-            }
-            #imagePreviewContainer img {
-            margin-right: 10px;
-            border-radius: 10px;
-        }
-            .modal-title {
-                font-weight: 600;
-                font-size: 1.4rem;
-                display: flex;
-                align-items: center;
-                gap: 0.5rem;
-            }
-        
-            .modal-body {
-                padding: 1.2rem 1.5rem;
-            }
-        
-            .form-label {
-                font-weight: 600;
-                font-size: 0.9rem;
-                color: #333;
-                margin-bottom: 0.2rem;
-            }
-        
-            .form-control,
-            .form-select {
-                border-radius: 0.5rem;
-                padding: 0.5rem 0.9rem;
-                font-size: 0.92rem;
-                border: 1px solid #ced4da;
-                transition: 0.2s ease-in-out;
-            }
-        
-            .form-control:focus,
-            .form-select:focus {
-                border-color: #4e54c8;
-                box-shadow: 0 0 0 0.15rem rgba(78, 84, 200, 0.2);
-            }
-        
-            .input-group-text {
-                background-color: #4e54c8;
-                color: white;
-                border: none;
-                border-radius: 0.5rem 0 0 0.5rem;
-                padding: 0.45rem 0.75rem;
-            }
-        
-            .custom-field-box {
-                background-color: #f9f9f9;
-                border-radius: 0.6rem;
-                /* padding: 0.75rem 1rem; */
-                margin-bottom: 1rem;
-                border: 1px solid #eee;
-                box-shadow: 0 0 3px rgba(0,0,0,0.02);
-            }
-        
-            .modal-footer {
-                padding: 1rem 1.5rem;
-                border-top: none;
-        
-                border-radius: 0 0 1rem 1rem;
-            }
-        
-            .btn-primary {
-                background: linear-gradient(to right, #4e54c8, #8f94fb);
-                border: none;
-                padding: 0.5rem 1.2rem;
-                font-weight: 600;
-                border-radius: 0.5rem;
-                font-size: 0.95rem;
-            }
-        
-            .btn-primary:hover {
-                background: linear-gradient(to right, #3d42b2, #7a7ef5);
-            }
-        
-            .btn-secondary {
-                border-radius: 0.5rem;
-                font-weight: 500;
-                padding: 0.5rem 1rem;
-                font-size: 0.95rem;
-            }
-        
-            .text-danger {
-                font-size: 0.82rem;
-            }
-            .custom-modal-xxl {
-                max-width: 95%;
-            }
-        </style>
-        
+</script>
+<!-- refresh page -->
 <script>
     document.querySelectorAll('.modal').forEach(modal => {
         modal.addEventListener('hidden.bs.modal', function () {
@@ -1276,22 +1066,164 @@
     .catch(error => console.error('Error:', error));
 }
 
-// Function to retrieve CSRF token from cookies
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            // Check if this cookie string begins with the desired name
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
+
+<style>
+    .modal-content {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 1rem;
+        backdrop-filter: blur(8px);
+        border: 1px solid #e3e3e3;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    textarea.form-control {
+        height: calc(2.25rem + 2px);
+        resize: none;
+    }
+
+    .modal-header {
+        background: linear-gradient(135deg, #4e54c8, #8f94fb);
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 1rem 1rem 0 0;
+    }
+
+    #imagePreviewContainer img {
+        margin-right: 10px;
+        border-radius: 10px;
+    }
+
+    .modal-title {
+        font-weight: 600;
+        font-size: 1.4rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .modal-body {
+        padding: 1.2rem 1.5rem;
+    }
+
+    .form-label {
+        font-weight: 600;
+        font-size: 0.9rem;
+        color: #333;
+        margin-bottom: 0.2rem;
+    }
+
+    .form-control,
+    .form-select {
+        border-radius: 0.5rem;
+        padding: 0.5rem 0.9rem;
+        font-size: 0.92rem;
+        border: 1px solid #ced4da;
+        transition: 0.2s ease-in-out;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #4e54c8;
+        box-shadow: 0 0 0 0.15rem rgba(78, 84, 200, 0.2);
+    }
+
+    .input-group-text {
+        background-color: #4e54c8;
+        color: white;
+        border: none;
+        border-radius: 0.5rem 0 0 0.5rem;
+        padding: 0.45rem 0.75rem;
+    }
+
+    .custom-field-box {
+        background-color: #f9f9f9;
+        border-radius: 0.6rem;
+        /* padding: 0.75rem 1rem; */
+        margin-bottom: 1rem;
+        border: 1px solid #eee;
+        box-shadow: 0 0 3px rgba(0, 0, 0, 0.02);
+    }
+
+    .modal-footer {
+        padding: 1rem 1.5rem;
+        border-top: none;
+
+        border-radius: 0 0 1rem 1rem;
+    }
+
+    .btn-primary {
+        background: linear-gradient(to right, #4e54c8, #8f94fb);
+        border: none;
+        padding: 0.5rem 1.2rem;
+        font-weight: 600;
+        border-radius: 0.5rem;
+        font-size: 0.95rem;
+    }
+
+    .btn-primary:hover {
+        background: linear-gradient(to right, #3d42b2, #7a7ef5);
+    }
+
+    .btn-secondary {
+        border-radius: 0.5rem;
+        font-weight: 500;
+        padding: 0.5rem 1rem;
+        font-size: 0.95rem;
+    }
+
+    .text-danger {
+        font-size: 0.82rem;
+    }
+
+    .custom-modal-xxl {
+        max-width: 95%;
+    }
+</style>
+
+<script>
+    function toggleStoreStatus(storeId, btnElement) {
+        // Send AJAX POST request to toggle store status
+        fetch(`/toggle-store-status/${storeId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'), // Ensure CSRF token is included
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                const iconElement = btnElement.querySelector('i');
+                if (data.is_active) {
+                    iconElement.classList.remove('bi-eye-slash-fill');
+                    iconElement.classList.add('bi-eye');
+                } else {
+                    iconElement.classList.remove('bi-eye');
+                    iconElement.classList.add('bi-eye-slash-fill');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    // Function to retrieve CSRF token from cookies
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                // Check if this cookie string begins with the desired name
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
             }
         }
+        return cookieValue;
     }
-    return cookieValue;
-}
+
+</script>
+
+
 
 </script>
 
