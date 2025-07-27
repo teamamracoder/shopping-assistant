@@ -4,6 +4,8 @@ from decorators import validate_serializer
 from utils.response_utils import Res
 from ..serializers import UserSerializer, UserCreateSerializer, UserUpdateSerializer
 from services.user_service import user_service
+from django.core.paginator import Paginator, EmptyPage
+from django.db.models import Q
 
 
 class UserListCreateAPIView(APIView):
@@ -67,13 +69,46 @@ class UserDetailAPIView(APIView):
 
 class MyCustomerListAPIView(APIView):
     def get(self, request):
+        # Hardcoded user for now (replace with request.user if using auth)
         user = user_service.get_user_by_id(5)
         if not user.is_seller:
             return Res.error(
                 data={"message": "You must be a seller to view customers"},
                 http_status=status.HTTP_403_FORBIDDEN
             )
-        
+
+        # Get all customers linked to the seller
         customers = user_service.get_my_customers(user)
-        serializer = UserSerializer(customers, many=True)
-        return Res.success("S-10001", serializer.data)
+
+        # --- Query string parameters ---
+        search = request.query_params.get('search', '')   # search by name
+        sort = request.query_params.get('sort', 'id')     # field to sort by
+        page = int(request.query_params.get('page', 1))   # default page 1
+        page_size = int(request.query_params.get('page_size', 5))  # default 5
+
+        # --- Search ---
+        if search:
+            customers = customers.filter(
+                Q(first_name__icontains=search) |
+                Q(last_name__icontains=search) |
+                Q(email__icontains=search)
+            )
+
+        # --- Sorting ---
+        if sort.lstrip('-') in ['id', 'first_name', 'last_name', 'email', 'created_at']:
+            customers = customers.order_by(sort)
+
+        # --- Pagination ---
+        paginator = Paginator(customers, page_size)
+        try:
+            paged_customers = paginator.page(page)
+        except EmptyPage:
+            paged_customers = []
+
+        serializer = UserSerializer(paged_customers, many=True)
+        return Res.success("S-10001", {
+            "results": serializer.data,
+            "total": paginator.count,
+            "page": page,
+            "pages": paginator.num_pages
+        })
