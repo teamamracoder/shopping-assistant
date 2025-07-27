@@ -13,14 +13,7 @@ from django.views.generic import UpdateView
 from django.contrib import messages
 from django.urls import reverse_lazy
 from django.db import IntegrityError
-
-# ---------------------------
-from django.views.generic import UpdateView
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.urls import reverse_lazy
 from ..models import UserModel
-from ..forms import ManageUserForm
-from django.contrib import messages
 
 
 #List (READ ALL)

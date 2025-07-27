@@ -259,7 +259,7 @@
                                     data-first-name="{{ user.first_name }}"
                                     data-last-name="{{ user.last_name }}"
                                     data-email="{{ user.email }}"
-                                    data-dob="{{ user.dob }}"
+                                    data-dob="{{ user.dob|date:'Y-m-d' }}"
                                     data-gender="{{ user.gender }}"
                                     data-phone="{{ user.phone }}"
                                     data-address="{{ user.address }}"
