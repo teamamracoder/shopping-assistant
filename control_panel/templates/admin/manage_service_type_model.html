@@ -54,6 +54,7 @@
     const addButton = document.querySelector('.circle-btn');
     const form = document.getElementById('addUserForm');
     const modalLabel = document.getElementById('addUserModalLabel');
+
     // ADD: Reset form
     addButton.addEventListener('click', function () {
       form.reset();
@@ -77,6 +78,9 @@
 <div class="container-fluid">
 
   <h1 class="h3 mb-2 text-gray-800">Service Type
+
+
+
   </h1>
   <p class="mb-4">Manage service type in the system.</p>
 
@@ -97,7 +101,7 @@
           <form id="addUserForm" method="POST" action="{% url 'manage_service_type_model_create' %}" class="fw-bold">
             {% csrf_token %}
             <div class="row">
-              <div class="form-group col-md-12 mb-3" name="service_name">
+              <div class="form-group col-md-6 mb-3">
                 {{ form.service_name.label_tag }}<span class="text-danger">*</span>
                 {{ form.service_name }}
               </div>
@@ -120,7 +124,7 @@
     <div class="card-body">
   <div class="table-responsive">
     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-      <thead>
+      <thead class="table-primary">
         <tr>
           <th>Service Name</th>
           <th>Actions</th>
@@ -206,4 +210,4 @@
 </script>
   
 
-{% endblock %}
+{% endblock %}.

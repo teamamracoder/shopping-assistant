@@ -19,75 +19,48 @@ from ..models import UserModel
 #List (READ ALL)
 class ManageUserListView(View):
     def get(self, request):
-        users = services.manage_user_service.get_all_users()
-
-        # Initialize an empty form for user creation or management
+        users = UserModel.objects.all()
         form = ManageUserForm()
-
-        # Generate gender choices from the Gender enum (as a list of dictionaries)
         choices_gender = [{type.value : type.name} for type in Gender]
-
-        # Generate role choices from the Role enum (as a list of dictionaries)
         choices_role = [{type.value : type.name} for type in Role]
-
-        # Render the 'manage_all_user.html' template with the user list, form, and choice data
-        return render(request, "admin/manage_all_user.html", {
-            'users': users,
-            'form': form,
-            'choices_gender': choices_gender,
-            'choices_role': choices_role
-        })
-
+        return render(request, "admin/manage_all_user.html", {'users': users, 'form': form, 'choices_gender': choices_gender, 'choices_role' : choices_role   })
 
 # CREATE VIEW (not working properly)
 class ManageUserCreateView(View):
     def get(self, request):
-        users = services.manage_user_service.get_all_users()
+        users = UserModel.objects.all()
         form = ManageUserForm()
         choices_gender = [{type.value : type.name} for type in Gender]
         choices_role = [{type.value : type.name} for type in Role]
         return render(request, "admin/manage_all_user.html", {'users': users, 'form': form, 'choices_gender': choices_gender, 'choices_role' : choices_role })
 
     def post(self, request):
-        # Initialize the form with POST data from the request
-        form = ManageUserForm(request.POST) 
-        # Fetch all users to be displayed on the template
-        users = services.manage_user_service.get_all_users()
-        # Prepare gender choices for rendering in the form (as list of dictionaries)
+        form = ManageUserForm(request.POST)
+        users = UserModel.objects.all()
         choices_gender = [{type.value: type.name} for type in Gender]
-        # Prepare role choices for rendering in the form (as list of dictionaries)
         choices_role = [{type.value: type.name} for type in Role]
 
-        # Validate the submitted form data
         if form.is_valid():
-            # Extract cleaned form data into a dictionary for user creation
-            user_data = {
-                'first_name' : form.cleaned_data['first_name'],
-                'last_name'  : form.cleaned_data['last_name'],
-                'email'      : form.cleaned_data['email'],
-                'dob'        : form.cleaned_data['dob'],
-                'gender'     : form.cleaned_data['gender'],
-                'phone'      : form.cleaned_data['phone'],
-                'address'    : form.cleaned_data['address'],
-                'country'    :  form.cleaned_data['country'],
-                'location'   : form.cleaned_data['location'],
-                'city'       : form.cleaned_data['city'],
-                'district'   : form.cleaned_data['district'],
-                'state'      : form.cleaned_data['state'],
-                'pincode'    : form.cleaned_data['pincode'],
-                'roles'      : form.cleaned_data['roles'],
-            }
-            # Call the service to create a new user with the form data
-            services.manage_user_service.manage_create_user(**user_data)
-            # Display a success message to the admin
+            user_data = UserModel.objects.create(
+            first_name=form.cleaned_data['first_name'],
+            last_name=form.cleaned_data['last_name'],
+            email=form.cleaned_data['email'],
+            dob=form.cleaned_data['dob'],
+            gender=form.cleaned_data['gender'],
+            phone=form.cleaned_data['phone'],
+            address=form.cleaned_data['address'],
+            location=form.cleaned_data['location'],
+            city=form.cleaned_data['city'],
+            district=form.cleaned_data['district'],
+            state=form.cleaned_data['state'],
+            pincode=form.cleaned_data['pincode'],
+            roles=form.cleaned_data['roles']
+            )
             messages.success(request, 'User created successfully.')
-            # Reset the form after successful submission
             form = ManageUserForm()  # reset the form
         else:
-            # Print form errors for checking purposes
             print("Form errors:", form.errors)
 
-        # Render the template with users list, form, and gender/role choices
         return render(request, "admin/manage_all_user.html", {
             'users': users,
             'form': form,

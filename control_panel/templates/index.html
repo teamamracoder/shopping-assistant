@@ -11,73 +11,67 @@
 
     <title>SA Admin Dashboard</title>
 
-   <!-- ✅ CSS SECTION -->
+    <!-- ✅ CSS SECTION -->
 
-    <!-- link add by tufan -->
-     <!-- Bootstrap CSS -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-<!-- Bootstrap Icons -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-<!-- Bootstrap CSS -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="{% static 'control_panel/vendor/fontawesome-free/css/all.min.css' %}">
 
-<!-- Bootstrap Icons -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
 
-<!-- Font Awesome -->
-<link rel="stylesheet" href="{% static 'control_panel/vendor/fontawesome-free/css/all.min.css' %}">
+    <!-- SB Admin 2 CSS -->
+    <link rel="stylesheet" href="{% static 'control_panel/css/sb-admin-2.min.css' %}">
 
-<!-- Google Fonts -->
-<link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
-
-<!-- SB Admin 2 CSS -->
-<link rel="stylesheet" href="{% static 'control_panel/css/sb-admin-2.min.css' %}">
-
-<!-- DataTables CSS -->
-<link rel="stylesheet" href="{% static 'control_panel/vendor/datatables/dataTables.bootstrap4.min.css' %}">
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="{% static 'control_panel/vendor/datatables/dataTables.bootstrap4.min.css' %}">
 
 
-<!-- ✅ JS SECTION -->
+    <!-- ✅ JS SECTION -->
 
-<!-- jQuery (Only once!) -->
-<script src="{% static 'control_panel/vendor/jquery/jquery.min.js' %}"></script>
+    <!-- jQuery (Only once!) -->
+    <script src="{% static 'control_panel/vendor/jquery/jquery.min.js' %}"></script>
 
-<!-- Bootstrap Bundle (includes Popper) -->
-<script src="{% static 'control_panel/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <!-- Bootstrap Bundle (includes Popper) -->
+    <script src="{% static 'control_panel/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
 
-<!-- jQuery Easing (for SB Admin animations) -->
-<script src="{% static 'control_panel/vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+    <!-- jQuery Easing (for SB Admin animations) -->
+    <script src="{% static 'control_panel/vendor/jquery-easing/jquery.easing.min.js' %}"></script>
 
-<!-- SB Admin 2 -->
-<script src="{% static 'control_panel/js/sb-admin-2.min.js' %}"></script>
+    <!-- SB Admin 2 -->
+    <script src="{% static 'control_panel/js/sb-admin-2.min.js' %}"></script>
 
-<!-- Chart.js -->
-<script src="{% static 'control_panel/vendor/chart.js/Chart.min.js' %}"></script>
-<script src="{% static 'control_panel/js/demo/chart-area-demo.js' %}"></script>
-<script src="{% static 'control_panel/js/demo/chart-bar-demo.js' %}"></script>
-<script src="{% static 'control_panel/js/demo/chart-pie-demo.js' %}"></script>
+    <!-- Chart.js -->
+    <script src="{% static 'control_panel/vendor/chart.js/Chart.min.js' %}"></script>
+    <script src="{% static 'control_panel/js/demo/chart-area-demo.js' %}"></script>
+    <script src="{% static 'control_panel/js/demo/chart-bar-demo.js' %}"></script>
+    <script src="{% static 'control_panel/js/demo/chart-pie-demo.js' %}"></script>
 
-<!-- DataTables -->
-<script src="{% static 'control_panel/vendor/datatables/jquery.dataTables.min.js' %}"></script>
-<script src="{% static 'control_panel/vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
+    <!-- DataTables -->
+    <script src="{% static 'control_panel/vendor/datatables/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'control_panel/vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
 
-<!-- Your DataTables Initialization -->
-<script src="{% static 'control_panel/js/demo/datatables-demo.js' %}"></script>
+    <!-- Your DataTables Initialization -->
+    <script src="{% static 'control_panel/js/demo/datatables-demo.js' %}"></script>
 
-<!-- jQuery Validation -->
-<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+    <!-- jQuery Validation -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
 
-<!-- SweetAlert2 -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
 
 </head>
 
-<body id="page-top" >
+<body id="page-top">
 
     <!-- Page Wrapper -->
     <div id="wrapper">
@@ -144,7 +138,7 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <!-- <h6 class="collapse-header">Custom Utilities:</h6> -->
                         <a class="collapse-item" href="/control-panel/stores/">Stores</a>
-                        <a class="collapse-item" href="/control-panel/stores/category/">Store Categories</a>
+                        <a class="collapse-item" href="/control-panel/store_categories/">Store Categories</a>
                     </div>
                 </div>
             </li>
@@ -213,14 +207,15 @@
             <div class="sidebar-heading">
                 Template Controls
             </div>
-            
+
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTemplates"
-                   aria-expanded="false" aria-controls="collapseTemplates">
+                    aria-expanded="false" aria-controls="collapseTemplates">
                     <i class="fas fa-fw fa-envelope"></i>
                     <span>Email Templates</span>
                 </a>
-                <div class="collapse" id="collapseTemplates" aria-labelledby="headingTemplates" data-parent="#accordionSidebar">
+                <div class="collapse" id="collapseTemplates" aria-labelledby="headingTemplates"
+                    data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <a class="collapse-item" href="/control-panel/templates/">Templates</a>
                     </div>
@@ -406,8 +401,7 @@
                                 </h6>
                                 <a class="dropdown-item d-flex align-items-center" href="#">
                                     <div class="dropdown-list-image mr-3">
-                                        <img class="rounded-circle" src="img/undraw_profile_1.svg"
-                                            alt="...">
+                                        <img class="rounded-circle" src="img/undraw_profile_1.svg" alt="...">
                                         <div class="status-indicator bg-success"></div>
                                     </div>
                                     <div class="font-weight-bold">
@@ -418,8 +412,7 @@
                                 </a>
                                 <a class="dropdown-item d-flex align-items-center" href="#">
                                     <div class="dropdown-list-image mr-3">
-                                        <img class="rounded-circle" src="img/undraw_profile_2.svg"
-                                            alt="...">
+                                        <img class="rounded-circle" src="img/undraw_profile_2.svg" alt="...">
                                         <div class="status-indicator"></div>
                                     </div>
                                     <div>
@@ -430,8 +423,7 @@
                                 </a>
                                 <a class="dropdown-item d-flex align-items-center" href="#">
                                     <div class="dropdown-list-image mr-3">
-                                        <img class="rounded-circle" src="img/undraw_profile_3.svg"
-                                            alt="...">
+                                        <img class="rounded-circle" src="img/undraw_profile_3.svg" alt="...">
                                         <div class="status-indicator bg-warning"></div>
                                     </div>
                                     <div>
@@ -469,7 +461,7 @@
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                 aria-labelledby="userDropdown">
-                                <a class="dropdown-item" href="#">
+                                <a class="dropdown-item" href="/control-panel/profile/">
                                     <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Profile
                                 </a>
@@ -495,7 +487,7 @@
                 <!-- End of Topbar -->
 
                 <!-- Begin Page Content -->
-                <div class="container-fluid" >
+                <div class="container-fluid">
                     {% block content %}
                     <!-- Main  -->
                     {% endblock %}
@@ -503,7 +495,7 @@
 
                 <!-- /.container-fluid -->
 
-                
+
             </div>
             <!-- End of Main Content -->
 
@@ -548,8 +540,8 @@
         </div>
     </div>
 
-   <!-- Bootstrap JS (for modal functionality) -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap JS (for modal functionality) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 
