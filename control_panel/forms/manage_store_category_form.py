@@ -1,13 +1,18 @@
 from django import forms
+from django.core.validators import MinLengthValidator, MaxLengthValidator
 from ..models import StoreCategoryModel
 
-class StoreCategoryForm(forms.ModelForm):
+class ManageStoreCategoryForm(forms.ModelForm):
+
     class Meta:
         model = StoreCategoryModel
-        fields = ['name', 'is_active', 'created_by', 'updated_by']
+        fields = '__all__'
+
         widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter category name'}),
-            'is_active': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
-            'created_by': forms.Select(attrs={'class': 'form-select'}),
-            'updated_by': forms.Select(attrs={'class': 'form-select'}),
+            'name': forms.TextInput(attrs={"class": "form-control", 'name': 'name','id': 'id_name', "placeholder": "Enter category name"}),
+        }
+
+        labels = {
+            'name': "Store Category Name",
+            'is_active': "Active",
         }

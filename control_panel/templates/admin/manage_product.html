@@ -210,7 +210,7 @@
                         <tr>
                             <th>Name</th>
                             <th>Category</th>
-                            <th>Description</th>
+                            <!-- <th>Description</th> -->
                             <th>Price</th>
                             <th>Discount (%)</th>
                             <th>Quantity</th>
@@ -224,7 +224,7 @@
                         <tr>
                             <td>{{ product.name }}</td>
                             <td>{{ product.category }}</td>
-                            <td>{{ product.description }}</td>
+                            <!-- <td>{{ product.description }}</td> -->
                             <td>${{ product.price }}</td>
                             <td>{{ product.discount_per }}%</td>
                             <td>{{ product.quantity }}</td>
@@ -464,16 +464,19 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     {% for message in messages %}
+        {% if 'product' in message.tags %}
         Swal.fire({
-            icon: '{% if message.tags == "success" %}success{% elif message.tags == "error" or message.tags == "danger" %}error{% else %}info{% endif %}',
+            icon: '{% if message.tags == "success product" or message.tags == "product success" %}success{% elif "error" in message.tags or "danger" in message.tags %}error{% else %}info{% endif %}',
             title: "Good job..!",
             text: '{{ message|escapejs }}',
             timer: 3000,
             showConfirmButton: false
         });
+        {% endif %}
     {% endfor %}
 });
 </script>
 {% endif %}
+
 
 {% endblock %}
