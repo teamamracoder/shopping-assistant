@@ -31,6 +31,15 @@ class ProductSubCategoryDetailAPIView(APIView):
             return Res.error(data={"message": "Sub-category not found"}, http_status=status.HTTP_404_NOT_FOUND)
         updated = services.product_sub_category_service.update_sub_category(sub_category, request.serializer.validated_data)
         return Res.success("S-20001", ProductSubCategorySerializer(updated).data)
+    
+    @validate_serializer(ProductSubCategorySerializer)
+    def patch(self, request, pk):
+        sub_category = services.product_sub_category_service.get_sub_category_by_id(pk)
+        if not sub_category:
+            return Res.error(data={"message": "Sub-category not found"}, http_status=status.HTTP_404_NOT_FOUND)
+        
+        updated = services.product_sub_category_service.update_sub_category(sub_category, request.serializer.validated_data)
+        return Res.success("S-20001", ProductSubCategorySerializer(updated).data)
 
     def delete(self, request, pk):
         sub_category = services.product_sub_category_service.get_sub_category_by_id(pk)
