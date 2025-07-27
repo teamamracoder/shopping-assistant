@@ -6,7 +6,6 @@ from ..models import ServiceBookingModel
 from ..forms import ManageServiceBookingForm
 from django.utils import timezone
 
-# JUST ADD PREFIX Manage in clss name
 
 #CREATE AND READ(ALL) VIEWS
 class ManageServiceBookingCreateView(View):
@@ -75,4 +74,5 @@ class ManageToggleServiceBookingActiveView(View):
         booking.is_active = not booking.is_active
         booking.save()
         return redirect('manage_service_booking_create')  # Replace with your actual list view name
+    
     

@@ -13,6 +13,7 @@ from django.views.generic import UpdateView
 from django.contrib import messages
 from django.urls import reverse_lazy
 from django.db import IntegrityError
+from ..models import UserModel
 
 
 #List (READ ALL)
@@ -69,12 +70,15 @@ class ManageUserCreateView(View):
 
 #DELETE VIEW
 class ManageUserDeleteView(View):
-    def post(self,request,user_id):
-        user = UserModel.objects.get(id=user_id)
-        user.delete()  # Delete user
-        return redirect("manage_user_list")  # Redirect to list after deletion
+    # View method to handle POST request for deleting a user
+    def post(self, request, user_id):
+        # Call the service method to delete the specified user
+        services.manage_user_service.manage_user_delete(user_id)
+        
+        # Redirect to the user management list page after deletion
+        return redirect("manage_user_list")
+    
 
-#UPDATE VIEW
 class ManageUserUpdateView(UpdateView):
     model = UserModel
     form_class = ManageUserForm
