@@ -11,7 +11,7 @@ class ManageUserProfileView(View):
     
     def get_user_instance(self):
         """Get user with id=1 (must exist)"""
-        user = UserModel.objects.get(id=1)
+        user = UserModel.objects.get(id=2)
         return user
     
     def get(self, request):
