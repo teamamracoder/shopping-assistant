@@ -428,19 +428,23 @@
                         minlength: 3
                     },
                     registration_no: {
-                        required: true
+                        required: true,
+                        maxlength:16
                     },
                     gst_no: {
                         required: true
                     },
                     contact_no: {
                         required: true,
-                        digits: true
+                        digits: true,
+                        minlength:10,
+                        maxlength:15
                     },
                     pin_code: {
                         required: true,
                         digits: true,
-                        maxlength: 6
+                        minlength:4,
+                        maxlength:6
                     },
                     email: {
                         required: true,
@@ -462,19 +466,24 @@
                         minlength: "Store name must be at least 3 characters long"
                     },
                     registration_no: {
-                        required: "Please enter the registration number"
+                        required: "Please enter the registration number",
+                        maxlength:"registration no must be maximum 16 degits"
+
                     },
                     gst_no: {
                         required: "Please enter the GST number"
                     },
                     contact_no: {
                         required: "Please enter a contact number",
-                        digits: "Only digits allowed"
+                        digits: "Only digits allowed",
+                        minlength:"contact no must be minimum 10 digits",
+                        maxlength:"contact no must be maximum 15 degits"
                     },
                     pin_code: {
                         required: "Please enter a pin code",
                         digits: "Only digits allowed",
-                        minlength: "pin code must be maximum 6 characters"
+                        minlength: "pin code must be minimum 4 digits",
+                        maxlength:"pin code must be maximum 6 degits"
                     },
                     email: {
                         required: "Please enter an email address",
@@ -491,27 +500,27 @@
                     }
                 },
                 errorElement: 'div',
-                errorClass: 'text-danger',
-                            errorElement: "span",
-            errorPlacement: function (error, element) {
-                error.addClass("invalid-feedback");
-                element.closest(".form-group").append(error);
-            },
-            highlight: function (element, errorClass, validClass) {
-                $(element).addClass("is-invalid").removeClass("is-valid");
-            },
-            unhighlight: function (element, errorClass, validClass) {
-                $(element).addClass("is-valid").removeClass("is-invalid");
-            },
-            submitHandler: function (form) {
-                const storeId = $("#store_id").val();
-                if (storeId) {
-                    form.action = `/control-panel/stores/edit/${storeId}/`;
-                } else {
-                    form.action = "{% url 'manage_store_create' %}";
+                //errorClass: 'text-danger',
+                //errorElement: "span",
+                errorPlacement: function (error, element) {
+                    error.addClass("invalid-feedback");
+                    element.closest(".form-group").append(error);
+                },
+                highlight: function (element, errorClass, validClass) {
+                    $(element).addClass("is-invalid").removeClass("is-valid");
+                },
+                unhighlight: function (element, errorClass, validClass) {
+                    $(element).addClass("is-valid").removeClass("is-invalid");
+                },
+                submitHandler: function (form) {
+                    const storeId = $("#store_id").val();
+                    if (storeId) {
+                        form.action = `/control-panel/stores/edit/${storeId}/`;
+                    } else {
+                        form.action = "{% url 'manage_store_create' %}";
+                    }
+                    form.submit();
                 }
-                form.submit();
-            }
             });
 
             // Auto-show modal on form error
