@@ -31,6 +31,16 @@ class ProductCategoryDetailAPIView(APIView):
             return Res.error(data={"message": "Category not found"}, http_status=status.HTTP_404_NOT_FOUND)
         updated_category = services.product_category_service.update_category(category, request.serializer.validated_data)
         return Res.success("S-20001", ProductCategorySerializer(updated_category).data)
+    
+    def patch(self, request, pk):
+        category = services.product_category_service.get_category_by_id(pk)
+        if not category:
+            return Res.error(data={"message": "Category not found"}, http_status=status.HTTP_404_NOT_FOUND)
+
+        # Perform soft delete
+        services.product_category_service.delete_category(category)
+        return Res.success("S-20003", {"message": "Category soft deleted (is_active=False)"})
+
 
     def delete(self, request, pk):
         category = services.product_category_service.get_category_by_id(pk)

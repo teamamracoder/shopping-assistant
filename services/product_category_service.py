@@ -4,11 +4,11 @@ from control_panel.models import ProductCategoryModel
 
 class ProductCategoryModelService:
     def get_all_categories(self):
-        return ProductCategoryModel.objects.all()
+        return ProductCategoryModel.objects.filter(is_active=True)
 
     def get_category_by_id(self, pk):
         try:
-            return ProductCategoryModel.objects.get(pk=pk)
+            return ProductCategoryModel.objects.get(pk=pk, is_active=True)
         except ProductCategoryModel.DoesNotExist:
             return None
 
@@ -31,7 +31,8 @@ class ProductCategoryModelService:
 
     def delete_category(self, category):
         try:
-            category.delete()
+            category.is_active = False
+            category.save()
         except Exception as e:
             raise ValidationError(f"Error deleting category: {str(e)}")
 
