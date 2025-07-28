@@ -10,7 +10,7 @@ from django.core.exceptions import ValidationError
 
 store_service = storeModelService()
 
-# List View
+## Store List View ##
 class ManageStoreListView(View):
     def get(self, request):
         stores = store_service.get_all_stores()
@@ -20,7 +20,7 @@ class ManageStoreListView(View):
         })
 
 
-# Create View
+## Create View ##
 class ManageStoreCreateView(View):
     def get(self, request): 
         form = ManageStoreForm()
@@ -69,7 +69,7 @@ class ManageStoreCreateView(View):
         })
 
 
-# Edit View
+## Edit View ##
 class ManageStoreEditView(View):
     def post(self, request, pk):
         store = store_service.get_store_by_id(pk)
@@ -114,8 +114,7 @@ class ManageStoreEditView(View):
     })
 
 
-
-# Delete View
+## Delete View ##
 class ManageStoreDeleteView(View):
     def post(self, request, pk, *args, **kwargs):
         store = store_service.get_store_by_id(pk)
@@ -132,18 +131,12 @@ class ManageStoreDeleteView(View):
         return redirect("manage_store_list")
 
 
-# Toggle Active/Inactive
+## Toggle Active/Inactive ##
 class ManageToggleStoreActiveView(View):
     def post(self, request, pk, *args, **kwargs):
-        store = store_service.get_store_by_id(pk)
-        if not store:
-            messages.error(request, "Store not found.")
-            return redirect("manage_store_list")
-
-        new_status = not store.is_active
         try:
-            store_service.update_store(store, {"is_active": new_status})
-            status = "activated" if new_status else "deactivated"
+            store = store_service.toggle_store_status(pk, updated_by=request.user)
+            status = "activated" if store.is_active else "deactivated"
             messages.success(request, f"Store '{store.store_name}' has been {status}.")
         except ValidationError as e:
             messages.error(request, str(e))

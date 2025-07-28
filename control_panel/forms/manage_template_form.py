@@ -1,7 +1,6 @@
 from django import forms
 from ..models import TemplateModel
 
-
 class ManageTemplateForm(forms.ModelForm):
     class Meta:
         model = TemplateModel

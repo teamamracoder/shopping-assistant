@@ -2,7 +2,6 @@ from django import forms
 from ..models import ProductSubCategoryModel
 from django.core.validators import MinLengthValidator, MaxLengthValidator
 
-
 class ManageProductSubCategoryForm(forms.ModelForm):
 
     class Meta:

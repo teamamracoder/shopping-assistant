@@ -35,3 +35,27 @@ class ProductCategoryModelService:
         except Exception as e:
             raise ValidationError(f"Error deleting category: {str(e)}")
 
+
+    def toggle_category_status(self, pk, updated_by=None):
+        """
+        Toggle the is_active status of a product category.
+        :param pk: Primary key of the category
+        :param updated_by: User performing the toggle
+        :return: Updated ProductCategoryModel instance
+        :raises ValidationError: If not found or save fails
+        """
+        category = self.get_category_by_id(pk)
+        if not category:
+            raise ValidationError("Product category not found.")
+
+        category.is_active = not category.is_active
+
+        # ✅ Only assign if authenticated user is passed
+        if updated_by and updated_by.is_authenticated:
+            category.updated_by = updated_by
+
+        try:
+            category.save()
+            return category
+        except IntegrityError:
+            raise ValidationError("Failed to toggle category status due to integrity issues.")

@@ -99,15 +99,9 @@ class ManageProductSubCategoryDeleteView(View):
 # Toggle Active View
 class ManageToggleProductSubCategoryActiveView(View):
     def post(self, request, pk, *args, **kwargs):
-        subcategory = subcategory_service.get_sub_category_by_id(pk)
-        if not subcategory:
-            messages.error(request, "Subcategory not found.")
-            return redirect("manage_product_sub_category_list")
-
         try:
-            new_status = not subcategory.is_active
-            subcategory_service.update_sub_category(subcategory, {'is_active': new_status})
-            status_text = "activated" if new_status else "deactivated"
+            subcategory = subcategory_service.toggle_sub_category_status(pk)
+            status_text = "activated" if subcategory.is_active else "deactivated"
             messages.success(request, f"Subcategory '{subcategory.name}' has been {status_text}.")
         except ValidationError as e:
             messages.error(request, str(e))

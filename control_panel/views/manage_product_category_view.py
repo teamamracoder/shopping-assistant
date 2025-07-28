@@ -92,19 +92,11 @@ class ManageProductCategoryDeleteView(View):
 # Toggle Active Status
 class ManageToggleProductCategoryActiveView(View):
     def post(self, request, pk, *args, **kwargs):
-        category = category_service.get_category_by_id(pk)
-        if not category:
-            messages.error(request, "Category not found.")
-            return redirect("manage_product_category_list")
-
         try:
-            new_status = not category.is_active
-            category_service.update_category(category, {'is_active': new_status})
-            status_text = "activated" if new_status else "deactivated"
+            category = category_service.toggle_category_status(pk, updated_by=request.user)
+            status_text = "activated" if category.is_active else "deactivated"
             messages.success(request, f"Category '{category.name}' has been {status_text}.")
         except ValidationError as e:
             messages.error(request, str(e))
 
-        return redirect("manage_product_category_list")
-    
-    
+        return redirect("manage_product_category_list")  

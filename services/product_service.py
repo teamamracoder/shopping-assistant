@@ -73,4 +73,26 @@ class ProductModelService:
             product.delete()
         except Exception as e:
             raise ValidationError(f"Error deleting product: {str(e)}")
+        
+    def toggle_product_status(self, pk, updated_by=None):
+        """
+        Toggle the is_active status of a product.
+        :param pk: Primary key of the product
+        :param updated_by: user who performed the update
+        :return: Updated ProductsModel instance
+        """
+        product = self.get_product_by_id(pk)
+        if not product:
+            raise ValidationError("Product not found.")
+
+        product.is_active = not product.is_active
+
+        if updated_by and updated_by.is_authenticated:
+            product.updated_by = updated_by
+
+        try:
+            product.save()
+            return product
+        except IntegrityError:
+            raise ValidationError("Failed to toggle product status due to integrity issues.")
 

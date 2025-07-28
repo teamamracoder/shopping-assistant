@@ -59,3 +59,26 @@ class StoreCategoryService:
         except Exception as e:
             raise ValidationError(f"Error deleting Store category: {str(e)}")
 
+    def toggle_store_category_status(self, pk, updated_by=None):
+        """
+        Toggle the is_active status of a store category.
+        :param pk: Primary key of the store category
+        :param updated_by: User performing the toggle (must be authenticated)
+        :return: Updated StoreCategoryModel instance
+        :raises ValidationError: If not found or save fails
+        """
+        category = self.get_store_category_by_id(pk)
+        if not category:
+            raise ValidationError("Store category not found.")
+
+        category.is_active = not category.is_active
+
+        # ✅ Only set updated_by if user is authenticated and valid
+        if updated_by and updated_by.is_authenticated:
+            category.updated_by = updated_by
+
+        try:
+            category.save()
+            return category
+        except IntegrityError:
+            raise ValidationError("Failed to toggle category status due to integrity issues.")
