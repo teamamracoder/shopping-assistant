@@ -279,7 +279,7 @@
                                 </a>
                             
                                 {% if user.id %}
-                                <form method="post" action="{% url 'manage_user_delete' user.id %}" style="display:inline;">
+                                <form method="post" action="{% url 'manage_user_delete' user.id %}?next={% url 'consumer_list' %}" style="display:inline;">
                                     {% csrf_token %}
                                     <button type="submit" class="btn text-danger btn-sm"
                                         onclick="return confirm('Are you sure you want to delete this user?');">
@@ -292,7 +292,7 @@
                                     </button>
                                 {% endif %}
 
-                                <form method="post" action="{% url 'manage_toggle_user_active' user.id %}" style="display:inline;">
+                                <form method="post" action="{% url 'manage_toggle_user_active' user.id %}?next={% url 'consumer_list' %}" style="display:inline;">
                                     {% csrf_token %}
                                     <button type="submit" class="btn btn-sm {% if user.is_active %}text-success{% else %}text-muted{% endif %}"
                                             title="Toggle visibility"

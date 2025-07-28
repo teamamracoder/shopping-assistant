@@ -98,6 +98,9 @@ class ManageUserCreateView(View):
                 'choices_gender': choices_gender,
                 'choices_role': choices_role
             })
+        elif source_page == "service_provider":
+            users = UserModel.objects.filter(roles__contains=[Role.SERVICE_PROVIDER.value])
+            return render(request, "admin/service_provider_list.html", {"users": users, "form": form})
         else:
             users = UserModel.objects.all()
             return render(request, "admin/manage_all_user.html", {
@@ -177,10 +180,15 @@ class ManageToggleUserActiveView(View):
         user = get_object_or_404(UserModel, pk=pk)
         user.is_active = not user.is_active
         user.save()
+
         status = "activated" if user.is_active else "deactivated"
         messages.success(request, f"User '{user.first_name}' has been {status}.")
-        print(status)
-        return redirect('manage_user_list')
+
+        next_url = request.GET.get('next')
+        if next_url:
+            return redirect(next_url)
+        return redirect('manage_user_list')  # fallback
+
     
 
 ## Consumer ##
@@ -237,4 +245,22 @@ class ManagePartnerListView(View):
             'form': form,
             'choices_gender': choices_gender,
             'choices_role': choices_role
-        })    
+        })
+    
+## Service_Provider ##    
+class ServiceProviderListView(View):
+    def get(self, request):
+        # This is correct now (passing [1] instead of just 1)
+        service_provider = UserModel.objects.filter(roles__contains=[Role.SERVICE_PROVIDER.value])
+
+        form = ManageUserForm()
+        choices_gender = [{type.value: type.name} for type in Gender]
+        choices_role = [{type.value: type.name} for type in Role]
+
+        return render(request, "admin/service_provider_list.html", {
+            'users': service_provider,
+            'form': form,
+            'choices_gender': choices_gender,
+            'choices_role': choices_role
+        })
+    

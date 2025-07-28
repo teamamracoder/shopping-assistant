@@ -22,6 +22,10 @@ urlpatterns = [
 # Consumer
     path('consumers/', ConsumerListView.as_view(), name='consumer_list'),
 
+# Service Provider
+    path('service-providers/', ServiceProviderListView.as_view(), name='service_provider_list'),
+
+
     path('partner/', ManagePartnerListView.as_view(), name='partner_list'),
 
 
