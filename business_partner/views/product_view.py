@@ -14,6 +14,7 @@ class ProductListCreateAPIView(APIView):
     operation_description="Retrieve a list of all available products.",
     responses={200: openapi.Response(description="List of products")}
     )
+    
     def get(self, request):
         print(f"Requested path: {request.path}")
         products = services.product_service.get_all_products()
