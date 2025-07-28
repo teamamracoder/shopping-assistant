@@ -24,7 +24,7 @@ class ServiceTypeModelService:
     
     def get_service_type_by_id(self,pk):
         try:
-            return ServiceTypeModel.objects.get(pk=pk)
+            return ServiceTypeModel.objects.get(id=pk)
         except ServiceTypeModel.DoesNotExist:
             return None
 
