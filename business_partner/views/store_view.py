@@ -9,12 +9,21 @@ from ..serializers import StoreSerializer
 from services.store_service import StoreService
 
 
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
+
 class StoreListCreateView(APIView):
     def get(self, request):
         stores = store_service.StoreService().list_stores()
         serializer = StoreSerializer(stores, many=True)
         return Res.success("S-20001", serializer.data)
 
+    @swagger_auto_schema(
+    operation_summary="Say Hello",
+    operation_description="Returns a greeting message using the provided name",
+    request_body=StoreSerializer,
+    responses={200: openapi.Response(description="Greeting Response")}
+    )
     @validate_serializer(StoreSerializer)
     def post(self, request):
         # store = store_service.StoreService().create_store(request.serializer.validated_data, user=request.user)   # If the frontend is ready then use this line 
@@ -30,7 +39,12 @@ class StoreDetailView(APIView):
         serializer = StoreSerializer(store)
         return Res.success("S-20003", serializer.data)
 
-
+    @swagger_auto_schema(
+    operation_summary="Say Hello",
+    operation_description="Returns a greeting message using the provided name",
+    request_body=StoreSerializer,
+    responses={200: openapi.Response(description="Greeting Response")}
+    )
     @validate_serializer(StoreSerializer)
     def put(self, request, pk):
         store = store_service.StoreService().get_store(pk)
@@ -40,7 +54,12 @@ class StoreDetailView(APIView):
         updated_store = store_service.StoreService().update_store(store, request.serializer.validated_data) 
         return Res.success("S-20004", StoreSerializer(updated_store).data)
     
-
+    @swagger_auto_schema(
+    operation_summary="Say Hello",
+    operation_description="Returns a greeting message using the provided name",
+    request_body=StoreSerializer,
+    responses={200: openapi.Response(description="Greeting Response")}
+    )
     @validate_serializer(StoreSerializer)
     def patch(self, request, pk):
         store = store_service.StoreService().get_store(pk)
@@ -53,7 +72,12 @@ class StoreDetailView(APIView):
             return Res.success("S-20006", StoreSerializer(updated_store).data)
         return Res.error(data={"message": serializer.errors}, http_status=status.HTTP_400_BAD_REQUEST)
 
-
+    @swagger_auto_schema(
+    operation_summary="Say Hello",
+    operation_description="Returns a greeting message using the provided name",
+    request_body=StoreSerializer,
+    responses={200: openapi.Response(description="Greeting Response")}
+    )
     def delete(self, request, pk):
         store = store_service.StoreService().get_store(pk)
         if not store:

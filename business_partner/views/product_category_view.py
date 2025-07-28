@@ -5,12 +5,21 @@ from utils.response_utils import Res
 from ..serializers import ProductCategorySerializer
 from services import services
 
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
+
 class ProductCategoryListCreateAPIView(APIView):
     def get(self, request):
         categories = services.product_category_service.get_all_categories()
         serializer = ProductCategorySerializer(categories, many=True)
         return Res.success("S-20001", serializer.data)
 
+    @swagger_auto_schema(
+    operation_summary="Say Hello",
+    operation_description="Returns a greeting message using the provided name",
+    request_body=ProductCategorySerializer,
+    responses={200: openapi.Response(description="Greeting Response")}
+    )
     @validate_serializer(ProductCategorySerializer)
     def post(self, request):
         category = services.product_category_service.create_category(request.serializer.validated_data)
@@ -25,6 +34,12 @@ class ProductCategoryDetailAPIView(APIView):
         return Res.success("S-20001", serializer.data)
 
     @validate_serializer(ProductCategorySerializer)
+    @swagger_auto_schema(
+    operation_summary="Say Hello",
+    operation_description="Returns a greeting message using the provided name",
+    request_body=ProductCategorySerializer,
+    responses={200: openapi.Response(description="Greeting Response")}
+    )
     def put(self, request, pk):
         category = services.product_category_service.get_category_by_id(pk)
         if not category:
@@ -32,6 +47,12 @@ class ProductCategoryDetailAPIView(APIView):
         updated_category = services.product_category_service.update_category(category, request.serializer.validated_data)
         return Res.success("S-20001", ProductCategorySerializer(updated_category).data)
     
+    @swagger_auto_schema(
+    operation_summary="Say Hello",
+    operation_description="Returns a greeting message using the provided name",
+    request_body=ProductCategorySerializer,
+    responses={200: openapi.Response(description="Greeting Response")}
+    )
     def patch(self, request, pk):
         category = services.product_category_service.get_category_by_id(pk)
         if not category:
@@ -42,6 +63,12 @@ class ProductCategoryDetailAPIView(APIView):
         return Res.success("S-20003", {"message": "Category soft deleted (is_active=False)"})
 
 
+    @swagger_auto_schema(
+    operation_summary="Say Hello",
+    operation_description="Returns a greeting message using the provided name",
+    request_body=ProductCategorySerializer,
+    responses={200: openapi.Response(description="Greeting Response")}
+    )
     def delete(self, request, pk):
         category = services.product_category_service.get_category_by_id(pk)
         if not category:
