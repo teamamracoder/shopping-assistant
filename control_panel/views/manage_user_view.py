@@ -69,7 +69,17 @@ class ManageUserCreateView(View):
                 )
 
                 messages.success(request, 'User created successfully.')
-                form = ManageUserForm()  # reset
+               
+               
+                if(request.POST.get("seller")):
+                    form = ManageUserForm()
+                    users = UserModel.objects.filter(roles__contains=[Role.SELLER.value])
+                    return render(request, "admin/partner_list.html", {
+                    'users': users,
+                    'form': form,
+                    'choices_gender': choices_gender,
+                    'choices_role': choices_role
+                })
 
             except Exception as e:
                 import traceback
@@ -77,6 +87,7 @@ class ManageUserCreateView(View):
                 messages.error(request, f"Error: {str(e)}")
         else:
             print("Form errors:", form.errors)
+
 
         # Return appropriate list view
         if source_page == "consumer":
@@ -188,3 +199,42 @@ class ConsumerListView(View):
             'choices_gender': choices_gender,
             'choices_role': choices_role
         })
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class ManagePartnerListView(View):
+    def get(self, request):
+        # This is correct now (passing [1] instead of just 1)
+        partner = UserModel.objects.filter(roles__contains=[Role.SELLER.value])
+
+        form = ManageUserForm()
+        choices_gender = [{type.value: type.name} for type in Gender]
+        choices_role = [{type.value: type.name} for type in Role]
+
+        return render(request, "admin/partner_list.html", {
+            'users': partner,
+            'form': form,
+            'choices_gender': choices_gender,
+            'choices_role': choices_role
+        })    
