@@ -4,6 +4,9 @@ from django.db import IntegrityError
 
 class UserService:
     
+    def is_exist(self, email):
+        return UserModel.objects.filter(email=email).exists()
+
     def get_all_users(self):
         """
         Fetch all users from the database.
@@ -22,6 +25,28 @@ class UserService:
         except UserModel.DoesNotExist:
             return None  # User not found.
 
+    def get_or_create_user(self, validated_data):
+        """
+        Get or create a user based on email.
+        :param validated_data: Dictionary containing at least 'email'
+        :return: Tuple of (created: bool, user: UserModel)
+        :raises ValidationError: If creation fails or email exists
+        """
+        email = validated_data.get('email')
+        if not email:
+            raise ValidationError("Email is required")
+
+        try:
+            user, created = UserModel.objects.get_or_create(
+                email=email,
+                defaults=validated_data
+            )
+            return created, user
+        except IntegrityError as e:
+            raise ValidationError(f"A user with this email already exists: {str(e)}")
+        except Exception as e:
+            raise ValidationError(f"Error creating user: {str(e)}")
+            
     def create_user(self, validated_data):
         """
         Create a new user from validated data.
@@ -107,4 +132,11 @@ class UserService:
             return UserModel.objects.get(email=email)
         except UserModel.DoesNotExist:
             return None
+
+    def get_by_field(self, **fields):
+        try:
+            return UserModel.objects.filter(**fields).first()
+        except UserModel.DoesNotExist:
+            return None
+        
 user_service = UserService()
