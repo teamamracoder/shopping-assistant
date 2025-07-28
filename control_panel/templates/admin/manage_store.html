@@ -500,8 +500,7 @@
                     }
                 },
                 errorElement: 'div',
-                //errorClass: 'text-danger',
-                //errorElement: "span",
+                errorClass: 'text-danger d-block ms-1',
                 errorPlacement: function (error, element) {
                     error.addClass("invalid-feedback");
                     element.closest(".form-group").append(error);
