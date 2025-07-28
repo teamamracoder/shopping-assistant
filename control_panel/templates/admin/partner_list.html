@@ -292,7 +292,7 @@
                                     </button>
                                 {% endif %}
 
-                                <form method="post" action="{% url 'manage_toggle_user_active' user.id %}" style="display:inline;">
+                                <form method="post" action="{% url 'manage_toggle_user_active' user.id %}?next={% url 'partner_list' %}" style="display:inline;">
                                     {% csrf_token %}
                                     <button type="submit" class="btn btn-sm {% if user.is_active %}text-success{% else %}text-muted{% endif %}"
                                             title="Toggle visibility"
