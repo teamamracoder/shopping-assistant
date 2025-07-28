@@ -62,8 +62,8 @@
 </style>
 
 <div class="container-fluid">
-    <h1 class="h3 mb-2 text-gray-800">Users</h1>
-    <p class="mb-4">Manage users in the system.</p>
+    <h1 class="h3 mb-2 text-gray-800">Consumers</h1>
+    <p class="mb-4">Manage consumers in the system.</p>
     <!-- Add Button (Opens Modal) -->
     <button class="circle-btn" data-bs-toggle="modal" data-bs-target="#addUserModal">
         <i class="bi bi-plus-lg text-light"></i>
@@ -79,8 +79,8 @@
                 <div class="modal-body">
                     <form id="addUserForm" method="post" action="{% url 'manage_user_create' %}" class="fw-bold">
                         {% csrf_token %}
-                        <input type="hidden" name="source_page" value="user">
-                        <!-- {{ form.as_p }} -->
+                            <input type="hidden" name="source_page" value="consumer">
+                            <!-- {{ form.as_p }} -->
                         <div class="row">
                             <div class="form-group col-md-6 mb-3">
                                 {{ form.first_name.label_tag }}<span class="text-danger">*</span>
@@ -274,7 +274,7 @@
                                     data-state="{{ user.state }}"
                                     data-pincode="{{ user.pincode }}"
                                     data-roles="{{ user.roles|safe }}"
-                                    data-action-url="{% url 'manage_user_update' user.id %}?next={% url 'manage_user_list' %}">
+                                    data-action-url="{% url 'manage_user_update' user.id %}?next={% url 'consumer_list' %}">
                                     <i class="bi bi-pencil-square"></i>
                                 </a>
                             

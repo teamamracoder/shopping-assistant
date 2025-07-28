@@ -19,6 +19,10 @@ urlpatterns = [
     path('users/delete/<int:user_id>/', ManageUserDeleteView.as_view(), name="manage_user_delete"),
     path('manage/user/toggle/<int:pk>/', ManageToggleUserActiveView.as_view(), name='manage_toggle_user_active'),
 
+# Consumer
+    path('consumers/', ConsumerListView.as_view(), name='consumer_list'),
+
+
 # service_model urls by tufan
     path('services_model/', ManageServiceModelListView.as_view(), name='manage_service_list'),
     path('services_model/create/', ManageServiceModelCreateView.as_view(), name='manage_create_service_model'),
