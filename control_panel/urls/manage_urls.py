@@ -22,6 +22,10 @@ urlpatterns = [
 # Consumer
     path('consumers/', ConsumerListView.as_view(), name='consumer_list'),
 
+# Service Provider
+    path('service-providers/', ServiceProviderListView.as_view(), name='service_provider_list'),
+
+
 
 # service_model urls by tufan
     path('services_model/', ManageServiceModelListView.as_view(), name='manage_service_list'),

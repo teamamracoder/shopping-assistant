@@ -79,8 +79,7 @@
                 <div class="modal-body">
                     <form id="addUserForm" method="post" action="{% url 'manage_user_create' %}" class="fw-bold">
                         {% csrf_token %}
-                            <input type="hidden" name="source_page" value="consumer">
-                            <!-- {{ form.as_p }} -->
+                            <input type="hidden" name="source_page" value="service_provider">
                         <div class="row">
                             <div class="form-group col-md-6 mb-3">
                                 {{ form.first_name.label_tag }}<span class="text-danger">*</span>
@@ -274,12 +273,12 @@
                                     data-state="{{ user.state }}"
                                     data-pincode="{{ user.pincode }}"
                                     data-roles="{{ user.roles|safe }}"
-                                    data-action-url="{% url 'manage_user_update' user.id %}?next={% url 'consumer_list' %}">
+                                    data-action-url="{% url 'manage_user_update' user.id %}?next={% url 'service_provider_list' %}">
                                     <i class="bi bi-pencil-square"></i>
                                 </a>
                             
                                 {% if user.id %}
-                                <form method="post" action="{% url 'manage_user_delete' user.id %}?next={% url 'consumer_list' %}" style="display:inline;">
+                                <form method="post" action="{% url 'manage_user_delete' user.id %}?next={% url 'service_provider_list' %}" style="display:inline;">
                                     {% csrf_token %}
                                     <button type="submit" class="btn text-danger btn-sm"
                                         onclick="return confirm('Are you sure you want to delete this user?');">
@@ -292,7 +291,7 @@
                                     </button>
                                 {% endif %}
 
-                                <form method="post" action="{% url 'manage_toggle_user_active' user.id %}?next={% url 'consumer_list' %}" style="display:inline;">
+                                <form method="post" action="{% url 'manage_toggle_user_active' user.id %}?next={% url 'service_provider_list' %}" style="display:inline;">
                                     {% csrf_token %}
                                     <button type="submit" class="btn btn-sm {% if user.is_active %}text-success{% else %}text-muted{% endif %}"
                                             title="Toggle visibility"

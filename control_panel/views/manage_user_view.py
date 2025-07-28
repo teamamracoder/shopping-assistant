@@ -87,6 +87,9 @@ class ManageUserCreateView(View):
                 'choices_gender': choices_gender,
                 'choices_role': choices_role
             })
+        elif source_page == "service_provider":
+            users = UserModel.objects.filter(roles__contains=[Role.SERVICE_PROVIDER.value])
+            return render(request, "admin/service_provider_list.html", {"users": users, "form": form})
         else:
             users = UserModel.objects.all()
             return render(request, "admin/manage_all_user.html", {
@@ -184,6 +187,23 @@ class ConsumerListView(View):
 
         return render(request, "admin/consumer_list.html", {
             'users': consumers,
+            'form': form,
+            'choices_gender': choices_gender,
+            'choices_role': choices_role
+        })
+    
+## Service_Provider ##    
+class ServiceProviderListView(View):
+    def get(self, request):
+        # This is correct now (passing [1] instead of just 1)
+        service_provider = UserModel.objects.filter(roles__contains=[Role.SERVICE_PROVIDER.value])
+
+        form = ManageUserForm()
+        choices_gender = [{type.value: type.name} for type in Gender]
+        choices_role = [{type.value: type.name} for type in Role]
+
+        return render(request, "admin/service_provider_list.html", {
+            'users': service_provider,
             'form': form,
             'choices_gender': choices_gender,
             'choices_role': choices_role
