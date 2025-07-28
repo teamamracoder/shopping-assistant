@@ -11,7 +11,7 @@ from .manage_store_category_view import (
     ManageToggleStoreCategoryActiveView
 )
 
-from .manage_user_view import ManageUserCreateView,ManageUserDeleteView,ManageUserUpdateView,ManageUserListView,ManageToggleUserActiveView
+from .manage_user_view import ManageUserCreateView,ManageUserDeleteView,ManageUserUpdateView,ManageUserListView,ManageToggleUserActiveView, ConsumerListView
 
 # by tufan
 from .manage_partner_user_view import ManagePartnerListView
