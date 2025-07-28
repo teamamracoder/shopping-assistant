@@ -73,7 +73,7 @@ class ManageUserDeleteView(View):
     # View method to handle POST request for deleting a user
     def post(self, request, user_id):
         # Call the service method to delete the specified user
-        services.manage_user_service.manage_user_delete(user_id)
+        services.user_service.manage_user_delete(user_id)
         
         # Redirect to the user management list page after deletion
         return redirect("manage_user_list")

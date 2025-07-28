@@ -57,7 +57,8 @@ class UserService:
         except IntegrityError:
             raise ValidationError("Email already exists, or another integrity issue occurred.") 
 
-    def delete_user(self, user):
+    def manage_user_delete(self, pk):
+        user = UserModel.objects.get(id=pk)
         """
         Delete a user.
         :param user: UserModel instance to be deleted.
