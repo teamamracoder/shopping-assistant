@@ -2,6 +2,7 @@ from urllib import request
 from django.http import Http404, JsonResponse
 from django.views import View
 from django.shortcuts import get_object_or_404, render
+from django.core.exceptions import ValidationError
 from constants import Gender
 from services import services  
 from ..forms import ManageUserForm
@@ -16,20 +17,31 @@ from django.urls import reverse, reverse_lazy
 from django.db import IntegrityError
 from ..models import UserModel
 from django.utils.http import urlencode
+from services import UserService
+
+
+service = UserService()
 
 #List (READ ALL)
 class ManageUserListView(View):
-    def get(self, request):
-        users = UserModel.objects.all()
+     def get(self, request):
+        users = service.get_all_users()  # call the service function
+
         form = ManageUserForm()
-        choices_gender = [{type.value : type.name} for type in Gender]
-        choices_role = [{type.value : type.name} for type in Role]
-        return render(request, "admin/manage_all_user.html", {'users': users, 'form': form, 'choices_gender': choices_gender, 'choices_role' : choices_role   })
+        choices_gender = [{type.value: type.name} for type in Gender]
+        choices_role = [{type.value: type.name} for type in Role]
+
+        return render(request, "admin/manage_all_user.html", {'users': users,'form': form,
+                'choices_gender': choices_gender,
+                'choices_role': choices_role
+            }
+        )
+     
 
 # CREATE VIEW (not working properly)
 class ManageUserCreateView(View):
     def get(self, request):
-        users = UserModel.objects.all()
+        users = service.get_all_users()
         form = ManageUserForm()
         choices_gender = [{type.value : type.name} for type in Gender]
         choices_role = [{type.value : type.name} for type in Role]
@@ -47,29 +59,27 @@ class ManageUserCreateView(View):
                 if not roles_raw:
                     raise ValueError("No roles selected")
 
-                # Normalize to list of ints
                 roles = [int(r) for r in roles_raw] if isinstance(roles_raw, list) else [int(roles_raw)]
-
                 print("Roles being saved:", roles)
 
-                UserModel.objects.create(
-                    first_name=form.cleaned_data['first_name'],
-                    last_name=form.cleaned_data['last_name'],
-                    email=form.cleaned_data['email'],
-                    dob=form.cleaned_data['dob'],
-                    gender=form.cleaned_data['gender'],
-                    phone=form.cleaned_data['phone'],
-                    address=form.cleaned_data['address'],
-                    location=form.cleaned_data['location'],
-                    city=form.cleaned_data['city'],
-                    district=form.cleaned_data['district'],
-                    state=form.cleaned_data['state'],
-                    pincode=form.cleaned_data['pincode'],
-                    roles=roles,
-                )
+                validated_data = {
+                    'first_name': form.cleaned_data['first_name'],
+                    'last_name': form.cleaned_data['last_name'],
+                    'email': form.cleaned_data['email'],
+                    'dob': form.cleaned_data['dob'],
+                    'gender': form.cleaned_data['gender'],
+                    'phone': form.cleaned_data['phone'],
+                    'address': form.cleaned_data['address'],
+                    'location': form.cleaned_data['location'],
+                    'city': form.cleaned_data['city'],
+                    'district': form.cleaned_data['district'],
+                    'state': form.cleaned_data['state'],
+                    'pincode': form.cleaned_data['pincode'],
+                    'roles': roles,
+                }
 
-                messages.success(request, 'User created successfully.')
-               
+                service.create_user(validated_data)  #call service function
+                messages.success(request, 'User created successfully.')               
                
                 if(request.POST.get("seller")):
                     form = ManageUserForm()
@@ -87,7 +97,6 @@ class ManageUserCreateView(View):
                 messages.error(request, f"Error: {str(e)}")
         else:
             print("Form errors:", form.errors)
-
 
         # Return appropriate list view
         if source_page == "consumer":
@@ -109,55 +118,20 @@ class ManageUserCreateView(View):
                 'choices_gender': choices_gender,
                 'choices_role': choices_role
             })
-
-    # def post(self, request):
-    #     form = ManageUserForm(request.POST)
-    #     users = UserModel.objects.all()
-    #     choices_gender = [{type.value: type.name} for type in Gender]
-    #     choices_role = [{type.value: type.name} for type in Role]
-
-    #     if form.is_valid():
-    #         user_data = UserModel.objects.create(
-    #         first_name=form.cleaned_data['first_name'],
-    #         last_name=form.cleaned_data['last_name'],
-    #         email=form.cleaned_data['email'],
-    #         dob=form.cleaned_data['dob'],
-    #         gender=form.cleaned_data['gender'],
-    #         phone=form.cleaned_data['phone'],
-    #         address=form.cleaned_data['address'],
-    #         location=form.cleaned_data['location'],
-    #         city=form.cleaned_data['city'],
-    #         district=form.cleaned_data['district'],
-    #         state=form.cleaned_data['state'],
-    #         pincode=form.cleaned_data['pincode'],
-    #         roles=form.cleaned_data['roles']
-    #         )
-    #         messages.success(request, 'User created successfully.')
-    #         form = ManageUserForm()  # reset the form
-    #     else:
-    #         print("Form errors:", form.errors)
-
-    #     return render(request, "admin/manage_all_user.html", {
-    #         'users': users,
-    #         'form': form,
-    #         'choices_gender': choices_gender,
-    #         'choices_role': choices_role
-    #     })
-
+        
+        
 #DELETE VIEW
 class ManageUserDeleteView(View):
-    # View method to handle POST request for deleting a user
     def post(self, request, user_id):
-        # Call the service method to delete the specified user
-        services.user_service.user_delete(user_id)
-        
-        # Redirect to the user management list page after deletion
+        try:
+            service.user_delete(user_id)  #call the service method
+            messages.success(request, "User deleted successfully.")
+        except ValidationError as e:
+            messages.error(request, f"Error deleting user: {str(e)}")
         return redirect("manage_user_list")
     
 
 # class ManageUserUpdateView(UpdateView):
-
-
 class ManageUserUpdateView(UpdateView):
     model = UserModel
     form_class = ManageUserForm
@@ -172,80 +146,50 @@ class ManageUserUpdateView(UpdateView):
         context = super().get_context_data(**kwargs)
         context['next'] = self.request.GET.get('next', '')
         return context
+    
+    def form_valid(self, form):
+        try:
+            validated_data = form.cleaned_data
+            service.update_user(self.object, validated_data)  #use service layer
+            messages.success(self.request, "User updated successfully.")
+        except ValidationError as ve:
+            form.add_error(None, ve.message)  # attach error to the form
+            return self.form_invalid(form)
+        except Exception as e:
+            form.add_error(None, f"Unexpected error: {str(e)}")
+            return self.form_invalid(form)
+        return super().form_valid(form)
 
 
 # TOGGLE VIEW
 class ManageToggleUserActiveView(View):
     def post(self, request, pk, *args, **kwargs):
-        user = get_object_or_404(UserModel, pk=pk)
-        user.is_active = not user.is_active
-        user.save()
-
-        status = "activated" if user.is_active else "deactivated"
-        messages.success(request, f"User '{user.first_name}' has been {status}.")
+        # user = get_object_or_404(UserModel, pk=pk)
+        user = service.get_user_by_id(pk=pk)
+        try:
+            updated_user = service.toggle_user_active(user)
+            status = "activated" if updated_user.is_active else "deactivated"
+            messages.success(request, f"User '{updated_user.first_name}' has been {status}.")
+        except ValidationError as e:
+            messages.error(request, str(e))
 
         next_url = request.GET.get('next')
-        if next_url:
-            return redirect(next_url)
-        return redirect('manage_user_list')  # fallback
+        return redirect(next_url) if next_url else redirect('manage_user_list')
 
-    
 
-## Consumer ##
 class ConsumerListView(View):
     def get(self, request):
-        # This is correct now (passing [1] instead of just 1)
-        consumers = UserModel.objects.filter(roles__contains=[Role.END_USER.value])
-
-        form = ManageUserForm()
-        choices_gender = [{type.value: type.name} for type in Gender]
-        choices_role = [{type.value: type.name} for type in Role]
-
-        return render(request, "admin/consumer_list.html", {
-            'users': consumers,
-            'form': form,
-            'choices_gender': choices_gender,
-            'choices_role': choices_role
-        })
-    
+        consumers = service.get_users_by_role(Role.END_USER.value)
+        context = UserService.common_user_context(consumers)
+        return render(request, "admin/consumer_list.html", context)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# view for Partner
 class ManagePartnerListView(View):
     def get(self, request):
-        # This is correct now (passing [1] instead of just 1)
-        partner = UserModel.objects.filter(roles__contains=[Role.SELLER.value])
-
-        form = ManageUserForm()
-        choices_gender = [{type.value: type.name} for type in Gender]
-        choices_role = [{type.value: type.name} for type in Role]
-
-        return render(request, "admin/partner_list.html", {
-            'users': partner,
-            'form': form,
-            'choices_gender': choices_gender,
-            'choices_role': choices_role
-        })
+        partners = service.get_users_by_role(Role.SELLER.value)
+        context = UserService.common_user_context(partners)
+        return render(request, "admin/partner_list.html", context)
     
 ## Service_Provider ##    
 class ServiceProviderListView(View):
@@ -263,4 +207,3 @@ class ServiceProviderListView(View):
             'choices_gender': choices_gender,
             'choices_role': choices_role
         })
-    

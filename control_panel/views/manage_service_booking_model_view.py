@@ -5,12 +5,14 @@ from django.shortcuts import get_object_or_404, render, redirect
 from ..models import ServiceBookingModel
 from ..forms import ManageServiceBookingForm
 from django.utils import timezone
+from services import ServiceBookingModelService
+service_book = ServiceBookingModelService()
 
 
 #CREATE AND READ(ALL) VIEWS
 class ManageServiceBookingCreateView(View):
     def get(self, request):
-        service_booking = ServiceBookingModel.objects.all()
+        service_booking = service_book.get_all_bookings()
         form = ManageServiceBookingForm()
         return render(request, 'admin/manage_service_booking_model.html', {
             'form': form,
@@ -20,59 +22,53 @@ class ManageServiceBookingCreateView(View):
     def post(self, request):
         form = ManageServiceBookingForm(request.POST)
         if form.is_valid():
-            booking = form.save(commit=False)
-
-            # Add any extra logic here (e.g., who is creating it)
-            booking.created_at = timezone.now()
-            booking.updated_at = timezone.now()
-            booking.created_by = request.user if request.user.is_authenticated else None
-            booking.updated_by = request.user if request.user.is_authenticated else None
-            booking.save()
-            return redirect('manage_service_booking_create')  # Make sure this URL name is defined in urls.py
-        else:
-            service_booking = ServiceBookingModel.objects.all()
-
-            return render(request, 'admin/manage_service_booking_model.html', {
-                'form': form,
-                'service_bookings': service_booking,
-                'error': 'Please correct the errors below.'
-            })
+            booking_data = form.cleaned_data
+            booking_data['created_at'] = timezone.now()
+            booking_data['updated_at'] = timezone.now()
+            booking_data['created_by'] = request.user if request.user.is_authenticated else None
+            booking_data['updated_by'] = request.user if request.user.is_authenticated else None
+            service_book.create_booking(booking_data)
+            return redirect('manage_service_booking_create')
         
+        # Form is invalid
+        service_bookings = service_book.get_all_bookings()
+        return render(request, 'admin/manage_service_booking_model.html', {
+            'form': form,
+            'service_bookings': service_bookings,
+            'error': 'Please correct the errors below.'
+        })        
 
 #UPDATE VIEW
 class ManageServiceBookingUpdateView(View):
     def post(self, request, pk):
-        booking = get_object_or_404(ServiceBookingModel, pk=pk)
-        print(f"Requrst for update id ========= {pk}")
+        booking = service_book.get_booking_by_id(pk)
         form = ManageServiceBookingForm(request.POST, instance=booking)
         if form.is_valid():
-            form.save()
-            # messages.success(request, "Service booking updated successfully.")
+            updated_data = form.cleaned_data
+            updated_data['updated_at'] = timezone.now()
+            updated_data['updated_by'] = request.user if request.user.is_authenticated else None
+            service_book.update_booking(booking, updated_data)
+            # Redirect back after update
             return redirect('manage_service_booking_create')
-        else:
-            messages.error(request, "Please correct the errors below.")            
-            return render(request, 'admin/manage_service_booking_model.html', {
-                'form': form,
-                'is_update': True,
-                'booking_id': pk
-            })
 
+        # If form is invalid
+        messages.error(request, "Please correct the errors below.")
+        return render(request, 'admin/manage_service_booking_model.html', {
+            'form': form,
+            'is_update': True,
+            'booking_id': pk
+        })
 
 #DELETE VIEW
 class ManageServiceBookingDeleteView(View):
     def post(self, request, pk):
-        booking = get_object_or_404(ServiceBookingModel, pk=pk)
-        booking.delete()
-        # messages.success(request, "Service booking deleted successfully.")
-        return redirect('manage_service_booking_create')  # Replace with your actual list view name
-    
+        booking = service_book.get_booking_by_id(pk)
+        service_book.delete_booking(booking)
+        return redirect('manage_service_booking_create')  # Update with correct view name
 
 #TOGGLE VIEW
 class ManageToggleServiceBookingActiveView(View):
     def post(self, request, pk):
-        booking = get_object_or_404(ServiceBookingModel, pk=pk)
-        booking.is_active = not booking.is_active
-        booking.save()
-        return redirect('manage_service_booking_create')  # Replace with your actual list view name
-    
-    
+        booking = service_book.get_booking_by_id(pk)
+        service_book.toggle_active_status(booking)
+        return redirect('manage_service_booking_create')  # Replace with actual view name

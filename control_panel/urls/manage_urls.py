@@ -1,50 +1,40 @@
 from django.urls import path
-
-
-# from control_panel.views import ManageServiceTypeListView,ServiceBookingCreateView, ManageServiceTypeCreateView, ManageServiceTypeUpdateView,ManageServiceTypeDeleteView,ServiceBookingUpdateView,ManageToggleServiceTypeActiveView
-# from control_panel.views import IndexView,ManageStoreView,ServiceBookingDeleteView,ManageServiceModelDeleteView,ManageServiceModelUpdateView,ManageServiceModelListView,ManageServiceModelCreateView,ManageDashboardView,ManageServiceTypeView,ManageUserCreateView,ManageUserDeleteView,ManageUserUpdateView,IndexView,ManageDashboardView,ManageProductSubCategoryListView,ManageProductSubCategoryCreateView,ManageProductCategoryEditView,ManageProductSubCategoryDeleteView,ManageToggleProductSubCategoryActiveView,ManageProductListView,ManageProductCreateView,ManageProductDeleteView,ManageToggleProductActiveView,ManageProductCategoryListView,ManageProductCategoryCreateView,ManageProductCategoryDeleteView,ManageToggleProductCategoryActiveView,ManageUserListView,ManageTemplateListView,ManageTemplateCreateView,ManageTemplateEditView,ManageTemplateDeleteView,ManageToggletemplatesActiveView
 from control_panel.views import *
 from control_panel.views.manage_user_profile_view import ManageUserProfileView
-
-# app_name = 'user_management'  # Set the app namespace here
 
 urlpatterns = [
     path('', IndexView.as_view(), name='home'),
     path('dashboard/', ManageDashboardView.as_view(), name='manage_dashboard'),
 
-# user url by tufan
+#user url by tufan
     path('users/', ManageUserListView.as_view(), name='manage_user_list'),
     path('users/create/', ManageUserCreateView.as_view(), name='manage_user_create'),
     path('admin/users/update/<int:pk>/', ManageUserUpdateView.as_view(), name='manage_user_update'),
     path('users/delete/<int:user_id>/', ManageUserDeleteView.as_view(), name="manage_user_delete"),
     path('manage/user/toggle/<int:pk>/', ManageToggleUserActiveView.as_view(), name='manage_toggle_user_active'),
 
-# Consumer
+#Consumer
     path('consumers/', ConsumerListView.as_view(), name='consumer_list'),
 
-# Service Provider
+#Service Provider
     path('service-providers/', ServiceProviderListView.as_view(), name='service_provider_list'),
-
-
     path('partner/', ManagePartnerListView.as_view(), name='partner_list'),
 
-
-# service_model urls by tufan
+#service_model
     path('services_model/', ManageServiceModelListView.as_view(), name='manage_service_list'),
     path('services_model/create/', ManageServiceModelCreateView.as_view(), name='manage_create_service_model'),
     path('services_model/update/<int:pk>/', ManageServiceModelUpdateView.as_view(), name='manage_service_model_update'),
     path('services_model/delete/<int:pk>/', ManageServiceModelDeleteView.as_view(), name='manage_delete_service_model'),
     path('services_model/toggle/<int:pk>/', ManageToggleServiceModelActiveView.as_view(), name='manage_toggle_service_active'),
     
-# service type model urls by tufan
+#service type model
     path('services-type/', ManageServiceTypeListView.as_view(), name='manage_service_type_model_list'),
     path('services-type/create/', ManageServiceTypeCreateView.as_view(), name='manage_service_type_model_create'),
     path('services-type/update/<int:pk>/', ManageServiceTypeUpdateView.as_view(), name='manage_service_type_model_update'),
     path('services-type/delete/<int:pk>/', ManageServiceTypeDeleteView.as_view(), name='manage_service_type_model_delete'),
     path('services-type/toggle/<int:pk>/', ManageToggleServiceTypeActiveView.as_view(), name='manage_toggle_service_type_active'),
 
-#service_booking_model url by tufan 
-# # JUST ADD PREFIX Manage in clss name
+#service_booking_model
     path('service-bookings/create/', ManageServiceBookingCreateView.as_view(), name='manage_service_booking_create'),
     path('service-bookings/update/<int:pk>/', ManageServiceBookingUpdateView.as_view(), name='manage_service_booking_update'),
     path('service-bookings/delete/<int:pk>/', ManageServiceBookingDeleteView.as_view(), name='manage_service_booking_delete'),
@@ -57,21 +47,19 @@ urlpatterns = [
     path('product_sub_categories/delete/<int:pk>/', ManageProductSubCategoryDeleteView.as_view(), name='manage_product_sub_category_delete'),
     path('product_sub_category/toggle-active/<int:pk>/', ManageToggleProductSubCategoryActiveView.as_view(), name='manage_toggle_product_sub_category_active'),
 
-    # Product URLs
+#Product URLs
     path('products/', ManageProductListView.as_view(), name='manage_product_list'),
     path("products/create/", ManageProductCreateView.as_view(), name="manage_product_create"),
     path("products/edit/<int:pk>/", ManageProductEditView.as_view(), name="manage_product_edit"),
     path("products/delete/<int:pk>/", ManageProductDeleteView.as_view(), name="manage_product_delete"),
     path('products/toggle-active/<int:pk>/', ManageToggleProductActiveView.as_view(), name='manage_toggle_product_active'),
 
-    # Product Category URLs
+#Product Category URLs
     path('product_categories/', ManageProductCategoryListView.as_view(), name='manage_product_category_list'),
     path("product_categories/create/", ManageProductCategoryCreateView.as_view(), name="manage_product_category_create"),
     path("product_categories/edit/<int:pk>/", ManageProductCategoryEditView.as_view(), name="manage_product_category_edit"),
     path("product_categories/delete/<int:pk>/", ManageProductCategoryDeleteView.as_view(), name="manage_product_category_delete"),
     path('product_categories/toggle-active/<int:pk>/', ManageToggleProductCategoryActiveView.as_view(), name='manage_toggle_product_category_active'),
-
-
 
 #store 
     path('stores/', ManageStoreListView.as_view(), name='manage_store_list'),
@@ -86,21 +74,14 @@ urlpatterns = [
     path("store_categories/edit/<int:pk>/", ManageStoreCategoryEditView.as_view(), name="manage_store_category_edit"),
     path("store_categories/delete/<int:pk>/", ManageStoreCategoryDeleteView.as_view(), name="manage_store_category_delete"),
     path('store_categories/toggle-active/<int:pk>/', ManageToggleStoreCategoryActiveView.as_view(), name='manage_toggle_store_category_active'),
-
-
-
-    #service type url by Rahul -- no need of this urls
-    path('service-type/', ManageServiceTypeView.as_view(), name='manage_service_type_list'),
-    path('service-type/create', ManageCreateServiceTypeView.as_view(), name='manage_create_service_type'),
-
-
+    
+#email templates
     path('templates/', ManageTemplateListView.as_view(), name='manage_template_list'),
     path('templates/create/', ManageTemplateCreateView.as_view(), name='manage_template_create'),
     path("templates/edit/<int:pk>/", ManageTemplateEditView.as_view(), name="manage_template_edit"),
     path('templates/delete/<int:pk>/', ManageTemplateDeleteView.as_view(), name='manage_template_delete'),
     path("templates/<int:pk>/toggle/", ManageToggletemplatesActiveView.as_view(), name="manage_toggle_template_active"),
 
-    # User Profile URL
+#User Profile URL
     path('profile/', ManageUserProfileView.as_view(), name='manage_user_profile'),
-
 ]

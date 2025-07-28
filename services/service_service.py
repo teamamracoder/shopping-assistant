@@ -10,7 +10,18 @@ class ServiceService:
         :return: Queryset of all ServiceModel instances.
         """
         return ServiceModel.objects.all()
-
+    
+    def create_service(self, data):
+        """
+        Create a new ServiceModel instance from validated form data.
+        :param data: dict from form.cleaned_data
+        :return: Created ServiceModel instance
+        """
+        service = ServiceModel(**data)
+        # TODO: Assign created_by/updated_by when auth is available
+        service.save()
+        return service
+    
     def get_service_by_id(self, pk):
         """
         Fetch a service by its primary key (ID).
@@ -40,7 +51,7 @@ class ServiceService:
             return service
         except IntegrityError:
             raise ValidationError("Service update failed due to integrity issues.")
-
+        
     def delete_service(self, service):
         """
         Delete a service.
@@ -52,6 +63,20 @@ class ServiceService:
             service.delete()
         except Exception as e:
             raise ValidationError(f"Error deleting service: {str(e)}")
+        
+    def toggle_active_status(self, service_ins):
+        """
+        Activate a service type.
+        :param service_type: ServiceTypeModel instance to be activated.
+        :return: Activated ServiceTypeModel instance.
+        """
+        service_ins.is_active = not service_ins.is_active
+        service_ins.save()
+        return service_ins
+        
+    
+
+
 
 
 
