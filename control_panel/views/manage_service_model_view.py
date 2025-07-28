@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect, get_object_or_404 ,HttpResponse
+from django.shortcuts import render, redirect, get_object_or_404
 from ..models import ServiceModel,ServiceTypeModel,UserModel
 from ..forms .manage_service_model_form  import *
 from django.views import View
@@ -42,6 +42,7 @@ class ManageServiceModelCreateView(View):
 # UPDATE VIEW
 class ManageServiceModelUpdateView(View):
     def get(self, request, pk):
+        print(f"Requrst for update id ========= {pk}")
         service = get_object_or_404(ServiceModel, pk=pk)
         form = ServiceModelForm(instance=service)
         return render(request, 'admin/manage_service_model.html', {'form': form, 'service': service})
@@ -53,7 +54,6 @@ class ManageServiceModelUpdateView(View):
             form.save(commit=False)
             service.save()
             return redirect('manage_service_list')
-    
         return render(request, 'admin/manage_service_model.html', {'form': form, 'service': service})
 
 

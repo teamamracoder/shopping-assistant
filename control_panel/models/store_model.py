@@ -23,7 +23,7 @@ class StoreModel(models.Model):
     village_or_city = models.CharField(max_length=255,blank=True, null=True)  # 14. Village/City
     district = models.CharField(max_length=255,blank=True, null=True)  # 15. District
     state = models.CharField(max_length=255,blank=True, null=True)  # 16. State
-    pin_code = models.CharField(max_length=6)  # 17. PinCode
+    pin_code = models.IntegerField(blank=True, null=True)
     store_image_urls = ArrayField(models.URLField(max_length=255), blank=True,null=True)  # 18. StoreImage_urls (Array of strings)
 
     is_active = models.BooleanField(db_default=True, blank=True)

@@ -8,7 +8,6 @@ from ..forms import ManageProductForm
 from services.product_service import ProductModelService
 from django.core.exceptions import ValidationError
 
-
 product_service = ProductModelService()
 
 # List View
@@ -54,12 +53,14 @@ class ManageProductCreateView(View):
 
             try:
                 product_service.create_product(product_data)
-                messages.success(request, "Product added successfully!")
+                messages.success(request, "Product added successfully!", extra_tags='product')
                 return redirect("manage_product_list")
             except ValidationError as e:
                 messages.error(request, str(e))
+        else:
+            for field, error in form.errors.items():
+                messages.error(request, f"{field.capitalize()}: {error}")
 
-        messages.error(request, "Please correct the errors below.")
         return render(request, "admin/manage_product.html", {
             "form": form,
             "products": product_service.get_all_products()

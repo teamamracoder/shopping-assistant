@@ -48,5 +48,5 @@ class UserModel(models.Model):
     class Meta:
         db_table = 'users'
          
-    def __str__(self):
+    def _str_(self):
         return f"ID: {self.id}, Created at: {self.created_at}, Active: {self.is_active}"
