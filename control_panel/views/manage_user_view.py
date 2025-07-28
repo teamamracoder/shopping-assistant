@@ -169,10 +169,15 @@ class ManageToggleUserActiveView(View):
         user = get_object_or_404(UserModel, pk=pk)
         user.is_active = not user.is_active
         user.save()
+
         status = "activated" if user.is_active else "deactivated"
         messages.success(request, f"User '{user.first_name}' has been {status}.")
-        print(status)
-        return redirect('manage_user_list')
+
+        next_url = request.GET.get('next')
+        if next_url:
+            return redirect(next_url)
+        return redirect('manage_user_list')  # fallback
+
     
 
 ## Consumer ##
