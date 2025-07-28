@@ -13,16 +13,21 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
 class StoreListCreateView(APIView):
+    @swagger_auto_schema(
+    operation_summary="Get All Stores",
+    operation_description="Retrieve a list of all stores currently stored in the system.",
+    responses={200: openapi.Response(description="List of stores")}
+    )
     def get(self, request):
         stores = store_service.StoreService().list_stores()
         serializer = StoreSerializer(stores, many=True)
         return Res.success("S-20001", serializer.data)
 
     @swagger_auto_schema(
-    operation_summary="Say Hello",
-    operation_description="Returns a greeting message using the provided name",
+    operation_summary="Create a New Store",
+    operation_description="Create and save a new store using the data provided in the request body.",
     request_body=StoreSerializer,
-    responses={200: openapi.Response(description="Greeting Response")}
+    responses={201: openapi.Response(description="Store created successfully")}
     )
     @validate_serializer(StoreSerializer)
     def post(self, request):
@@ -32,6 +37,11 @@ class StoreListCreateView(APIView):
 
 
 class StoreDetailView(APIView):
+    @swagger_auto_schema(
+    operation_summary="Get a Store by ID",
+    operation_description="Retrieve a single store by providing its ID in the URL path.",
+    responses={200: openapi.Response(description="Store details"), 404: openapi.Response(description="Store not found")}
+    )
     def get(self, request, pk):
         store = store_service.StoreService().get_store(pk)
         if not store:
@@ -40,10 +50,10 @@ class StoreDetailView(APIView):
         return Res.success("S-20003", serializer.data)
 
     @swagger_auto_schema(
-    operation_summary="Say Hello",
-    operation_description="Returns a greeting message using the provided name",
-    request_body=StoreSerializer,
-    responses={200: openapi.Response(description="Greeting Response")}
+        operation_summary="Update Entire Store",
+        operation_description="Update the entire store object with new data by providing all fields.",
+        request_body=StoreSerializer,
+        responses={200: openapi.Response(description="Store updated successfully"), 404: openapi.Response(description="Store not found")}
     )
     @validate_serializer(StoreSerializer)
     def put(self, request, pk):
@@ -55,10 +65,10 @@ class StoreDetailView(APIView):
         return Res.success("S-20004", StoreSerializer(updated_store).data)
     
     @swagger_auto_schema(
-    operation_summary="Say Hello",
-    operation_description="Returns a greeting message using the provided name",
+    operation_summary="Partially Update Store",
+    operation_description="Update specific fields of the store object. Only provided fields will be updated.",
     request_body=StoreSerializer,
-    responses={200: openapi.Response(description="Greeting Response")}
+    responses={200: openapi.Response(description="Store partially updated"), 404: openapi.Response(description="Store not found")}
     )
     @validate_serializer(StoreSerializer)
     def patch(self, request, pk):
@@ -73,10 +83,9 @@ class StoreDetailView(APIView):
         return Res.error(data={"message": serializer.errors}, http_status=status.HTTP_400_BAD_REQUEST)
 
     @swagger_auto_schema(
-    operation_summary="Say Hello",
-    operation_description="Returns a greeting message using the provided name",
-    request_body=StoreSerializer,
-    responses={200: openapi.Response(description="Greeting Response")}
+    operation_summary="Soft Delete a Store",
+    operation_description="Performs a soft delete on the Store by setting is_active=False.",
+    responses={204: openapi.Response(description="Store deleted successfully"), 404: openapi.Response(description="Store not found")}
     )
     def delete(self, request, pk):
         store = store_service.StoreService().get_store(pk)
