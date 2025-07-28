@@ -10,3 +10,4 @@ from .product_view import *
 from .product_category_view import *
 from .product_sub_category_view import *
 from .service_booking_view import *
+from .email_track_view import *
