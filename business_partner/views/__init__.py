@@ -1,6 +1,7 @@
 from .demo_view import DemoView
 from .user_view import UserDetailAPIView
 from .user_view import UserListCreateAPIView
+from .user_view import MyCustomerListAPIView
 from .store_view import StoreListCreateView
 from .store_view import StoreDetailView
 from .store_category_view import StoreCategoryListCreateView
