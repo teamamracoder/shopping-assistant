@@ -4,11 +4,11 @@ from control_panel.models import ProductSubCategoryModel
 
 class  ProductSubCategoryModelService:
     def get_all_sub_categories(self):
-        return ProductSubCategoryModel.objects.all()
+        return ProductSubCategoryModel.objects.filter(is_active=True)
 
     def get_sub_category_by_id(self, pk):
         try:
-            return ProductSubCategoryModel.objects.get(pk=pk)
+            return ProductSubCategoryModel.objects.get(pk=pk, is_active=True)
         except ProductSubCategoryModel.DoesNotExist:
             return None
 
@@ -24,4 +24,5 @@ class  ProductSubCategoryModelService:
         return instance
 
     def delete_sub_category(self, instance):
-        instance.delete()
+            instance.is_active = False
+            instance.save()

@@ -8,7 +8,7 @@ class ProductModelService:
         Fetch all products from the database.
         :return: QuerySet of all ProductsModel instances.
         """
-        return ProductsModel.objects.all()
+        return ProductsModel.objects.filter(is_active=True)
 
     def get_product_by_id(self, pk):
         """
@@ -17,7 +17,7 @@ class ProductModelService:
         :return: ProductsModel instance if found, None otherwise.
         """
         try:
-            return ProductsModel.objects.get(pk=pk)
+            return ProductsModel.objects.get(pk=pk, is_active=True)
         except ProductsModel.DoesNotExist:
             return None
 
@@ -64,13 +64,12 @@ class ProductModelService:
 
     def delete_product(self, product):
         """
-        Delete a product.
-        :param product: ProductsModel instance to be deleted.
-        :return: None
-        :raises ValidationError: If deletion fails.
+        Soft-delete a product by setting is_active to False.
         """
+        
         try:
-            product.delete()
+            product.is_active = False
+            product.save()
         except Exception as e:
             raise ValidationError(f"Error deleting product: {str(e)}")
 
