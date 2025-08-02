@@ -79,8 +79,6 @@
                 <div class="modal-body">
                     <form id="addUserForm" method="post" action="{% url 'manage_user_create' %}" class="fw-bold">
                         {% csrf_token %}
-                        <input type="hidden" name="source_page" value="user">
-                        <!-- {{ form.as_p }} -->
                         <div class="row">
                             <div class="form-group col-md-6 mb-3">
                                 {{ form.first_name.label_tag }}<span class="text-danger">*</span>
@@ -274,7 +272,7 @@
                                     data-state="{{ user.state }}"
                                     data-pincode="{{ user.pincode }}"
                                     data-roles="{{ user.roles|safe }}"
-                                    data-action-url="{% url 'manage_user_update' user.id %}?next={% url 'manage_user_list' %}">
+                                    data-action-url="{% url 'manage_user_update' user.id %}">
                                     <i class="bi bi-pencil-square"></i>
                                 </a>
                             
@@ -292,7 +290,7 @@
                                     </button>
                                 {% endif %}
 
-                                <form method="post" action="{% url 'manage_toggle_user_active' user.id %}?next={% url 'manage_user_list' %}" style="display:inline;">
+                                <form method="post" action="{% url 'manage_toggle_user_active' user.id %}" style="display:inline;">
                                     {% csrf_token %}
                                     <button type="submit" class="btn btn-sm {% if user.is_active %}text-success{% else %}text-muted{% endif %}"
                                             title="Toggle visibility"

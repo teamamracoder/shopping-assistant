@@ -2,26 +2,34 @@ from django.db import IntegrityError
 from django.forms import ValidationError
 from control_panel.models import ServiceTypeModel
 from django.db import transaction
-class ServiceTypeModelService:
-    def get_all_ServiceTypeModels(self):
-        """
-        Fetch all service types from the database.
-        :return: Queryset of all ServiceTypeModel instances.
-        """
-        return ServiceTypeModel.objects.all()
 
-    def get_user_by_id(self,pk):
+class ServiceTypeModelService:
+
+    def get_all_ServiceTypeModels(self):
+        return ServiceTypeModel.objects.all()
+    
+    def create_service_type(self, form, user):
         """
-        Fetch a service type by its primary key (ID).
-        :param pk: Primary key (ID) of the service type.
-        :return: ServiceTypeModel instance if found, None otherwise.
+        Create and save a ServiceTypeModel instance with audit fields.
         """
+        instance = form.save(commit=False)
+        if user and user.is_authenticated:
+            instance.created_by = user
+            instance.updated_by = user
+        else:
+            instance.created_by = None
+            instance.updated_by = None
+        instance.save()
+        return instance
+    
+    def get_service_type_by_id(self,pk):
         try:
-            return ServiceTypeModel.objects.get(pk=pk)
+            return ServiceTypeModel.objects.get(id=pk)
         except ServiceTypeModel.DoesNotExist:
             return None
 
-    def update_service_type(self, service_type, validated_data):
+    def update_service_type(self, form):
+        form.save()
         """
         Update an existing service type with new validated data.
         :param service_type: ServiceTypeModel instance to be updated.
@@ -29,17 +37,7 @@ class ServiceTypeModelService:
         :return: Updated ServiceTypeModel instance.
         :raises ValidationError: If the updated data fails validation.
         """
-        try:
-            service_type.service_name = validated_data.get('service_name', service_type.service_name)
-            service_type.is_active = validated_data.get('is_active', service_type.is_active)
-            service_type.created_by = validated_data.get('created_by', service_type.created_by)
-            service_type.updated_by = validated_data.get('updated_by', service_type.updated_by)
-
-            service_type.save()
-            return service_type
-        except IntegrityError:
-            raise ValidationError("Service type update failed due to integrity issues.") 
-
+        
     def delete_service_type(self, service_type):
         """
         Delete a service type.
@@ -52,16 +50,16 @@ class ServiceTypeModelService:
         except Exception as e:
             raise ValidationError(f"Error deleting service type: {str(e)}")
     
-    def activate_service_type(self, service_type):
+    def toggle_active_status(self, service_type):
         """
         Activate a service type.
         :param service_type: ServiceTypeModel instance to be activated.
         :return: Activated ServiceTypeModel instance.
         """
-        service_type.is_active = True
+        service_type.is_active = not service_type.is_active
         service_type.save()
         return service_type
-
+        
     def deactivate_service_type(self, service_type):
         """
         Deactivate a service type.

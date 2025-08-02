@@ -62,8 +62,8 @@
 </style>
 
 <div class="container-fluid">
-    <h1 class="h3 mb-2 text-gray-800">Users</h1>
-    <p class="mb-4">Manage users in the system.</p>
+    <h1 class="h3 mb-2 text-gray-800">Partners</h1>
+    <p class="mb-4">Manage partners in the system.</p>
     <!-- Add Button (Opens Modal) -->
     <button class="circle-btn" data-bs-toggle="modal" data-bs-target="#addUserModal">
         <i class="bi bi-plus-lg text-light"></i>
@@ -79,8 +79,8 @@
                 <div class="modal-body">
                     <form id="addUserForm" method="post" action="{% url 'manage_user_create' %}" class="fw-bold">
                         {% csrf_token %}
-                        <input type="hidden" name="source_page" value="user">
-                        <!-- {{ form.as_p }} -->
+                            <input type="hidden" name="seller" value="seller">
+                            <!-- {{ form.as_p }} -->
                         <div class="row">
                             <div class="form-group col-md-6 mb-3">
                                 {{ form.first_name.label_tag }}<span class="text-danger">*</span>
@@ -234,7 +234,7 @@
     <!-- User Table -->
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Users</h6>
+            <h6 class="m-0 font-weight-bold text-primary">Partners</h6>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -274,7 +274,7 @@
                                     data-state="{{ user.state }}"
                                     data-pincode="{{ user.pincode }}"
                                     data-roles="{{ user.roles|safe }}"
-                                    data-action-url="{% url 'manage_user_update' user.id %}?next={% url 'manage_user_list' %}">
+                                    data-action-url="{% url 'manage_user_update' user.id %}?next={% url 'partner_list' %}">
                                     <i class="bi bi-pencil-square"></i>
                                 </a>
                             
@@ -292,7 +292,7 @@
                                     </button>
                                 {% endif %}
 
-                                <form method="post" action="{% url 'manage_toggle_user_active' user.id %}?next={% url 'manage_user_list' %}" style="display:inline;">
+                                <form method="post" action="{% url 'manage_toggle_user_active' user.id %}?next={% url 'partner_list' %}" style="display:inline;">
                                     {% csrf_token %}
                                     <button type="submit" class="btn btn-sm {% if user.is_active %}text-success{% else %}text-muted{% endif %}"
                                             title="Toggle visibility"
@@ -332,7 +332,7 @@
     editButtons.forEach(btn => {
         btn.addEventListener('click', function () {
             form.action = this.getAttribute('data-action-url');  // retrive the url name to send requests
-            modalLabel.textContent = "Edit User";  // Change modal title to "Edit User"
+            modalLabel.textContent = "Edit Partner";  // Change modal title to "Edit User"
             // Set form field values with the user's existing data
             form.elements['first_name'].value = this.getAttribute('data-first-name');
             form.elements['last_name'].value = this.getAttribute('data-last-name');
@@ -415,13 +415,12 @@ $(document).ready(function () {
             },
             address: {
                 required: true,
-               // minlength: 5
+                minlength: 5
             },
             pincode: {
                 required: true,
                 digits: true,
-                minlength: 4,
-                maxlength: 6
+                minlength: 4
             },
             city: {
                 required: true
@@ -434,7 +433,7 @@ $(document).ready(function () {
             },
             location: {
                 required: true,
-                // minlength: 3
+                minlength: 3
             }
         },
         messages: {
@@ -476,13 +475,12 @@ $(document).ready(function () {
             },
             address: {
                 required: "Please enter address.",
-                // minlength: "Address must be at least 5 characters."
+                minlength: "Address must be at least 5 characters."
             },
             pincode: {
                 required: "Please enter pincode.",
                 digits: "Only digits allowed.",
-                minlength: "Minimum 4 digits.",
-                maxlength: "Maximum 6 digits.",
+                minlength: "Minimum 4 digits."
             },
             city: {
                 required: "Please enter city."
@@ -495,6 +493,7 @@ $(document).ready(function () {
             },
             location: {
                 required: "Please enter location.",
+                minlength: "Location must be at least 3 characters."
             }
         },
         errorElement: "span",

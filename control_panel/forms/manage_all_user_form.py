@@ -22,7 +22,7 @@ class ManageUserForm(forms.ModelForm):
             'city': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your city'}),
             'district': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your district'}),
             'state': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your state'}),
-            'pincode': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Enter your pincode'}),
+            'pincode': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Enter your pincode', 'max-length': 6}),
             'roles': forms.SelectMultiple(attrs={'class': 'form-control', 'id': 'role'}),
         }
 
@@ -31,3 +31,5 @@ class ManageUserForm(forms.ModelForm):
         # Override gender and roles choices using enums
         self.fields['gender'].choices = [(g.value, g.name) for g in Gender]
         self.fields['roles'].choices = [(r.value, r.name) for r in Role]
+        self.fields['city'].label = 'City/Vill:'
+        self.fields['country'].initial = 'India'

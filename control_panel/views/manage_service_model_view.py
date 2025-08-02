@@ -3,22 +3,19 @@ from ..models import ServiceModel,ServiceTypeModel,UserModel
 from ..forms .manage_service_model_form  import *
 from django.views import View
 from django.contrib import messages
-
+from services import ServiceService
+service_helper = ServiceService()
 
 # LIST VIEW (READ ALL)
 class ManageServiceModelListView(View):
     def get(self, request):
-        services_model_data = ServiceModel.objects.all()
         form = ServiceModelForm()
-        services_with_names = []
-        for service in services_model_data:
-            service_type_name  = ServiceTypeModel.objects.filter(id = service.service_type_id).first()
-            service_provider_name = UserModel.objects.filter(id=service.service_provider_id,is_service_provider=True).first()
-            services_with_names.append({
-                'service_type_name': service_type_name.service_name if service_type_name else 'N/A',
-                'service_provider_name': service_provider_name.first_name if service_provider_name else 'N/A'
-            })
-        return render(request, 'admin/manage_service_model.html', {'services_model_data': services_model_data,'form': form,'services_with_names': services_with_names})
+        services_ins = service_helper.get_all_services()
+
+        return render(request, 'admin/manage_service_model.html', {
+            'form': form,
+            'services_model_data': services_ins,
+        })
 
 
 # CREATE VIEW
@@ -30,52 +27,53 @@ class ManageServiceModelCreateView(View):
     def post(self, request):
         form = ServiceModelForm(request.POST)
         if form.is_valid():
-            service = form.save(commit=False)
-            # service.created_by = request.user # this will required while login or sign up feature will developed
-            # service.updated_by = request.user # this will required while login or sign up feature will developed
-            service.save()
-            form.save()
-            return redirect('manage_service_list')
+            service_data = form.cleaned_data
+            try:
+                service_helper.create_service(service_data)
+                return redirect('manage_service_list')
+            except Exception as e:
+                form.add_error(None, f"Error saving service: {str(e)}")
         return render(request, 'admin/manage_service_model.html', {'form': form})
-
 
 # UPDATE VIEW
 class ManageServiceModelUpdateView(View):
     def get(self, request, pk):
         print(f"Requrst for update id ========= {pk}")
-        service = get_object_or_404(ServiceModel, pk=pk)
+        service = service_helper.get_service_by_id(pk=pk)
         form = ServiceModelForm(instance=service)
         return render(request, 'admin/manage_service_model.html', {'form': form, 'service': service})
 
     def post(self, request, pk):
-        service = get_object_or_404(ServiceModel, pk=pk)
+        service = service_helper.get_service_by_id(pk=pk)
         form = ServiceModelForm(request.POST, instance=service)
+        
         if form.is_valid():
-            form.save(commit=False)
-            service.save()
-            return redirect('manage_service_list')
+            validated_data = form.cleaned_data
+            try:
+                service_helper.update_service(service, validated_data)
+                return redirect('manage_service_list')
+            except Exception as e:
+                form.add_error(None, f"Error updating service: {str(e)}")
+        
         return render(request, 'admin/manage_service_model.html', {'form': form, 'service': service})
-
 
 # DELETE VIEW
 class ManageServiceModelDeleteView(View):
     def get(self, request, pk):
-        service = get_object_or_404(ServiceModel, pk=pk)
+        service = service_helper.get_service_by_id(pk=pk)
         return render(request, 'admin/manage_service_model.html', {'service': service})
     
     def post(self, request, pk):
-        service = get_object_or_404(ServiceModel, pk=pk)
-        service.delete()
+        service = service_helper.get_service_by_id(pk=pk)
+        service_helper.delete_service(service)
         return redirect('manage_service_list')
-    
     
 #TOGGLE VIEW
 class ManageToggleServiceModelActiveView(View): 
     def post(self, request, pk):
-        service = get_object_or_404(ServiceModel, pk=pk)
-        service.is_active = not service.is_active 
-        service.save()
-        status = "activated" if service.is_active else "deactivated"
-        messages.success(request, f"ServiceModel '{service.is_active}' has been {status}.")
-        
+        service_ins = service_helper.get_service_by_id(pk=pk)
+        updated_service = service_helper.toggle_active_status(service_ins)
+        status = "activated" if updated_service.is_active else "deactivated"
+        messages.success(request, f"ServiceModel '{updated_service.is_active}' has been {status}.")    
         return redirect('manage_service_list')
+    

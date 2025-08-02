@@ -1,6 +1,8 @@
+from django.shortcuts import render
 from control_panel.models import UserModel
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
+from constants import Gender, Role
 
 class UserService:
     
@@ -10,6 +12,40 @@ class UserService:
         :return: Queryset of all UserModel instances.
         """
         return UserModel.objects.all()
+    
+    def get_users_by_role(self, role):
+        """
+        Fetch users by specific role.
+        :param role: Role enum value
+        :return: QuerySet of UserModel
+        """
+        try:
+            return UserModel.objects.filter(roles__contains=[role])
+        except Exception as e:
+            raise ValidationError(f"Error fetching users for role {role}: {str(e)}")
+        
+    def common_user_context(users, form=None):
+        from constants import Gender, Role
+        from control_panel.forms import ManageUserForm
+        if form is None:
+            form = ManageUserForm()
+        choices_gender = [{type.value: type.name} for type in Gender]
+        choices_role = [{type.value: type.name} for type in Role]
+
+        return {
+            'users': users,
+            'form': form,
+            'choices_gender': choices_gender,
+            'choices_role': choices_role
+        }
+    
+    def get(self, request):
+        service = UserService()
+        providers = service.get_users_by_role(Role.SERVICE_PROVIDER.value)
+        context = UserService.common_user_context(providers)
+        return render(request, "admin/service_provider_list.html", context)
+
+
 
     def get_user_by_id(self, pk):
         """
@@ -57,7 +93,8 @@ class UserService:
         except IntegrityError:
             raise ValidationError("Email already exists, or another integrity issue occurred.") 
 
-    def delete_user(self, user):
+    def user_delete(self, pk):
+        user = UserModel.objects.get(id=pk)
         """
         Delete a user.
         :param user: UserModel instance to be deleted.
@@ -69,15 +106,18 @@ class UserService:
         except Exception as e:
             raise ValidationError(f"Error deleting user: {str(e)}")
     
-    def activate_user(self, user):
+    def toggle_user_active(self, user):
         """
-        Activate a user.
-        :param user: UserModel instance to be activated.
-        :return: Activated UserModel instance.
+        Toggle the active status of a user.
+        :param user: UserModel instance
+        :return: Updated UserModel instance
         """
-        user.is_active = True
-        user.save()
-        return user
+        try:
+            user.is_active = not user.is_active
+            user.save()
+            return user
+        except Exception as e:
+            raise ValidationError(f"Error toggling user status: {str(e)}")
 
     def deactivate_user(self, user):
         """
