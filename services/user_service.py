@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from control_panel.models import UserModel, CustomerProvider
+from control_panel.models import UserModel
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from constants import Gender, Role
@@ -147,19 +147,4 @@ class UserService:
             return UserModel.objects.get(email=email)
         except UserModel.DoesNotExist:
             return None
-        
-    def get_my_customers(self, user):
-        """
-        Fetch customers associated with the Business Partner .
-        :param user: Business Partner UserModel instance.
-        :return: Queryset of UserModel instances representing customers.
-        """
-        customer_ids = CustomerProvider.objects.filter(
-            provider=user,
-            relationship_type=RELATIONSHIP_TYPE.SELLER.value,
-            is_active=True
-        ).values_list('customer_id', flat=True)
-
-        return UserModel.objects.filter(id__in=customer_ids, is_active=True)
-        
 user_service = UserService()

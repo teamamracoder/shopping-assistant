@@ -124,6 +124,7 @@ class ManageUserCreateView(View):
 class ManageUserDeleteView(View):
     def post(self, request, user_id):
         try:
+            print("+++++++++++++ ID = ",user_id)
             service.user_delete(user_id)  #call the service method
             messages.success(request, "User deleted successfully.")
         except ValidationError as e:

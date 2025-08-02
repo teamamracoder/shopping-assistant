@@ -133,15 +133,9 @@ class ManageProductDeleteView(View):
 # Toggle Active/Inactive View
 class ManageToggleProductActiveView(View):
     def post(self, request, pk, *args, **kwargs):
-        product = product_service.get_product_by_id(pk)
-        if not product:
-            messages.error(request, "Product not found.")
-            return redirect("manage_product_list")
-
-        new_status = not product.is_active
         try:
-            product_service.update_product(product, {"is_active": new_status})
-            status = "activated" if new_status else "deactivated"
+            product = product_service.toggle_product_status(pk, updated_by=request.user)
+            status = "activated" if product.is_active else "deactivated"
             messages.success(request, f"Product '{product.name}' has been {status}.")
         except ValidationError as e:
             messages.error(request, str(e))

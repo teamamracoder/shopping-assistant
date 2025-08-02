@@ -5,6 +5,8 @@ from django.db import transaction
 from django.db import IntegrityError
 from django.forms import ValidationError
 from control_panel.models import StoreModel
+from django.contrib.auth.models import AnonymousUser
+
 
 class storeModelService:
     def get_all_stores(self):
@@ -86,7 +88,22 @@ class storeModelService:
             raise ValidationError(f"Error deleting store: {str(e)}")
 
 
+    def toggle_store_status(self, pk, updated_by=None):
+        store = self.get_store_by_id(pk)
+        if not store:
+            raise ValidationError("Store not found.")
 
+        store.is_active = not store.is_active
+
+        # ✅ Only assign if authenticated user
+        if updated_by and not isinstance(updated_by, AnonymousUser) and updated_by.is_authenticated:
+            store.updated_by = updated_by
+
+        try:
+            store.save()
+            return store
+        except IntegrityError:
+            raise ValidationError("Failed to toggle store status due to integrity issues.")
 
 
 # class StoreService:

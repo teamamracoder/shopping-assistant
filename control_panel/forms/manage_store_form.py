@@ -79,6 +79,5 @@ class ManageStoreForm(forms.ModelForm):
             'open_time': "Open Time",
             'close_time': "Close Time",
             'pin_code': "Pincode",
-            # 'is_active': "Is Active",
             'owner_id': "Owner",
         }

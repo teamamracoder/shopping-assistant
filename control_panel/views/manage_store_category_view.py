@@ -13,6 +13,7 @@ from services.store_category_service import StoreCategoryService
 
 store_category_service = StoreCategoryService()
 
+##Store Category List ##
 class ManageStoreCategoryListView(View):
     def get(self, request):
         store_categories = store_category_service.get_all_store_categories()
@@ -22,7 +23,8 @@ class ManageStoreCategoryListView(View):
             "form": form
         })
 
-# Create View
+
+## Create View ##
 class ManageStoreCategoryCreateView(View):
     def post(self, request):
         form = ManageStoreCategoryForm(request.POST)
@@ -46,7 +48,8 @@ class ManageStoreCategoryCreateView(View):
             "categories": store_categories
         })
 
-# Update View
+
+## Update View ##
 class ManageStoreCategoryEditView(UpdateView):
     model = StoreCategoryModel
     form_class = ManageStoreCategoryForm
@@ -68,7 +71,8 @@ class ManageStoreCategoryEditView(UpdateView):
         store_categories = store_category_service.get_all_store_categories()
         return self.render_to_response(self.get_context_data(form=form, store_categories=store_categories))
 
-# Delete View
+
+## Delete View ##
 class ManageStoreCategoryDeleteView(View):
     def post(self, request, pk, *args, **kwargs):
         store_category = store_category_service.get_store_category_by_id(pk)
@@ -84,18 +88,13 @@ class ManageStoreCategoryDeleteView(View):
 
         return redirect("manage_store_category_list")
 
-# Toggle Active Status
+
+## Toggle Active Status ##
 class ManageToggleStoreCategoryActiveView(View):
     def post(self, request, pk):
-        category = store_category_service.get_store_category_by_id(pk)
-        if not category:
-            messages.error(request, "Store category not found.")
-            return redirect("manage_store_category_list")
-
         try:
-            new_status = not category.is_active
-            store_category_service.update_store_category(category, {'is_active': new_status})
-            status = "activated" if new_status else "deactivated"
+            category = store_category_service.toggle_store_category_status(pk, updated_by=request.user)
+            status = "activated" if category.is_active else "deactivated"
             messages.success(request, f"Category '{category.name}' has been {status}.")
         except ValidationError as e:
             messages.error(request, str(e))

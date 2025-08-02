@@ -24,5 +24,18 @@ class  ProductSubCategoryModelService:
         return instance
 
     def delete_sub_category(self, instance):
-            instance.is_active = False
-            instance.save()
+        # instance.delete()
+        instance.is_active = False
+        instance.save()
+
+    def toggle_sub_category_status(self, pk):
+        subcategory = self.get_sub_category_by_id(pk)
+        if not subcategory:
+            raise ValidationError("Subcategory not found.")
+
+        subcategory.is_active = not subcategory.is_active
+        try:
+            subcategory.save()
+            return subcategory
+        except IntegrityError:
+            raise ValidationError("Failed to toggle status due to database error.")
