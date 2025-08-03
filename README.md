@@ -19,7 +19,7 @@
 > pip install -r requirements.txt
 
 ### 4. Migrate
-> python manage.py makemigrations
+> python manage.py makemigrations control_panel
 
 > python manage.py migrate
 

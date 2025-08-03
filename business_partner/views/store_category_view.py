@@ -5,13 +5,27 @@ from utils.response_utils import Res
 from ..serializers import StoreCategorySerializer
 from services import store_category_service
 
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
+
 
 class StoreCategoryListCreateView(APIView):
+    @swagger_auto_schema(
+    operation_summary="List Store Categories",
+    operation_description="Retrieve a list of all store categories.",
+    responses={200: openapi.Response(description="List of store categories")}
+    )
     def get(self, request):
         categories = store_category_service.StoreCategoryService().get_all_store_categories()
         serializer = StoreCategorySerializer(categories, many=True)
         return Res.success("S-30001", serializer.data)
-    
+
+    @swagger_auto_schema(  
+        operation_summary="Create Store Category",  
+        operation_description="Create a new store category using the provided information.",  
+        request_body=StoreCategorySerializer,  
+        responses={201: openapi.Response(description="Store category created successfully")}  
+    )    
     @validate_serializer(StoreCategorySerializer)
     def post(self, request):
         # category = store_category_service.StoreCategoryService().create_store_category(request.serializer.validated_data, user=request.user) # If the frontend is ready then use this line 
@@ -21,25 +35,45 @@ class StoreCategoryListCreateView(APIView):
 
 
 class StoreCategoryDetailView(APIView):
+    @swagger_auto_schema(
+    operation_summary="Retrieve Store Category",
+    operation_description="Retrieve the details of a store category by its ID.",
+    responses={200: openapi.Response(description="Store category details"),
+    404: openapi.Response(description="Store category not found")}
+    )
     def get(self, request, pk):
-        category = store_category_service.StoreCategoryService().get_store_category(pk)
+        category = store_category_service.StoreCategoryService().get_store_category_by_id(pk)
         if not category:
             return Res.error(data={"message": "Store category not found"}, http_status=status.HTTP_404_NOT_FOUND)
         serializer = StoreCategorySerializer(category)
         return Res.success("S-30003", serializer.data)
-    
+
+    @swagger_auto_schema(  
+    operation_summary="Update Store Category",  
+    operation_description="Update an existing store category completely using the provided ID.",  
+    request_body=StoreCategorySerializer,  
+    responses={200: openapi.Response(description="Store category updated successfully"),  
+               404: openapi.Response(description="Store category not found")}  
+    )     
     @validate_serializer(StoreCategorySerializer)
     def put(self, request, pk):
-        category = store_category_service.StoreCategoryService().get_store_category(pk)
+        category = store_category_service.StoreCategoryService().get_store_category_by_id(pk)
         if not category:
             return Res.error(data={"message": "Store category not found"}, http_status=status.HTTP_404_NOT_FOUND)
         # updated_category = store_category_service.StoreCategoryService().update_store_category(category, request.serializer.validated_data, user=request.user) # If the frontend is ready then use this line 
         updated_category = store_category_service.StoreCategoryService().update_store_category(category, request.serializer.validated_data) 
         return Res.success("S-30004", StoreCategorySerializer(updated_category).data)
-    
+
+    @swagger_auto_schema(  
+    operation_summary="Partially Update Store Category",  
+    operation_description="Partially update a store category using only the fields provided.",  
+    request_body=StoreCategorySerializer,  
+    responses={200: openapi.Response(description="Store category partially updated"),  
+               404: openapi.Response(description="Store category not found")}  
+    )    
     @validate_serializer(StoreCategorySerializer)
     def patch(self, request, pk):
-        category = store_category_service.StoreCategoryService().get_store_category(pk)
+        category = store_category_service.StoreCategoryService().get_store_category_by_id(pk)
         if not category:
             return Res.error(data={"message": "Store category not found"}, http_status=status.HTTP_404_NOT_FOUND)
         serializer = StoreCategorySerializer(category, data=request.data, partial=True)
@@ -49,8 +83,14 @@ class StoreCategoryDetailView(APIView):
             return Res.success("S-30006", StoreCategorySerializer(updated_category).data)
         return Res.error(data={"message": serializer.errors}, http_status=status.HTTP_400_BAD_REQUEST)
 
+    @swagger_auto_schema(  
+    operation_summary="Soft Delete a Store Category",
+    operation_description="Performs a soft delete on the Store Category by setting is_active=False.",
+    responses={204: openapi.Response(description="Store category deleted successfully"),  
+               404: openapi.Response(description="Store category not found")}  
+    ) 
     def delete(self, request, pk):
-        category = store_category_service.StoreCategoryService().get_store_category(pk)
+        category = store_category_service.StoreCategoryService().get_store_category_by_id(pk)
         if not category:
             return Res.error(data={"message": "Store category not found"}, http_status=status.HTTP_404_NOT_FOUND)
         store_category_service.StoreCategoryService().delete_store_category(category)

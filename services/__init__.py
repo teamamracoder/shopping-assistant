@@ -10,6 +10,7 @@ from services.product_sub_category_service import *
 # from services.manage_product_sub_category_service import ProductSubCategoryModelService
 from services.store_service import storeModelService
 from services.store_category_service import StoreCategoryService
+from services.email_track_service import *
 
 class Service:
     _instance = None
@@ -33,6 +34,7 @@ class Service:
             self.service_type_api = ServiceTypeModelAPI()
             self.store_service = storeModelService()
             self.store_category_service = StoreCategoryService()
+            self.email_track_service= EmailTrackService()
 
 services = Service()
 
