@@ -20,7 +20,7 @@ class StoreListCreateView(APIView):
     responses={200: openapi.Response(description="List of stores")}
     )
     def get(self, request):
-        stores = store_service.storeModelService().list_stores()
+        stores = store_service.storeModelService().get_all_stores()
         serializer = StoreSerializer(stores, many=True)
         return Res.success("S-20001", serializer.data)
 
@@ -44,7 +44,7 @@ class StoreDetailView(APIView):
     responses={200: openapi.Response(description="Store details"), 404: openapi.Response(description="Store not found")}
     )
     def get(self, request, pk):
-        store = store_service.storeModelService().get_store(pk)
+        store = store_service.storeModelService().get_store_by_id(pk)
         if not store:
             return Res.error(data={"message": "Store not found"}, http_status=status.HTTP_404_NOT_FOUND)
         serializer = StoreSerializer(store)
@@ -58,7 +58,7 @@ class StoreDetailView(APIView):
     )
     @validate_serializer(StoreSerializer)
     def put(self, request, pk):
-        store = store_service.storeModelService().get_store(pk)
+        store = store_service.storeModelService().get_store_by_id(pk)
         if not store:
             return Res.error(data={"message": "Store not found"}, http_status=status.HTTP_404_NOT_FOUND)
         # updated_store = store_service.storeModelService().update_store(store, request.serializer.validated_data, user=request.user) # If the frontend is ready then use this line 
@@ -73,7 +73,7 @@ class StoreDetailView(APIView):
     )
     @validate_serializer(StoreSerializer)
     def patch(self, request, pk):
-        store = store_service.storeModelService().get_store(pk)
+        store = store_service.storeModelService().get_store_by_id(pk)
         if not store:
             return Res.error(data={"message": "Store not found"}, http_status=status.HTTP_404_NOT_FOUND)
         serializer = StoreSerializer(store, data=request.data, partial=True)
@@ -89,7 +89,7 @@ class StoreDetailView(APIView):
     responses={204: openapi.Response(description="Store deleted successfully"), 404: openapi.Response(description="Store not found")}
     )
     def delete(self, request, pk):
-        store = store_service.storeModelService().get_store(pk)
+        store = store_service.storeModelService().get_store_by_id(pk)
         if not store:
             return Res.error(data={"message": "Store not found"}, http_status=status.HTTP_404_NOT_FOUND)
         store_service.storeModelService().delete_store(store)

@@ -42,7 +42,7 @@ class StoreCategoryDetailView(APIView):
     404: openapi.Response(description="Store category not found")}
     )
     def get(self, request, pk):
-        category = store_category_service.StoreCategoryService().get_store_category(pk)
+        category = store_category_service.StoreCategoryService().get_store_category_by_id(pk)
         if not category:
             return Res.error(data={"message": "Store category not found"}, http_status=status.HTTP_404_NOT_FOUND)
         serializer = StoreCategorySerializer(category)
@@ -57,7 +57,7 @@ class StoreCategoryDetailView(APIView):
     )     
     @validate_serializer(StoreCategorySerializer)
     def put(self, request, pk):
-        category = store_category_service.StoreCategoryService().get_store_category(pk)
+        category = store_category_service.StoreCategoryService().get_store_category_by_id(pk)
         if not category:
             return Res.error(data={"message": "Store category not found"}, http_status=status.HTTP_404_NOT_FOUND)
         # updated_category = store_category_service.StoreCategoryService().update_store_category(category, request.serializer.validated_data, user=request.user) # If the frontend is ready then use this line 
@@ -73,7 +73,7 @@ class StoreCategoryDetailView(APIView):
     )    
     @validate_serializer(StoreCategorySerializer)
     def patch(self, request, pk):
-        category = store_category_service.StoreCategoryService().get_store_category(pk)
+        category = store_category_service.StoreCategoryService().get_store_category_by_id(pk)
         if not category:
             return Res.error(data={"message": "Store category not found"}, http_status=status.HTTP_404_NOT_FOUND)
         serializer = StoreCategorySerializer(category, data=request.data, partial=True)
@@ -90,7 +90,7 @@ class StoreCategoryDetailView(APIView):
                404: openapi.Response(description="Store category not found")}  
     ) 
     def delete(self, request, pk):
-        category = store_category_service.StoreCategoryService().get_store_category(pk)
+        category = store_category_service.StoreCategoryService().get_store_category_by_id(pk)
         if not category:
             return Res.error(data={"message": "Store category not found"}, http_status=status.HTTP_404_NOT_FOUND)
         store_category_service.StoreCategoryService().delete_store_category(category)

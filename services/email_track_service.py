@@ -11,7 +11,8 @@ class EmailTrackService:
         """
         return EmailTrackModel.objects.all()
 
-    def get_email_by_id(self, pk):
+    # def get_email_by_id(self, pk):
+    def get_email_track_by_id(self, pk):
         """
         Fetch an email by its primary key.
         :param pk: Primary key (ID) of the email.

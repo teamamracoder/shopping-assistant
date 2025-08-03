@@ -27,24 +27,24 @@ class EmailTrackDetailAPIView(APIView):
 
     @validate_serializer(EmailTrackSerializer)
     def put(self, request, pk):
-        email =services.email_track_service.get_email_track_by_id(pk)
+        email = services.email_track_service.get_email_track_by_id(pk)
         if not email:
             return Res.error(data={"message": "Email not found"}, http_status=status.HTTP_404_NOT_FOUND)
-        updated_email =services.email_track_service.update_email_track(email, request.serializer.validated_data)
+        updated_email = services.email_track_service.update_email(email, request.serializer.validated_data)
         return Res.success("S-20001", EmailTrackSerializer(updated_email).data)
 
     @validate_serializer(EmailTrackSerializer)
     def patch(self, request, pk):
         request.serializer.partial = True
-        email =services.email_track_service.get_email_track_by_id(pk)
+        email = services.email_track_service.get_email_track_by_id(pk)
         if not email:
             return Res.error(data={"message": "Email not found"}, http_status=status.HTTP_404_NOT_FOUND)
-        updated_email = services.email_track_service.update_email_track(email, request.serializer.validated_data)
+        updated_email = services.email_track_service.update_email(email, request.serializer.validated_data)
         return Res.success("S-20001", EmailTrackSerializer(updated_email).data)
 
     def delete(self, request, pk):
-        email =services.email_track_service.get_email_track_by_id(pk)
+        email = services.email_track_service.get_email_track_by_id(pk)
         if not email:
             return Res.error(data={"message": "Email not found"}, http_status=status.HTTP_404_NOT_FOUND)
-        services.email_track_service.delete_email_track(email)
+        services.email_track_service.delete_email(email)
         return Res.success("S-20003", {"message": "Email deleted successfully"}, http_status=status.HTTP_204_NO_CONTENT)
