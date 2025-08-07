@@ -100,71 +100,62 @@
           <form id="addUserForm" method="POST" action="{% url 'manage_service_booking_create' %}" class="fw-bold">
             {% csrf_token %}
             <div class="row">
-              <div class="form-group col-md-6 mb-3">
-                {{ form.service.label_tag }}<span class="text-danger">*</span>
-                <div class="input-group">
-                  <span class="input-group-text">
-                    <i class="bi bi-gear-fill text-primary"></i>
-                  </span>
-                  {{ form.service }}
-                </div>
-                {% if form.service.errors %}
-                <div class="text-danger">{{ form.service.errors }}</div>
-                {% endif %}
-              </div>
+  <div class="form-group col-md-6 mb-3">
+    {{ form.service.label_tag }}<span class="text-danger">*</span>
+    <div class="input-group">
+      <span class="input-group-text">
+        <i class="bi bi-gear-fill text-primary"></i>
+      </span>
+      {{ form.service }}
+    </div>
+    <div class="error-container"></div> <!-- ✅ added -->
+  </div>
 
-              <div class="form-group col-md-6 mb-3">
-                {{ form.service_provider.label_tag }}<span class="text-danger">*</span>
-                <div class="input-group">
-                  <span class="input-group-text">
-                    <i class="bi bi-person-fill-gear text-primary"></i>
-                  </span>
-                  {{ form.service_provider }}
-                </div>
-                {% if form.service_provider.errors %}
-                <div class="text-danger">{{ form.service_provider.errors }}</div>
-                {% endif %}
-              </div>
+  <div class="form-group col-md-6 mb-3">
+    {{ form.service_provider.label_tag }}<span class="text-danger">*</span>
+    <div class="input-group">
+      <span class="input-group-text">
+        <i class="bi bi-person-fill-gear text-primary"></i>
+      </span>
+      {{ form.service_provider }}
+    </div>
+    <div class="error-container"></div> <!-- ✅ added -->
+  </div>
 
-              <div class="form-group col-md-6 mb-3">
-                {{ form.user.label_tag }}<span class="text-danger">*</span>
-                <div class="input-group">
-                  <span class="input-group-text">
-                    <i class="bi bi-person-fill text-primary"></i>
-                  </span>
-                  {{ form.user }}
-                </div>
-                {% if form.user.errors %}
-                <div class="text-danger">{{ form.user.errors }}</div>
-                {% endif %}
-              </div>
+  <div class="form-group col-md-6 mb-3">
+    {{ form.user.label_tag }}<span class="text-danger">*</span>
+    <div class="input-group">
+      <span class="input-group-text">
+        <i class="bi bi-person-fill text-primary"></i>
+      </span>
+      {{ form.user }}
+    </div>
+    <div class="error-container"></div> <!-- ✅ added -->
+  </div>
 
-              <div class="form-group col-md-6 mb-3">
-                {{ form.booking_charge.label_tag }}<span class="text-danger">*</span>
-                <div class="input-group">
-                  <span class="input-group-text">
-                    <i class="bi bi-cash-coin text-primary"></i>
-                  </span>
-                  {{ form.booking_charge }}
-                </div>
-                {% if form.booking_charge.errors %}
-                <div class="text-danger">{{ form.booking_charge.errors }}</div>
-                {% endif %}
-              </div>
+  <div class="form-group col-md-6 mb-3">
+    {{ form.booking_charge.label_tag }}<span class="text-danger">*</span>
+    <div class="input-group">
+      <span class="input-group-text">
+        <i class="bi bi-cash-coin text-primary"></i>
+      </span>
+      {{ form.booking_charge }}
+    </div>
+    <div class="error-container"></div> <!-- ✅ added -->
+  </div>
 
-              <div class="form-group col-md-6 mb-3">
-                {{ form.booking_time.label_tag }}<span class="text-danger">*</span>
-                <div class="input-group">
-                  <span class="input-group-text">
-                    <i class="bi bi-clock-fill text-primary"></i>
-                  </span>
-                  {{ form.booking_time }}
-                </div>
-                {% if form.booking_time.errors %}
-                <div class="text-danger">{{ form.booking_time.errors }}</div>
-                {% endif %}
-              </div>
-            </div>
+  <div class="form-group col-md-6 mb-3">
+    {{ form.booking_time.label_tag }}<span class="text-danger">*</span>
+    <div class="input-group">
+      <span class="input-group-text">
+        <i class="bi bi-clock-fill text-primary"></i>
+      </span>
+      {{ form.booking_time }}
+    </div>
+    <div class="error-container"></div> <!-- ✅ added -->
+  </div>
+</div>
+
 
             <div class="modal-footer">
               <button type="submit" class="btn btn-primary">Save</button>
@@ -259,21 +250,12 @@
 </div>
 
 <script>
-  // jquery form validations
   $(document).ready(function () {
-    console.log("vcbcvbncvbncvb mvnb cvmbncv b");
-
     $("#addUserForm").validate({
       rules: {
-        service: {
-          required: true
-        },
-        service_provider: {
-          required: true
-        },
-        user: {
-          required: true
-        },
+        service: { required: true },
+        service_provider: { required: true },
+        user: { required: true },
         booking_charge: {
           required: true,
           number: true,
@@ -285,15 +267,9 @@
         }
       },
       messages: {
-        service: {
-          required: "Please select a service"
-        },
-        service_provider: {
-          required: "Please select a service provider"
-        },
-        user: {
-          required: "Please select a user"
-        },
+        service: { required: "Please select a service" },
+        service_provider: { required: "Please select a service provider" },
+        user: { required: "Please select a user" },
         booking_charge: {
           required: "Please enter booking charge",
           number: "Please enter a valid number",
@@ -306,15 +282,22 @@
       },
       errorElement: "div",
       errorClass: "text-danger",
+
+      errorPlacement: function (error, element) {
+        element.closest(".form-group").find(".error-container").html(error);
+      },
+
       highlight: function (element) {
         $(element).addClass("is-invalid");
       },
       unhighlight: function (element) {
         $(element).removeClass("is-invalid");
+        $(element).closest(".form-group").find(".error-container").empty(); // ✅ clear error
       }
     });
   });
 </script>
+
 
 
 {% endblock %}

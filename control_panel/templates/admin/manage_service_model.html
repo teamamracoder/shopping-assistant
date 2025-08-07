@@ -87,229 +87,231 @@
                                 {{ form.service_type.label_tag }}<span class="text-danger">*</span>
                                 <div class="input-group">
                                     <span class="input-group-text">
-                                        <i class="bi bi-gear text-primary"></i> <!-- Icon for service_type -->
+                                        <i class="bi bi-gear text-primary"></i>
                                     </span>
                                     {{ form.service_type }}
                                 </div>
-                                {% if form.service_type.errors %}
-                                    <div class="text-danger small">
-                                        {{ form.service_type.errors.0 }}
-                                    </div>
-                                {% endif %}
+                                <div class="error-container"></div> 
                             </div>
+
                             <div class="form-group col-md-6 mb-3">
                                 {{ form.service_provider.label_tag }}<span class="text-danger">*</span>
                                 <div class="input-group">
                                     <span class="input-group-text">
                                         <i class="bi bi-person-circle text-primary"></i>
-                                        <!-- Icon for service_provider -->
                                     </span>
                                     {{ form.service_provider }}
                                 </div>
+                                <div class="error-container"></div> 
                             </div>
                         </div>
 
                         <div class="row">
-                            <div class="form-group col-md-6 mb-3">
+                              <div class="form-group col-md-6 mb-3">
                                 {{ form.services_charge.label_tag }}
                                 <div class="input-group">
-                                    <span class="input-group-text">
-                                        <i class="bi bi-currency-rupee text-primary"></i>
-                                        <!-- Icon for services_charge -->
-                                    </span>
-                                    {{ form.services_charge }}
+                                <span class="input-group-text">
+                                    <i class="bi bi-currency-rupee text-primary"></i>
+                                </span>
+                                {{ form.services_charge }}
                                 </div>
+                                <div class="error-container"></div> 
                             </div>
                             <div class="form-group col-md-6 mb-6">
                                 {{ form.description.label_tag }}
                                 <div class="input-group">
                                     <span class="input-group-text">
-                                        <i class="bi bi-card-text text-primary"></i> <!-- Icon for description -->
+                                        <i class="bi bi-card-text text-primary"></i>
                                     </span>
                                     {{ form.description }}
                                 </div>
+                                <div class="error-container"></div>
                             </div>
                         </div>
+                        <div class="row">
+                            <select name="created_by" class="form-control" hidden>
+                                {% for user in form.created_by.field.queryset %}
+                                <option value="{{ user.id }}">{{ user.username }}</option>
+                                {% endfor %}
+                            </select>
+                            <select name="updated_by" class="form-control" hidden>
+                                {% for user in form.updated_by.field.queryset %}
+                                <option value="{{ user.id }}">{{ user.username }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
 
+                        <div class="row">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Save</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </form>
                 </div>
-                <div class="row">
-                    <select name="created_by" class="form-control" hidden>
-                        {% for user in form.created_by.field.queryset %}
-                        <option value="{{ user.id }}">{{ user.username }}</option>
-                        {% endfor %}
-                    </select>
-                    <select name="updated_by" class="form-control" hidden>
-                        {% for user in form.updated_by.field.queryset %}
-                        <option value="{{ user.id }}">{{ user.username }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <div class="row">
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Save</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-                </form>
             </div>
         </div>
     </div>
-</div>
-<!-- Product Table -->
-<div class="card shadow mb-4">
-    <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Service Model</h6>
-    </div>
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                <thead class="table-primary">
-                    <tr>
-                        <th>Services Type</th>
-                        <th>Service Provider</th>
-                        <th>Service Charge</th>
-                        <th>Description</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for services_model in services_model_data %}
-                    <tr>
-                        <td>{{ services_model.service_type.service_name }}</td>
-                        <td>{{ services_model.service_provider.first_name }}</td>
-                        <td>{{ services_model.services_charge }}</td>
-                        <td>{{ services_model.description }}</td>
-                        <td>
-                            <a href="#" class="text-primary edit-btn"
-                                data-service-type="{{ services_model.service_type.id }}"
-                                data-service-provider="{{ services_model.service_provider.id }}"
-                                data-services-charge="{{ services_model.services_charge }}"
-                                data-description="{{ services_model.description }}"
-                                data-is-active="{{ services_model.is_active }}"
-                                data-action-url="{% url 'manage_service_model_update' services_model.id %}">
-                                <i class="bi bi-pencil-square"></i>
-                            </a>
-                            {% if services_model.id %}
-                            <form method="post" action="{% url 'manage_delete_service_model' services_model.id %}"
-                                style="display:inline;">
-                                {% csrf_token %}
-                                <button type="submit" class="btn text-danger btn-sm"
-                                    onclick="return confirm('Are you sure you want to delete this product?');">
+    <!-- Product Table -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Service Model</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead class="table-primary">
+                        <tr>
+                            <th>Services Type</th>
+                            <th>Service Provider</th>
+                            <th>Service Charge</th>
+                            <th>Description</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for services_model in services_model_data %}
+                        <tr>
+                            <td>{{ services_model.service_type.service_name }}</td>
+                            <td>{{ services_model.service_provider.first_name }}</td>
+                            <td>{{ services_model.services_charge }}</td>
+                            <td>{{ services_model.description }}</td>
+                            <td>
+                                <a href="#" class="text-primary edit-btn"
+                                    data-service-type="{{ services_model.service_type.id }}"
+                                    data-service-provider="{{ services_model.service_provider.id }}"
+                                    data-services-charge="{{ services_model.services_charge }}"
+                                    data-description="{{ services_model.description }}"
+                                    data-is-active="{{ services_model.is_active }}"
+                                    data-action-url="{% url 'manage_service_model_update' services_model.id %}">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                                {% if services_model.id %}
+                                <form method="post" action="{% url 'manage_delete_service_model' services_model.id %}"
+                                    style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn text-danger btn-sm"
+                                        onclick="return confirm('Are you sure you want to delete this product?');">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                                {% else %}
+                                <button class="btn btn-danger btn-sm" disabled>
                                     <i class="bi bi-trash"></i>
                                 </button>
-                            </form>
-                            {% else %}
-                            <button class="btn btn-danger btn-sm" disabled>
-                                <i class="bi bi-trash"></i>
-                            </button>
-                            {% endif %}
+                                {% endif %}
 
-                            <form method="post" action="{% url 'manage_toggle_service_active' services_model.id %}"
-                                style="display:inline;">
-                                {% csrf_token %}
-                                <button type="submit"
-                                    class="btn btn-sm {% if user.is_active %}text-success{% else %}text-muted{% endif %}"
-                                    title="Toggle visibility"
-                                    onclick="return confirm('Are you sure you want to toggle this user\'s visibility?');">
-                                    {% if services_model.is_active %}
-                                    <i class="bi bi-eye text-primary fs-6"></i>
-                                    {% else %}
-                                    <i class="bi bi-eye-slash text-danger fs-6"></i>
-                                    {% endif %}
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
-                    {% endfor %}
+                                <form method="post" action="{% url 'manage_toggle_service_active' services_model.id %}"
+                                    style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit"
+                                        class="btn btn-sm {% if user.is_active %}text-success{% else %}text-muted{% endif %}"
+                                        title="Toggle visibility"
+                                        onclick="return confirm('Are you sure you want to toggle this user\'s visibility?');">
+                                        {% if services_model.is_active %}
+                                        <i class="bi bi-eye text-primary fs-6"></i>
+                                        {% else %}
+                                        <i class="bi bi-eye-slash text-danger fs-6"></i>
+                                        {% endif %}
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
 
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-</div>
 
 
 
-<script>
-    document.querySelectorAll('.edit-btn').forEach(btn => {
-        btn.addEventListener('click', function () {
-            // e.preventDefault();
+    <script>
+        document.querySelectorAll('.edit-btn').forEach(btn => {
+            btn.addEventListener('click', function () { 
+                const form = document.getElementById('addProductForm');
+                const modalLabel = document.querySelector('.service-modal .modal-title');
+                const modal = document.querySelector('.service-modal');
+                form.action = this.getAttribute('data-action-url');
+                modalLabel.textContent = "Edit Service";
+                form.elements['service_type'].value = this.getAttribute('data-service-type');
+                form.elements['service_provider'].value = this.getAttribute('data-service-provider');
+                form.elements['services_charge'].value = this.getAttribute('data-services-charge');
+                form.elements['description'].value = this.getAttribute('data-description');
+                new bootstrap.Modal(modal).show();
+            });
+        });
+
+        // Reset modal for "Add" button
+        document.querySelector('.circle-btn').addEventListener('click', () => {
             const form = document.getElementById('addProductForm');
             const modalLabel = document.querySelector('.service-modal .modal-title');
             const modal = document.querySelector('.service-modal');
-            form.action = this.getAttribute('data-action-url');
-            modalLabel.textContent = "Edit Service";
-            form.elements['service_type'].value = this.getAttribute('data-service-type');
-            form.elements['service_provider'].value = this.getAttribute('data-service-provider');
-            form.elements['services_charge'].value = this.getAttribute('data-services-charge');
-            form.elements['description'].value = this.getAttribute('data-description');
-            // form.elements['is_active'].checked = this.getAttribute('data-is-active') === 'True';
-            new bootstrap.Modal(modal).show();
+            form.reset();
+            form.action = "{% url 'manage_create_service_model' %}";
+            modalLabel.textContent = "Add Service";
         });
-    });
+    </script>
 
-    // Reset modal for "Add" button
-    document.querySelector('.circle-btn').addEventListener('click', () => {
-        const form = document.getElementById('addProductForm');
-        const modalLabel = document.querySelector('.service-modal .modal-title');
-        const modal = document.querySelector('.service-modal');
-        form.reset();
-        form.action = "{% url 'manage_create_service_model' %}";
-        modalLabel.textContent = "Add Service";
-    });
-</script>
+    <script>
+        $(document).ready(function () {
+            $('#addProductForm').validate({
+                ignore: ":hidden:not(select)",
 
-<script>
-    $(document).ready(function () {
-        $('#addProductForm').validate({
-            ignore: ":hidden:not(select)",
-
-            rules: {
-                service_type: { required: true },
-                service_provider: { required: true },
-                services_charge: {
-                    required: true,
-                    number: true,
-                    min: 0
+                rules: {
+                    service_type: { required: true },
+                    service_provider: { required: true },
+                    services_charge: {
+                        required: true,
+                        number: true,
+                        min: 0
+                    },
+                    description: {
+                        required: true,
+                        minlength: 5
+                    }
                 },
-                description: {
-                    required: true,
-                    minlength: 5
-                }
-            },
 
-            messages: {
-                service_type: { required: "Please select a service type" },
-                service_provider: { required: "Please select a service provider" },
-                services_charge: {
-                    required: "Please enter the service charge",
-                    number: "Enter a valid number",
-                    min: "Charge cannot be negative"
+                messages: {
+                    service_type: { required: "Please select a service type" },
+                    service_provider: { required: "Please select a service provider" },
+                    services_charge: {
+                        required: "Please enter the service charge",
+                        number: "Enter a valid number",
+                        min: "Charge cannot be negative"
+                    },
+                    description: {
+                        required: "Please provide a description",
+                        minlength: "Description must be at least 5 characters"
+                    }
                 },
-                description: {
-                    required: "Please provide a description",
-                    minlength: "Description must be at least 5 characters"
+
+                errorClass: "text-danger fw-bold",
+                errorElement: "div",
+
+                errorPlacement: function (error, element) {
+                    element.closest('.form-group').find('.error-container').html(error);
+                },
+
+                highlight: function (element) {
+                    $(element).addClass("is-invalid");
+                },
+
+                unhighlight: function (element) {
+                    $(element).removeClass("is-invalid");
+
+                    $(element).closest('.form-group').find('.error-container').empty();
                 }
-            },
+            });
 
-            errorClass: "text-danger fw-bold",
-            errorElement: "div",
-
-            highlight: function (element) {
-                $(element).addClass("is-invalid");
-            },
-            unhighlight: function (element) {
-                $(element).removeClass("is-invalid");
-            }
+            $('#addProductForm').on('submit', function (e) {
+                if (!$(this).valid()) {
+                    e.preventDefault();
+                }
+            });
         });
+    </script>
 
-        $('#addProductForm').on('submit', function (e) {
-            if (!$(this).valid()) {
-                e.preventDefault();  // Block submission
-            }
-        });
-    });
-</script>
 
-{% endblock %}
+    {% endblock %}

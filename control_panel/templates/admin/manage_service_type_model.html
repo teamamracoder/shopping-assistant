@@ -102,13 +102,14 @@
             {% csrf_token %}
             <div class="row">
               <div class="form-group col-md-6 mb-3">
-                {{ form.service_name.label_tag }}<span class="text-danger">*</span>
+                {{ form.service_name.label_tag }}
                 <div class="input-group">
                   <span class="input-group-text">
-                    <i class="bi bi-pencil-square text-primary"></i> <!-- blue icon for service_name -->
+                    <i class="bi bi-pencil-square text-primary"></i>
                   </span>
-                  {{ form.service_name }}
+                  {{ form.service_name }} <br>
                 </div>
+                <div class="error-container"></div>
               </div>
             </div>
 
@@ -188,33 +189,55 @@
 </div>
 
 <script>
+  // Custom pattern rule for jQuery Validate
+  $.validator.addMethod("pattern", function(value, element, param) {
+    if (this.optional(element)) return true;
+    return param.test(value);
+  }, "Invalid format.");
+
   $(document).ready(function () {
     $("#addUserForm").validate({
       rules: {
         service_name: {
           required: true,
           minlength: 2,
-          pattern: /^[a-zA-Z0-9\s]+$/   // allow only letters, numbers, and space
+          pattern: /^[a-zA-Z0-9\s]+$/ // letters, numbers, space
         }
       },
       messages: {
         service_name: {
-          required: "Please enter the service name",
+          required: "Please enter the service type name",
           minlength: "Must be at least 2 characters long",
           pattern: "Only letters, numbers, and spaces are allowed"
         }
       },
       errorElement: "div",
       errorClass: "text-danger",
+
+      errorPlacement: function (error, element) {
+        element.closest('.form-group').find('.error-container').html(error);
+      },
+
       highlight: function (element) {
-        $(element).addClass("is-invalid");
+        $(element).addClass("is-invalid").removeClass("is-valid");
       },
       unhighlight: function (element) {
-        $(element).removeClass("is-invalid");
+        $(element).removeClass("is-invalid").addClass("is-valid");
+        $(element).closest('.form-group').find('.error-container').empty();
+      },
+
+      onkeyup: function (element) {
+        $(element).valid();
+      },
+      onfocusout: function (element) {
+        $(element).valid();
       }
     });
   });
 </script>
+
+
+
 
 
 {% endblock %}.
