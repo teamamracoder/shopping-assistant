@@ -156,6 +156,7 @@
                                         {% endfor %}
                                     {% endfor %}
                                 </select>
+
                             </div>
                         </div>
                             
@@ -321,6 +322,7 @@
     const form = document.getElementById('addUserForm');
     const modalLabel = document.getElementById('addUserModalLabel');
     
+    
     // Clear form fields when clicking the "Add" button
     addButton.addEventListener('click', function () {
         form.reset();  // Reset the form fields
@@ -348,22 +350,22 @@
             form.elements['state'].value = this.getAttribute('data-state');
             form.elements['pincode'].value = this.getAttribute('data-pincode');
 
-            form.elements['roles'].value = this.getAttribute('data-roles');
+            ///form.elements['roles'].value = this.getAttribute('data-roles');
 
-                        // Parse roles from data attribute and update checkboxes
-            const roles = JSON.parse(this.getAttribute('data-roles').replace(/'/g, '"'));
+            // Parse roles from data attribute
+        const roles = JSON.parse(this.getAttribute('data-roles').replace(/'/g, '"'));    
+        // First, unselect all
+        document.querySelectorAll('#role option').forEach(opt => {
+            opt.selected = false;
+        });
 
-            // First, uncheck all
-            document.querySelectorAll('input[name="roles"]').forEach(cb => {
-                cb.checked = false;
-            });
+        // Then, select matching ones
+        document.querySelectorAll('#role option').forEach(opt => {
+            if (roles.includes(parseInt(opt.value))) {
+                opt.selected = true;
+            }
+        });
 
-            // Then check those that match
-            document.querySelectorAll('input[name="roles"]').forEach(cb => {
-                if (roles.includes(parseInt(cb.value))) {
-                    cb.checked = true;
-                }
-            });
 
             // Show modal
             new bootstrap.Modal(document.getElementById('addUserModal')).show();
