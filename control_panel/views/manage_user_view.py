@@ -76,6 +76,7 @@ class ManageUserCreateView(View):
                     'state': form.cleaned_data['state'],
                     'pincode': form.cleaned_data['pincode'],
                     'roles': roles,
+                    'country': form.cleaned_data['country'],
                 }
 
                 service.create_user(validated_data)  #call service function

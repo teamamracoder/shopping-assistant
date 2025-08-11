@@ -118,7 +118,7 @@
                         
                         <div class="row">
                             <div class="form-group col-md-6 mb-3">
-                                {{ form.gender.label_tag }}
+                                {{ form.gender.label_tag }}<span class="text-danger">*</span>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-gender-ambiguous"></i></span>
                                     <select id="gender" name="gender" class="form-select">
@@ -133,7 +133,7 @@
                             </div>
 
                             <div class="form-group col-md-6 mb-3">
-                                {{ form.phone.label_tag }}
+                                {{ form.phone.label_tag }}<span class="text-danger">*</span>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-telephone"></i></span>
                                     {{ form.phone }}
@@ -143,7 +143,7 @@
 
                         <div class="row">
                              <div class="form-group col-md-6 mb-3">
-                            {{ form.roles.label_tag }}
+                            {{ form.roles.label_tag }}<span class="text-danger">*</span>
                             <div class="input-group">
                                  <span class="input-group-text">Role</span>
                                 <select id="role" name="roles" class="form-select" multiple>
@@ -156,6 +156,7 @@
                                         {% endfor %}
                                     {% endfor %}
                                 </select>
+
                             </div>
                         </div>
                             
@@ -212,7 +213,7 @@
                                 </div>
                             </div>
                             <div class="form-group col-md-6 mb-3">
-                              {{ form.country.label_tag }}<span class="text-danger">*</span>
+                              {{ form.country.label_tag }}
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
                                 {{ form.country }}
@@ -321,6 +322,7 @@
     const form = document.getElementById('addUserForm');
     const modalLabel = document.getElementById('addUserModalLabel');
     
+    
     // Clear form fields when clicking the "Add" button
     addButton.addEventListener('click', function () {
         form.reset();  // Reset the form fields
@@ -348,22 +350,22 @@
             form.elements['state'].value = this.getAttribute('data-state');
             form.elements['pincode'].value = this.getAttribute('data-pincode');
 
-            form.elements['roles'].value = this.getAttribute('data-roles');
+            ///form.elements['roles'].value = this.getAttribute('data-roles');
 
-                        // Parse roles from data attribute and update checkboxes
-            const roles = JSON.parse(this.getAttribute('data-roles').replace(/'/g, '"'));
+            // Parse roles from data attribute
+        const roles = JSON.parse(this.getAttribute('data-roles').replace(/'/g, '"'));    
+        // First, unselect all
+        document.querySelectorAll('#role option').forEach(opt => {
+            opt.selected = false;
+        });
 
-            // First, uncheck all
-            document.querySelectorAll('input[name="roles"]').forEach(cb => {
-                cb.checked = false;
-            });
+        // Then, select matching ones
+        document.querySelectorAll('#role option').forEach(opt => {
+            if (roles.includes(parseInt(opt.value))) {
+                opt.selected = true;
+            }
+        });
 
-            // Then check those that match
-            document.querySelectorAll('input[name="roles"]').forEach(cb => {
-                if (roles.includes(parseInt(cb.value))) {
-                    cb.checked = true;
-                }
-            });
 
             // Show modal
             new bootstrap.Modal(document.getElementById('addUserModal')).show();

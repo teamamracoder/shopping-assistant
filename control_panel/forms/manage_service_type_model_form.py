@@ -15,7 +15,7 @@ class ServiceTypeForm(forms.ModelForm):
         widgets = {
             'service_name': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Enter service name',
+                'placeholder': 'Enter service nameee',
             }),
             'is_active': forms.CheckboxInput(attrs={
                 'class': 'form-check-input',

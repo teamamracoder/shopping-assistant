@@ -54,30 +54,30 @@
     const addButton = document.querySelector('.circle-btn');
     const form = document.getElementById('addUserForm');
     const modalLabel = document.getElementById('addUserModalLabel');
-    
+
     // Reset form for adding
     addButton.addEventListener('click', function () {
       form.reset();
       modalLabel.textContent = "Add Service Type Booking";
       form.action = "{% url 'manage_service_booking_create' %}";
-  });
+    });
 
     // Handle edit
     editButtons.forEach(btn => {
-    btn.addEventListener('click', function () {
-      modalLabel.textContent = "Edit Booking";
-      form.action = this.getAttribute('data-action-url');
+      btn.addEventListener('click', function () {
+        modalLabel.textContent = "Edit Booking";
+        form.action = this.getAttribute('data-action-url');
 
-      // Fill fields
-      document.getElementById('id_service').value = this.getAttribute('data-service-id');
-      document.getElementById('id_user').value = this.getAttribute('data-user-id');
-      document.getElementById('id_service_provider').value = this.getAttribute('data-provider-id');
-      document.getElementById('id_booking_charge').value = this.getAttribute('data-booking-charge');
-      document.getElementById('id_booking_time').value = this.getAttribute('data-booking-time');
-      new bootstrap.Modal(document.getElementById('addUserModal')).show();
+        // Fill fields
+        document.getElementById('id_service').value = this.getAttribute('data-service-id');
+        document.getElementById('id_user').value = this.getAttribute('data-user-id');
+        document.getElementById('id_service_provider').value = this.getAttribute('data-provider-id');
+        document.getElementById('id_booking_charge').value = this.getAttribute('data-booking-charge');
+        document.getElementById('id_booking_time').value = this.getAttribute('data-booking-time');
+        new bootstrap.Modal(document.getElementById('addUserModal')).show();
+      });
     });
   });
-});
 </script>
 
 <div class="container-fluid">
@@ -100,54 +100,69 @@
           <form id="addUserForm" method="POST" action="{% url 'manage_service_booking_create' %}" class="fw-bold">
             {% csrf_token %}
             <div class="row">
-             <div class="form-group col-md-6 mb-3">
-                {{ form.service.label_tag }}
-                {{ form.service }}
-                {% if form.service.errors %}
-                  <div class="text-danger">{{ form.service_provider.errors }}</div>
-                {% endif %}
-              </div>
-              <div class="form-group col-md-6 mb-3">
-                {{ form.service_provider.label_tag }}
-                {{ form.service_provider }}
-                {% if form.service_provider.errors %}
-                  <div class="text-danger">{{ form.service_provider.errors }}</div>
-                {% endif %}
-              </div>
-          
-              <div class="form-group col-md-6 mb-3">
-                {{ form.user.label_tag }}
-                {{ form.user }}
-                {% if form.user.errors %}
-                  <div class="text-danger">{{ form.user.errors }}</div>
-                {% endif %}
-              </div>
-          
-              <div class="form-group col-md-6 mb-3">
-                {{ form.booking_charge.label_tag }}
-                {{ form.booking_charge }}
-                {% if form.booking_charge.errors %}
-                  <div class="text-danger">{{ form.booking_charge.errors }}</div>
-                {% endif %}
-              </div>
-          
-              <div class="form-group col-md-6 mb-3">
-                {{ form.booking_time.label_tag }}
-                {{ form.booking_time }}
-                {% if form.booking_time.errors %}
-                  <div class="text-danger">{{ form.booking_time.errors }}</div>
-                {% endif %}
-              </div>          
-              <!-- Hidden fields -->
-              {{ form.created_by }}
-              {{ form.updated_by }}
-            </div>
+  <div class="form-group col-md-6 mb-3">
+    {{ form.service.label_tag }}<span class="text-danger">*</span>
+    <div class="input-group">
+      <span class="input-group-text">
+        <i class="bi bi-gear-fill text-primary"></i>
+      </span>
+      {{ form.service }}
+    </div>
+    <div class="error-container"></div> <!-- ✅ added -->
+  </div>
+
+  <div class="form-group col-md-6 mb-3">
+    {{ form.service_provider.label_tag }}<span class="text-danger">*</span>
+    <div class="input-group">
+      <span class="input-group-text">
+        <i class="bi bi-person-fill-gear text-primary"></i>
+      </span>
+      {{ form.service_provider }}
+    </div>
+    <div class="error-container"></div> <!-- ✅ added -->
+  </div>
+
+  <div class="form-group col-md-6 mb-3">
+    {{ form.user.label_tag }}<span class="text-danger">*</span>
+    <div class="input-group">
+      <span class="input-group-text">
+        <i class="bi bi-person-fill text-primary"></i>
+      </span>
+      {{ form.user }}
+    </div>
+    <div class="error-container"></div> <!-- ✅ added -->
+  </div>
+
+  <div class="form-group col-md-6 mb-3">
+    {{ form.booking_charge.label_tag }}<span class="text-danger">*</span>
+    <div class="input-group">
+      <span class="input-group-text">
+        <i class="bi bi-cash-coin text-primary"></i>
+      </span>
+      {{ form.booking_charge }}
+    </div>
+    <div class="error-container"></div> <!-- ✅ added -->
+  </div>
+
+  <div class="form-group col-md-6 mb-3">
+    {{ form.booking_time.label_tag }}<span class="text-danger">*</span>
+    <div class="input-group">
+      <span class="input-group-text">
+        <i class="bi bi-clock-fill text-primary"></i>
+      </span>
+      {{ form.booking_time }}
+    </div>
+    <div class="error-container"></div> <!-- ✅ added -->
+  </div>
+</div>
+
+
             <div class="modal-footer">
               <button type="submit" class="btn btn-primary">Save</button>
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
           </form>
-          
+
         </div>
       </div>
     </div>
@@ -176,26 +191,23 @@
           {% for booking in service_bookings %}
           <tbody>
             <tr>
-                <!-- <td>{{ booking.id }}</td> -->
-                <td>{{ booking.service.service_type.service_name }}</td>
-                <td>{{ booking.service_provider.first_name }} {{ booking.service_provider.last_name }}</td>
-                <td>{{ booking.user.first_name }} {{ booking.user.last_name }}</td>
-                <td>{{ booking.booking_charge }}</td>
-                <td>{{ booking.booking_time }}</td>
-                <td>{{ booking.is_active }}</td>
+              <!-- <td>{{ booking.id }}</td> -->
+              <td>{{ booking.service.service_type.service_name }}</td>
+              <td>{{ booking.service_provider.first_name }} {{ booking.service_provider.last_name }}</td>
+              <td>{{ booking.user.first_name }} {{ booking.user.last_name }}</td>
+              <td>{{ booking.booking_charge }}</td>
+              <td>{{ booking.booking_time }}</td>
+              <td>{{ booking.is_active }}</td>
               <td>
 
-                <a href="#" class="text-primary edit-btn"
-                data-id="{{ booking.id }}"
-                data-action-url="{% url 'manage_service_booking_update' booking.id %}"
-                data-service-id="{{ booking.service.id }}"
-                data-user-id="{{ booking.user.id }}"
-                data-provider-id="{{ booking.service_provider.id }}"
-                data-booking-charge="{{ booking.booking_charge }}"
-                data-booking-time="{{ booking.booking_time|date:'Y-m-d' }}"
-                data-is-active="{{ booking.is_active }}">
-                    <i class="bi bi-pencil-square"></i>
-                  </a>
+                <a href="#" class="text-primary edit-btn" data-id="{{ booking.id }}"
+                  data-action-url="{% url 'manage_service_booking_update' booking.id %}"
+                  data-service-id="{{ booking.service.id }}" data-user-id="{{ booking.user.id }}"
+                  data-provider-id="{{ booking.service_provider.id }}"
+                  data-booking-charge="{{ booking.booking_charge }}"
+                  data-booking-time="{{ booking.booking_time|date:'Y-m-d' }}" data-is-active="{{ booking.is_active }}">
+                  <i class="bi bi-pencil-square"></i>
+                </a>
 
                 {% if booking.id %}
                 <form method="post" action="{% url 'manage_service_booking_delete' booking.id %}"
@@ -212,18 +224,20 @@
                 </button>
                 {% endif %}
 
-                <form method="post" action="{% url 'manage_service_booking_active' booking.id %}" style="display:inline;">                  
-                  {% csrf_token %}                  
-                  <button type="submit" class="btn btn-sm {% if booking.is_active %}text-success{% else %}text-muted{% endif %}"
-                          title="Toggle visibility"
-                          onclick="return confirm('Are you sure you want to toggle this user\'s visibility?');">
-                      {% if booking.is_active %}
-                          <i class="bi bi-eye text-primary fs-6"></i>
-                      {% else %}
-                          <i class="bi bi-eye-slash text-danger fs-6"></i>
-                      {% endif %}
+                <form method="post" action="{% url 'manage_service_booking_active' booking.id %}"
+                  style="display:inline;">
+                  {% csrf_token %}
+                  <button type="submit"
+                    class="btn btn-sm {% if booking.is_active %}text-success{% else %}text-muted{% endif %}"
+                    title="Toggle visibility"
+                    onclick="return confirm('Are you sure you want to toggle this user\'s visibility?');">
+                    {% if booking.is_active %}
+                    <i class="bi bi-eye text-primary fs-6"></i>
+                    {% else %}
+                    <i class="bi bi-eye-slash text-danger fs-6"></i>
+                    {% endif %}
                   </button>
-              </form>     
+                </form>
               </td>
             </tr>
 
@@ -236,72 +250,64 @@
 </div>
 
 <script>
-  // jquery form validations
   $(document).ready(function () {
-    console.log("vcbcvbncvbncvb mvnb cvmbncv b");
-    
-      $("#addUserForm").validate({
-          rules: {
-              service: {
-                  required: true
-              },
-              service_provider: {
-                  required: true
-              },
-              user: {
-                  required: true
-              },
-              booking_charge: {
-                  required: true,
-                  number: true,
-                  min: 0
-              },
-              booking_time: {
-                  required: true,
-                  dateISO: true
-              }
-          },
-          messages: {
-              service: {
-                  required: "Please select a service"
-              },
-              service_provider: {
-                  required: "Please select a service provider"
-              },
-              user: {
-                  required: "Please select a user"
-              },
-              booking_charge: {
-                  required: "Please enter booking charge",
-                  number: "Please enter a valid number",
-                  min: "Charge cannot be negative"
-              },
-              booking_time: {
-                  required: "Please select booking time",
-                  dateISO: "Please enter a valid date and time"
-              }
-          },
-          errorElement: "div",
-          errorClass: "text-danger",
-          highlight: function (element) {
-              $(element).addClass("is-invalid");
-          },
-          unhighlight: function (element) {
-              $(element).removeClass("is-invalid");
-          }
-      });
+    $("#addUserForm").validate({
+      rules: {
+        service: { required: true },
+        service_provider: { required: true },
+        user: { required: true },
+        booking_charge: {
+          required: true,
+          number: true,
+          min: 0
+        },
+        booking_time: {
+          required: true,
+          dateISO: true
+        }
+      },
+      messages: {
+        service: { required: "Please select a service" },
+        service_provider: { required: "Please select a service provider" },
+        user: { required: "Please select a user" },
+        booking_charge: {
+          required: "Please enter booking charge",
+          number: "Please enter a valid number",
+          min: "Charge cannot be negative"
+        },
+        booking_time: {
+          required: "Please select booking time",
+          dateISO: "Please enter a valid date and time"
+        }
+      },
+      errorElement: "div",
+      errorClass: "text-danger",
+
+      errorPlacement: function (error, element) {
+        element.closest(".form-group").find(".error-container").html(error);
+      },
+
+      highlight: function (element) {
+        $(element).addClass("is-invalid");
+      },
+      unhighlight: function (element) {
+        $(element).removeClass("is-invalid");
+        $(element).closest(".form-group").find(".error-container").empty(); // ✅ clear error
+      }
+    });
   });
-  </script>
-  
+</script>
+
+
 
 {% endblock %}
 
 {% for field in form %}
-  <div class="form-group col-md-6 mb-3">
-      {{ field.label_tag }} 
-      {{ field }}
-      {% if field.errors %}
-        <div class="text-danger">{{ field.errors }}</div>
-      {% endif %}
-  </div>
+<div class="form-group col-md-6 mb-3">
+  {{ field.label_tag }}
+  {{ field }}
+  {% if field.errors %}
+  <div class="text-danger">{{ field.errors }}</div>
+  {% endif %}
+</div>
 {% endfor %}

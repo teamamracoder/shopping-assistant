@@ -102,10 +102,17 @@
             {% csrf_token %}
             <div class="row">
               <div class="form-group col-md-6 mb-3">
-                {{ form.service_name.label_tag }}<span class="text-danger">*</span>
-                {{ form.service_name }}
+                {{ form.service_name.label_tag }}
+                <div class="input-group">
+                  <span class="input-group-text">
+                    <i class="bi bi-pencil-square text-primary"></i>
+                  </span>
+                  {{ form.service_name }} <br>
+                </div>
+                <div class="error-container"></div>
               </div>
             </div>
+
             <div class="modal-footer">
               <button type="submit" class="btn btn-primary">Save</button>
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -122,92 +129,115 @@
       <h6 class="m-0 font-weight-bold text-primary">Users</h6>
     </div>
     <div class="card-body">
-  <div class="table-responsive">
-    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-      <thead class="table-primary">
-        <tr>
-          <th>Service Name</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for data in services %}
-        <tr data-id="{{ data.id }}">
-          <td>{{ data.service_name }}</td>
-          <td>
-            <a href="#" class="text-primary edit-btn"
-               data-id="{{ data.id }}"
-               data-service-name="{{ data.service_name }}"
-               data-action-url="{% url 'manage_service_type_model_update' data.id %}">
-              <i class="bi bi-pencil-square"></i>
-            </a>
+      <div class="table-responsive">
+        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+          <thead class="table-primary">
+            <tr>
+              <th>Service Name</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for data in services %}
+            <tr data-id="{{ data.id }}">
+              <td>{{ data.service_name }}</td>
+              <td>
+                <a href="#" class="text-primary edit-btn" data-id="{{ data.id }}"
+                  data-service-name="{{ data.service_name }}"
+                  data-action-url="{% url 'manage_service_type_model_update' data.id %}">
+                  <i class="bi bi-pencil-square"></i>
+                </a>
 
-            {% if data.id %}
-            <form method="post" action="{% url 'manage_service_type_model_delete' data.id %}" style="display:inline;">
-              {% csrf_token %}
-              <button type="submit" class="btn text-danger btn-sm"
-                      onclick="return confirm('Are you sure you want to delete this user?');">
-                <i class="bi bi-trash"></i>
-              </button>
-            </form>
-            {% else %}
-            <button class="btn btn-danger btn-sm" disabled>
-              <i class="bi bi-trash"></i>
-            </button>
-            {% endif %}
-
-            <form method="post" action="{% url 'manage_toggle_service_type_active' data.id %}" style="display:inline;">
-              {% csrf_token %}
-              <button type="submit"
-                      class="btn btn-sm {% if data.is_active %}text-success{% else %}text-muted{% endif %}"
-                      title="Toggle visibility"
-                      onclick="return confirm('Are you sure you want to toggle this user\'s visibility?');">
-                {% if data.is_active %}
-                <i class="bi bi-eye text-primary fs-6"></i>
+                {% if data.id %}
+                <form method="post" action="{% url 'manage_service_type_model_delete' data.id %}"
+                  style="display:inline;">
+                  {% csrf_token %}
+                  <button type="submit" class="btn text-danger btn-sm"
+                    onclick="return confirm('Are you sure you want to delete this user?');">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </form>
                 {% else %}
-                <i class="bi bi-eye-slash text-danger fs-6"></i>
+                <button class="btn btn-danger btn-sm" disabled>
+                  <i class="bi bi-trash"></i>
+                </button>
                 {% endif %}
-              </button>
-            </form>
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-</div>
+
+                <form method="post" action="{% url 'manage_toggle_service_type_active' data.id %}"
+                  style="display:inline;">
+                  {% csrf_token %}
+                  <button type="submit"
+                    class="btn btn-sm {% if data.is_active %}text-success{% else %}text-muted{% endif %}"
+                    title="Toggle visibility"
+                    onclick="return confirm('Are you sure you want to toggle this user\'s visibility?');">
+                    {% if data.is_active %}
+                    <i class="bi bi-eye text-primary fs-6"></i>
+                    {% else %}
+                    <i class="bi bi-eye-slash text-danger fs-6"></i>
+                    {% endif %}
+                  </button>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
 
   </div>
 </div>
 
 <script>
+  // Custom pattern rule for jQuery Validate
+  $.validator.addMethod("pattern", function(value, element, param) {
+    if (this.optional(element)) return true;
+    return param.test(value);
+  }, "Invalid format.");
+
   $(document).ready(function () {
     $("#addUserForm").validate({
       rules: {
-    service_name: {
-      required: true,
-      minlength: 2,
-      pattern: /^[a-zA-Z0-9\s]+$/   // allow only letters, numbers, and space
-    }
-  },
-  messages: {
-    service_name: {
-      required: "Please enter the service name",
-      minlength: "Must be at least 2 characters long",
-      pattern: "Only letters, numbers, and spaces are allowed"
-    }
-  },
+        service_name: {
+          required: true,
+          minlength: 2,
+          pattern: /^[a-zA-Z0-9\s]+$/ // letters, numbers, space
+        }
+      },
+      messages: {
+        service_name: {
+          required: "Please enter the service type name",
+          minlength: "Must be at least 2 characters long",
+          pattern: "Only letters, numbers, and spaces are allowed"
+        }
+      },
       errorElement: "div",
       errorClass: "text-danger",
+
+      errorPlacement: function (error, element) {
+        element.closest('.form-group').find('.error-container').html(error);
+      },
+
       highlight: function (element) {
-        $(element).addClass("is-invalid");
+        $(element).addClass("is-invalid").removeClass("is-valid");
       },
       unhighlight: function (element) {
-        $(element).removeClass("is-invalid");
+        $(element).removeClass("is-invalid").addClass("is-valid");
+        $(element).closest('.form-group').find('.error-container').empty();
+      },
+
+      onkeyup: function (element) {
+        $(element).valid();
+      },
+      onfocusout: function (element) {
+        $(element).valid();
       }
     });
   });
 </script>
-  
+
+
+
+
 
 {% endblock %}.

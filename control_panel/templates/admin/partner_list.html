@@ -62,8 +62,8 @@
 </style>
 
 <div class="container-fluid">
-    <h1 class="h3 mb-2 text-gray-800">Partners</h1>
-    <p class="mb-4">Manage partners in the system.</p>
+    <h1 class="h3 mb-2 text-gray-800">Users</h1>
+    <p class="mb-4">Manage users in the system.</p>
     <!-- Add Button (Opens Modal) -->
     <button class="circle-btn" data-bs-toggle="modal" data-bs-target="#addUserModal">
         <i class="bi bi-plus-lg text-light"></i>
@@ -79,8 +79,6 @@
                 <div class="modal-body">
                     <form id="addUserForm" method="post" action="{% url 'manage_user_create' %}" class="fw-bold">
                         {% csrf_token %}
-                            <input type="hidden" name="seller" value="seller">
-                            <!-- {{ form.as_p }} -->
                         <div class="row">
                             <div class="form-group col-md-6 mb-3">
                                 {{ form.first_name.label_tag }}<span class="text-danger">*</span>
@@ -234,7 +232,7 @@
     <!-- User Table -->
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Partners</h6>
+            <h6 class="m-0 font-weight-bold text-primary">Users</h6>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -274,7 +272,7 @@
                                     data-state="{{ user.state }}"
                                     data-pincode="{{ user.pincode }}"
                                     data-roles="{{ user.roles|safe }}"
-                                    data-action-url="{% url 'manage_user_update' user.id %}?next={% url 'partner_list' %}">
+                                    data-action-url="{% url 'manage_user_update' user.id %}">
                                     <i class="bi bi-pencil-square"></i>
                                 </a>
                             
@@ -292,7 +290,7 @@
                                     </button>
                                 {% endif %}
 
-                                <form method="post" action="{% url 'manage_toggle_user_active' user.id %}?next={% url 'partner_list' %}" style="display:inline;">
+                                <form method="post" action="{% url 'manage_toggle_user_active' user.id %}" style="display:inline;">
                                     {% csrf_token %}
                                     <button type="submit" class="btn btn-sm {% if user.is_active %}text-success{% else %}text-muted{% endif %}"
                                             title="Toggle visibility"
@@ -321,6 +319,7 @@
     const form = document.getElementById('addUserForm');
     const modalLabel = document.getElementById('addUserModalLabel');
     
+    
     // Clear form fields when clicking the "Add" button
     addButton.addEventListener('click', function () {
         form.reset();  // Reset the form fields
@@ -332,7 +331,7 @@
     editButtons.forEach(btn => {
         btn.addEventListener('click', function () {
             form.action = this.getAttribute('data-action-url');  // retrive the url name to send requests
-            modalLabel.textContent = "Edit Partner";  // Change modal title to "Edit User"
+            modalLabel.textContent = "Edit User";  // Change modal title to "Edit User"
             // Set form field values with the user's existing data
             form.elements['first_name'].value = this.getAttribute('data-first-name');
             form.elements['last_name'].value = this.getAttribute('data-last-name');
@@ -350,20 +349,18 @@
 
             form.elements['roles'].value = this.getAttribute('data-roles');
 
-                        // Parse roles from data attribute and update checkboxes
-            const roles = JSON.parse(this.getAttribute('data-roles').replace(/'/g, '"'));
+        const roles = JSON.parse(this.getAttribute('data-roles').replace(/'/g, '"'));
+        // First, unselect all
+        document.querySelectorAll('#role option').forEach(opt => {
+            opt.selected = false;
+        });
 
-            // First, uncheck all
-            document.querySelectorAll('input[name="roles"]').forEach(cb => {
-                cb.checked = false;
-            });
-
-            // Then check those that match
-            document.querySelectorAll('input[name="roles"]').forEach(cb => {
-                if (roles.includes(parseInt(cb.value))) {
-                    cb.checked = true;
-                }
-            });
+        // Then, select matching ones
+        document.querySelectorAll('#role option').forEach(opt => {
+            if (roles.includes(parseInt(opt.value))) {
+                opt.selected = true;
+            }
+        });
 
             // Show modal
             new bootstrap.Modal(document.getElementById('addUserModal')).show();
@@ -415,12 +412,13 @@ $(document).ready(function () {
             },
             address: {
                 required: true,
-                minlength: 5
+               // minlength: 5
             },
             pincode: {
                 required: true,
                 digits: true,
-                minlength: 4
+                minlength: 4,
+                maxlength: 6
             },
             city: {
                 required: true
@@ -433,7 +431,7 @@ $(document).ready(function () {
             },
             location: {
                 required: true,
-                minlength: 3
+                // minlength: 3
             }
         },
         messages: {
@@ -475,12 +473,13 @@ $(document).ready(function () {
             },
             address: {
                 required: "Please enter address.",
-                minlength: "Address must be at least 5 characters."
+                // minlength: "Address must be at least 5 characters."
             },
             pincode: {
                 required: "Please enter pincode.",
                 digits: "Only digits allowed.",
-                minlength: "Minimum 4 digits."
+                minlength: "Minimum 4 digits.",
+                maxlength: "Maximum 6 digits.",
             },
             city: {
                 required: "Please enter city."
@@ -493,7 +492,6 @@ $(document).ready(function () {
             },
             location: {
                 required: "Please enter location.",
-                minlength: "Location must be at least 3 characters."
             }
         },
         errorElement: "span",
