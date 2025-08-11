@@ -228,21 +228,20 @@
     });
 </script>
 
+{% if messages %}
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        {% if messages %}
-            {% for message in messages %}
-                Swal.fire({
-                    icon: '{% if message.tags == "success" %}success{% elif message.tags == "error" or message.tags == "danger" %}error{% else %}info{% endif %}',
-                    title: "Success",
-                    text: '{{ message|escapejs }}',
-                    timer: 3000,
-                    showConfirmButton: false,
-                    timerProgressBar: true
-                });
-            {% endfor %}
-        {% endif %}
+        {% for message in messages %}
+            Swal.fire({
+                icon: '{% if message.tags == "success" %}success{% elif message.tags == "error" or message.tags == "danger" %}error{% else %}info{% endif %}',
+                title: "Success",
+                text: '{{ message|escapejs }}',
+                timer: 3000,
+                showConfirmButton: false,
+                timerProgressBar: true
+            });
+        {% endfor %}
     });
 </script>
-
+{% endif %}
 {% endblock %}

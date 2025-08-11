@@ -92,7 +92,7 @@
                                 </div>
                             </div>
                             <div class="form-group col-md-6">
-                                {{ form.name.label_tag }}
+                                {{ form.name.label_tag }}<span class="text-danger">*</span>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-tag"></i></span>
                                     {{ form.name }}
@@ -288,5 +288,4 @@
         {% endfor %}
     {% endif %}
 </script>
-
 {% endblock %}
