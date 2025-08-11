@@ -1,8 +1,9 @@
 from django.db import models
 from constants.enums import Role,Gender
 from django.contrib.postgres.fields import ArrayField
+from django.contrib.auth.models import AbstractBaseUser
 
-class UserModel(models.Model):
+class UserModel(AbstractBaseUser):
     id = models.AutoField(primary_key=True)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
@@ -13,7 +14,7 @@ class UserModel(models.Model):
     )
     dob = models.DateField(blank=True,null=True)
     email = models.EmailField(unique=True)
-    password = models.CharField(max_length=255)
+    password = models.CharField(max_length=255, blank=True, null=True)
     phone = models.CharField(max_length=15, blank=True, null=True)
     address = models.TextField(blank=True, null=True)
     location = models.CharField(max_length=255, blank=True, null=True)
@@ -41,7 +42,10 @@ class UserModel(models.Model):
     updated_at = models.DateTimeField(auto_now=True, blank=True)
     created_by = models.ForeignKey('UserModel', on_delete=models.CASCADE, blank=True, null=True, related_name='fk_create_users_user_id')
     updated_by = models.ForeignKey('UserModel', on_delete=models.CASCADE, blank=True, null=True, related_name='fk_update_users_user_id')
-
+    
+    is_staff = models.BooleanField(default=False)
+    last_login = models.DateTimeField(null=True, blank=True)
+    
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
  
