@@ -121,16 +121,28 @@ class ManageUserCreateView(View):
             })
         
         
-#DELETE VIEW
+# #DELETE VIEW
+# class ManageUserDeleteView(View):
+#     def post(self, request, user_id):
+#         try:
+#             print("+++++++++++++ ID = ",user_id)
+#             service.user_delete(user_id)  #call the service method
+#             messages.success(request, "User deleted successfully.")
+#         except ValidationError as e:
+#             messages.error(request, f"Error deleting user: {str(e)}")
+#         return redirect("manage_user_list")
 class ManageUserDeleteView(View):
     def post(self, request, user_id):
         try:
-            print("+++++++++++++ ID = ",user_id)
-            service.user_delete(user_id)  #call the service method
+            print("+++++++++++++ ID = ", user_id)
+            service.user_delete(user_id)  # call the service method
             messages.success(request, "User deleted successfully.")
         except ValidationError as e:
             messages.error(request, f"Error deleting user: {str(e)}")
-        return redirect("manage_user_list")
+
+        # Get the previous page URL (fallback to user list if missing)
+        referer = request.META.get("HTTP_REFERER", reverse("manage_user_list"))
+        return redirect(referer)
     
 
 # class ManageUserUpdateView(UpdateView):
