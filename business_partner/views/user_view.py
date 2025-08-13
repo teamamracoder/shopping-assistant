@@ -59,12 +59,25 @@ class UserDetailAPIView(APIView):
     def patch(self, request, pk):
         return self.update_user(request, pk, partial=True)
 
+    # def delete(self, request, pk):
+    #     user = user_service.get_user_by_id(pk)
+    #     if not user:
+    #         return Res.error(data={"message": "User not found"}, http_status=status.HTTP_404_NOT_FOUND)
+    #     user_service.delete_user(user)
+    #     return Res.success("S-10003", {"message": "User deleted successfully"}, http_status=status.HTTP_204_NO_CONTENT)
     def delete(self, request, pk):
         user = user_service.get_user_by_id(pk)
         if not user:
-            return Res.error(data={"message": "User not found"}, http_status=status.HTTP_404_NOT_FOUND)
-        user_service.delete_user(user)
-        return Res.success("S-10003", {"message": "User deleted successfully"}, http_status=status.HTTP_204_NO_CONTENT)
+            return Res.error(
+                data={"message": "User not found"},
+                http_status=status.HTTP_404_NOT_FOUND
+            )
+        user_service.user_delete(pk)  
+        return Res.success(
+            "S-10003",
+            {"message": "User deleted successfully"},
+            http_status=status.HTTP_200_OK
+        )
 
 
 class MyCustomerListAPIView(APIView):
