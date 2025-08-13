@@ -82,15 +82,15 @@ class ManageUserCreateView(View):
                 service.create_user(validated_data)  #call service function
                 messages.success(request, 'User created successfully.')               
                
-                if(request.POST.get("seller")):
+                if request.POST.get("source_page_seller") == "seller":
                     form = ManageUserForm()
                     users = UserModel.objects.filter(roles__contains=[Role.SELLER.value])
-                    return render(request, "admin/partner_list.html", {
-                    'users': users,
-                    'form': form,
-                    'choices_gender': choices_gender,
-                    'choices_role': choices_role
-                })
+                    return render(request, 'manage_partner_user.html', {
+                        'users': users,
+                        'form': form,
+                        'choices_gender': choices_gender,
+                        'choices_role': choices_role
+                    })
 
             except Exception as e:
                 import traceback
@@ -122,15 +122,27 @@ class ManageUserCreateView(View):
         
         
 #DELETE VIEW
+# class ManageUserDeleteView(View):
+#     def post(self, request, user_id):
+#         try:
+#             print("+++++++++++++ ID = ",user_id)
+#             service.user_delete(user_id)  #call the service method
+#             messages.success(request, "User deleted successfully.")
+#         except ValidationError as e:
+#             messages.error(request, f"Error deleting user: {str(e)}")
+#         return redirect("manage_user_list")
 class ManageUserDeleteView(View):
     def post(self, request, user_id):
         try:
-            print("+++++++++++++ ID = ",user_id)
-            service.user_delete(user_id)  #call the service method
+            print("+++++++++++++ ID = ", user_id)
+            service.user_delete(user_id)  # call the service method
             messages.success(request, "User deleted successfully.")
         except ValidationError as e:
             messages.error(request, f"Error deleting user: {str(e)}")
-        return redirect("manage_user_list")
+
+        # Get the previous page URL (fallback to user list if missing)
+        referer = request.META.get("HTTP_REFERER", reverse("manage_user_list"))
+        return redirect(referer)
     
 
 # class ManageUserUpdateView(UpdateView):
