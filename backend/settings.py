@@ -21,6 +21,7 @@ INSTALLED_APPS = [
     'control_panel',
     'business_partner',
     'shopping_assistant',
+    'auth_app'
 ]
 
 MIDDLEWARE = [
@@ -92,3 +93,18 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'static/media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+AUTH_USER_MODEL = 'control_panel.UserModel'
+
+# Simple JWT Configuration
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
+
+# Cache setup
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    }
+}

@@ -54,10 +54,12 @@
     .is-invalid {
         border-color: #dc3545 !important;
     }
-    .text-danger {
-        font-size: 1rem;
-        font-weight: normal;
+    .required-asterisk {
+    color: #dc3545;
+    font-weight: bold;
     }
+
+
 </style>
 
 <!-- PAGE CONTENT -->
@@ -85,14 +87,14 @@
 
                         <div class="row">
                             <div class="form-group col-md-6 mb-3">
-                                {{ form.store_name.label_tag }}<span class="text-danger">*</span>
+                                {{ form.store_name.label_tag }}<span class="required-asterisk">*</span>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-tag"></i></span>
                                     {{ form.store_name }}
                                 </div>
                             </div>
                             <div class="form-group col-md-6 mb-3">
-                                {{ form.registration_no.label_tag }}<span class="text-danger">*</span>
+                                {{ form.registration_no.label_tag }}<span class="required-asterisk">*</span>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-123"></i></span>
                                     {{ form.registration_no }}
@@ -102,14 +104,14 @@
 
                         <div class="row">
                             <div class="form-group col-md-6 mb-3">
-                                {{ form.gst_no.label_tag }}<span class="text-danger">*</span>
+                                {{ form.gst_no.label_tag }}<span class="required-asterisk">*</span>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-receipt"></i></span>
                                     {{ form.gst_no }}
                                 </div>
                             </div>
                             <div class="form-group col-md-6 mb-3">
-                                {{ form.contact_no.label_tag }}<span class="text-danger">*</span>
+                                {{ form.contact_no.label_tag }}<span class="required-asterisk">*</span>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-telephone"></i></span>
                                     {{ form.contact_no }}
@@ -119,14 +121,14 @@
 
                         <div class="row">
                             <div class="form-group col-md-6 mb-3">
-                                {{ form.email.label_tag }}<span class="text-danger">*</span>
+                                {{ form.email.label_tag }}<span class="required-asterisk">*</span>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-envelope"></i></span>
                                     {{ form.email }}
                                 </div>
                             </div>
                             <div class="form-group col-md-6 mb-3">
-                                {{ form.open_time.label_tag }}<span class="text-danger">*</span>
+                                {{ form.open_time.label_tag }}<span class="required-asterisk">*</span>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-clock"></i></span>
                                     {{ form.open_time }}
@@ -136,14 +138,14 @@
 
                         <div class="row">
                             <div class="form-group col-md-6 mb-3">
-                                {{ form.close_time.label_tag }}<span class="text-danger">*</span>
+                                {{ form.close_time.label_tag }}<span class="required-asterisk">*</span>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-clock-history"></i></span>
                                     {{ form.close_time }}
                                 </div>
                             </div>
                             <div class="form-group col-md-6 mb-3">
-                                {{ form.pin_code.label_tag }}<span class="text-danger">*</span>
+                                {{ form.pin_code.label_tag }}<span class="required-asterisk">*</span>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-geo"></i></span>
                                     {{ form.pin_code }}
@@ -153,7 +155,7 @@
 
                         <div class="row">
                             <div class="form-group col-md-6 mb-3">
-                                {{ form.owner.label_tag }}<span class="text-danger">*</span>
+                                {{ form.owner.label_tag }}<span class="required-asterisk">*</span>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-person"></i></span>
                                     {{ form.owner }}
@@ -538,7 +540,4 @@
         });
     });
 </script>
-
-
-
 {% endblock %}
