@@ -34,7 +34,7 @@ class ManageStoreCreateView(View):
             store_data = form.cleaned_data
 
             # Owner and user info
-            store_data['owner_id'] = 1  # Default owner_id or use request.user.id if appropriate
+            store_data['owner_id'] = 28  # Default owner_id or use request.user.id if appropriate
             if not isinstance(request.user, AnonymousUser):
                 store_data['created_by'] = request.user
                 store_data['updated_by'] = request.user

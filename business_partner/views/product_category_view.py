@@ -4,7 +4,6 @@ from decorators import validate_serializer
 from utils.response_utils import Res
 from ..serializers import ProductCategorySerializer
 from services import services
-
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
@@ -68,10 +67,10 @@ class ProductCategoryDetailAPIView(APIView):
         if not category:
             return Res.error(data={"message": "Category not found"}, http_status=status.HTTP_404_NOT_FOUND)
 
-        # Perform soft delete
-        services.product_category_service.delete_category(category)
-        return Res.success("S-20003", {"message": "Category soft deleted (is_active=False)"})
+        # Pass updated data to service
+        updated_category = services.product_category_service.update_category(category, request.data)
 
+        return Res.success("S-20003", {"message": "Category updated successfully", "category": updated_category})
 
     @swagger_auto_schema(
         operation_summary="Soft Delete a Product Category",
