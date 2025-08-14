@@ -50,6 +50,7 @@ class ManageUserCreateView(View):
     def post(self, request):
         form = ManageUserForm(request.POST)
         source_page = request.POST.get("source_page", "user")
+        source_page_seller = request.POST.get("seller")
         choices_gender = [{type.value: type.name} for type in Gender]
         choices_role = [{type.value: type.name} for type in Role]
 
@@ -82,22 +83,15 @@ class ManageUserCreateView(View):
                 service.create_user(validated_data)  #call service function
                 messages.success(request, 'User created successfully.')               
                
-                if request.POST.get("source_page_seller") == "seller":
-                    form = ManageUserForm()
-                    users = UserModel.objects.filter(roles__contains=[Role.SELLER.value])
-                    return render(request, 'manage_partner_user.html', {
-                        'users': users,
-                        'form': form,
-                        'choices_gender': choices_gender,
-                        'choices_role': choices_role
-                    })
-
             except Exception as e:
                 import traceback
                 traceback.print_exc()
                 messages.error(request, f"Error: {str(e)}")
         else:
             print("Form errors:", form.errors)
+
+        if source_page_seller == "seller":
+           return redirect("partner_list")
 
         # Return appropriate list view
         if source_page == "consumer":
@@ -143,7 +137,7 @@ class ManageUserDeleteView(View):
         # Get the previous page URL (fallback to user list if missing)
         referer = request.META.get("HTTP_REFERER", reverse("manage_user_list"))
         return redirect(referer)
-    
+        
 
 # class ManageUserUpdateView(UpdateView):
 class ManageUserUpdateView(UpdateView):
