@@ -82,15 +82,15 @@ class ManageUserCreateView(View):
                 service.create_user(validated_data)  #call service function
                 messages.success(request, 'User created successfully.')               
                
-                if(request.POST.get("seller")):
+                if request.POST.get("source_page_seller") == "seller":
                     form = ManageUserForm()
                     users = UserModel.objects.filter(roles__contains=[Role.SELLER.value])
-                    return render(request, "admin/partner_list.html", {
-                    'users': users,
-                    'form': form,
-                    'choices_gender': choices_gender,
-                    'choices_role': choices_role
-                })
+                    return render(request, 'manage_partner_user.html', {
+                        'users': users,
+                        'form': form,
+                        'choices_gender': choices_gender,
+                        'choices_role': choices_role
+                    })
 
             except Exception as e:
                 import traceback
@@ -121,7 +121,7 @@ class ManageUserCreateView(View):
             })
         
         
-# #DELETE VIEW
+#DELETE VIEW
 # class ManageUserDeleteView(View):
 #     def post(self, request, user_id):
 #         try:
