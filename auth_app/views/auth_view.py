@@ -1,3 +1,5 @@
+from django.shortcuts import render
+from django.views import View
 from django.shortcuts import redirect
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -92,3 +94,8 @@ class VerifyOTPView(APIView):
                 'user': UserAuthSerializer(services.user_service.get_by_field(email=email)).data
             }
         )
+
+
+class Login_Page(View):
+    def get(self, request):
+        return render(request, 'templates/login.html')
