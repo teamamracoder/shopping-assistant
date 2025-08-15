@@ -16,12 +16,17 @@ class storeModelService:
         """
         return StoreModel.objects.all()
 
+    # def get_store_by_id(self, pk):
+    #     """
+    #     Fetch a store by its primary key (ID).
+    #     :param pk: Primary key (ID) of the store.
+    #     :return: StoreModel instance if found, None otherwise.
+    #     """
+    #     try:
+    #         return StoreModel.objects.get(pk=pk)
+    #     except StoreModel.DoesNotExist:
+    #         return None
     def get_store_by_id(self, pk):
-        """
-        Fetch a store by its primary key (ID).
-        :param pk: Primary key (ID) of the store.
-        :return: StoreModel instance if found, None otherwise.
-        """
         try:
             return StoreModel.objects.get(pk=pk)
         except StoreModel.DoesNotExist:
@@ -39,41 +44,54 @@ class storeModelService:
         except IntegrityError:
             raise ValidationError("store creation failed due to integrity constraints.")
 
-    def update_store(self, store, validated_data):
-        """
-        Update an existing store with new validated data.
-        :param store: StoreModel instance to update.
-        :param validated_data: Dictionary containing new data.
-        :return: Updated StoreModel instance.
-        :raises ValidationError: If update fails due to integrity issues.
-        """
-        try:
-            # store.owner = validated_data.get('name', store.owner)
-            store.store_name = validated_data.get('store_code', store.store_name)
-            store.registration_no = validated_data.get('registration_no', store.registration_no)
-            store.gst_no = validated_data.get('gst_no', store.gst_no)
-            store.store_category = validated_data.get('discount_per', store.store_category)
-            store.contact_no = validated_data.get('quantity', store.contact_no)
-            store.alternate_contact_no = validated_data.get('maf_date', store.alternate_contact_no)
-            store.email = validated_data.get('exp_date', store.email)
-            store.alternate_email = validated_data.get('category', store.alternate_email)
-            store.open_time = validated_data.get('sub_category', store.open_time)
-            store.close_time = validated_data.get('others_category', store.close_time)
-            store.address = validated_data.get('is_active', store.address)
-            store.location = validated_data.get('is_active', store.location)
-            store.street_or_road = validated_data.get('is_active', store.street_or_road)
-            store.village_or_city = validated_data.get('is_active', store.village_or_city)
-            store.district = validated_data.get('is_active', store.district)
-            store.state = validated_data.get('is_active', store.state)
-            store.pin_code = validated_data.get('is_active', store.pin_code)
-            store.store_image_urls = validated_data.get('image_urls', store.store_image_urls)
-            store.is_active = validated_data.get('is_active', store.is_active)
-            store.updated_by = validated_data.get('updated_by', store.updated_by)
+    # def update_store(self, store, validated_data):
+    #     """
+    #     Update an existing store with new validated data.
+    #     :param store: StoreModel instance to update.
+    #     :param validated_data: Dictionary containing new data.
+    #     :return: Updated StoreModel instance.
+    #     :raises ValidationError: If update fails due to integrity issues.
+    #     """
+    #     try:
+    #         # store.owner = validated_data.get('name', store.owner)
+    #         store.store_name = validated_data.get('store_code', store.store_name)
+    #         store.registration_no = validated_data.get('registration_no', store.registration_no)
+    #         store.gst_no = validated_data.get('gst_no', store.gst_no)
+    #         store.store_category = validated_data.get('discount_per', store.store_category)
+    #         store.contact_no = validated_data.get('quantity', store.contact_no)
+    #         store.alternate_contact_no = validated_data.get('maf_date', store.alternate_contact_no)
+    #         store.email = validated_data.get('exp_date', store.email)
+    #         store.alternate_email = validated_data.get('category', store.alternate_email)
+    #         store.open_time = validated_data.get('sub_category', store.open_time)
+    #         store.close_time = validated_data.get('others_category', store.close_time)
+    #         store.address = validated_data.get('is_active', store.address)
+    #         store.location = validated_data.get('is_active', store.location)
+    #         store.street_or_road = validated_data.get('is_active', store.street_or_road)
+    #         store.village_or_city = validated_data.get('is_active', store.village_or_city)
+    #         store.district = validated_data.get('is_active', store.district)
+    #         store.state = validated_data.get('is_active', store.state)
+    #         store.pin_code = validated_data.get('is_active', store.pin_code)
+    #         store.store_image_urls = validated_data.get('image_urls', store.store_image_urls)
+    #         store.is_active = validated_data.get('is_active', store.is_active)
+    #         store.updated_by = validated_data.get('updated_by', store.updated_by)
 
-            store.save()
-            return store
-        except IntegrityError:
-            raise ValidationError("store update failed due to integrity issues.")
+    #         store.save()
+    #         return store
+    #     except IntegrityError:
+    #         raise ValidationError("store update failed due to integrity issues.")
+
+    def update_store(self, store, validated_data, user=None):
+        # Loop through all validated fields and set them
+        for attr, value in validated_data.items():
+            setattr(store, attr, value)
+
+        # Optional: Track who updated
+        if user is not None:
+            store.updated_by = user
+
+        store.save()
+        return store
+
 
     def delete_store(self, store):
         """

@@ -8,8 +8,6 @@ from utils.response_utils import Res
 from ..serializers import StoreSerializer
 # from services.store_service import storeModelService
 from services.store_service import storeModelService
-
-
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
@@ -62,8 +60,9 @@ class StoreDetailView(APIView):
         if not store:
             return Res.error(data={"message": "Store not found"}, http_status=status.HTTP_404_NOT_FOUND)
         # updated_store = store_service.storeModelService().update_store(store, request.serializer.validated_data, user=request.user) # If the frontend is ready then use this line 
-        updated_store = store_service.storeModelService().update_store(store, request.serializer.validated_data) 
-        return Res.success("S-20004", StoreSerializer(updated_store).data)
+        updated_store = store_service.storeModelService().update_store(
+            store, request.serializer.validated_data
+        )
     
     @swagger_auto_schema(
     operation_summary="Partially Update Store",
@@ -78,8 +77,9 @@ class StoreDetailView(APIView):
             return Res.error(data={"message": "Store not found"}, http_status=status.HTTP_404_NOT_FOUND)
         serializer = StoreSerializer(store, data=request.data, partial=True)
         if serializer.is_valid():
-            # updated_store = store_service.storeModelService().update_store(store, serializer.validated_data, user=request.user)  # If the frontend is ready then use this line
-            updated_store = store_service.storeModelService().update_store(store, request.serializer.validated_data)
+            updated_store = store_service.storeModelService().update_store(
+                store, serializer.validated_data
+            )       
             return Res.success("S-20006", StoreSerializer(updated_store).data)
         return Res.error(data={"message": serializer.errors}, http_status=status.HTTP_400_BAD_REQUEST)
 
