@@ -52,7 +52,7 @@
     <div class="signup-container">
     <h4 class="signup-title">Signup</h4>
 
-        <form action="{% url 'signup_page' %}" method="post">
+        <form id="signupForm">
             {% csrf_token %}
             <div class="mb-3">
                 <input type="text" name="first_name" class="form-control" placeholder="First Name" required>
@@ -68,14 +68,32 @@
             </div>
             <button type="submit" class="btn btn-submit">Submit</button>
         </form>
+    </div>   
 
-        {% if errors %}
-        <div class="alert alert-danger mt-3">
-            {% for field, error_list in errors.items %}
-                <strong>{{ field }}:</strong> {{ error_list|join:", " }}<br>
-            {% endfor %}
-        </div>
-        {% endif %}
-    </div>    
+    <script>
+        document.getElementById("signupForm").addEventListener("submit", async function(e) {
+            e.preventDefault();
+
+            let formData = new FormData(this);
+            let payload = Object.fromEntries(formData.entries());
+
+            let response = await fetch("{% url 'signup_api' %}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": "{{ csrf_token }}"
+                },
+                body: JSON.stringify(payload)
+            });
+
+            let data = await response.json();
+            if (response.ok) {
+                // ✅ user create success হলে login page এ পাঠাবে
+                window.location.href = "{% url 'login_page' %}";
+            } else {
+                alert("Error: " + JSON.stringify(data));
+            }
+        });
+    </script>     
 </body>
 </html>

@@ -14,6 +14,7 @@ from decorators.validator import validate_serializer
 from services import services
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+from utils.response_utils import Res 
 
 class SendOTPView(APIView):
 
@@ -99,15 +100,22 @@ class VerifyOTPView(APIView):
 class Login_Page(View):
     def get(self, request):
         return render(request, 'login_page.html')
-
-# SIgnup View #
-class Signup_Page(View):
+    
+# Signup View #
+class SignupView(View):
+    """GET request -> return HTML page"""
     def get(self, request):
-        return render(request, 'signup_page.html')
+        return render(request, "signup_page.html")
 
+
+class SignupApiView(APIView):
+    """POST request -> create user via API"""
     def post(self, request):
-        serializer = SignupSerializer(data=request.POST)
+        serializer = SignupSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return redirect('login_page')  
-        return render(request, 'signup_page.html', {"errors": serializer.errors})
+            return Response(
+                {"message": "User created successfully"},
+                status=status.HTTP_201_CREATED
+            )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
