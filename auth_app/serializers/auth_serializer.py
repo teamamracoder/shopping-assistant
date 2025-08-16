@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from services import services
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import User
+from constants.enums import Role  
 
 User = get_user_model()
 
@@ -29,7 +31,6 @@ class VerifyOtpSerializer(serializers.Serializer):
         return data
     
 
-
 class UserAuthSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -44,3 +45,22 @@ class VerifyOTPResponseSerializer(serializers.Serializer):
 
 class SendOTPResponseSerializer(serializers.Serializer):
     existing_user = serializers.BooleanField()
+
+
+class SignupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["first_name", "last_name", "phone", "email"]
+
+    def create(self, validated_data):
+        user = User(
+            first_name=validated_data.get("first_name", ""),
+            last_name=validated_data.get("last_name", ""),
+            phone=validated_data.get("phone", None),  
+            email=validated_data["email"],
+            roles=[Role.END_USER.value],   
+        )
+        user.set_unusable_password()
+        user.save()
+        return user
+

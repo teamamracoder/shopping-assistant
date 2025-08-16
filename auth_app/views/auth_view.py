@@ -8,7 +8,7 @@ from django.core.cache import cache
 import random
 from rest_framework_simplejwt.tokens import RefreshToken
 from utils.response_utils import Res
-from auth_app.serializers.auth_serializer import SendOtpSerializer, VerifyOtpSerializer, VerifyOTPResponseSerializer, SendOTPResponseSerializer, UserAuthSerializer
+from auth_app.serializers.auth_serializer import SendOtpSerializer, SignupSerializer, VerifyOtpSerializer, VerifyOTPResponseSerializer, SendOTPResponseSerializer, UserAuthSerializer
 from constants.enums import Role
 from decorators.validator import validate_serializer
 from services import services
@@ -95,7 +95,19 @@ class VerifyOTPView(APIView):
             }
         )
 
-
+# Login View #
 class Login_Page(View):
     def get(self, request):
         return render(request, 'login_page.html')
+
+# SIgnup View #
+class Signup_Page(View):
+    def get(self, request):
+        return render(request, 'signup_page.html')
+
+    def post(self, request):
+        serializer = SignupSerializer(data=request.POST)
+        if serializer.is_valid():
+            serializer.save()
+            return redirect('login_page')  
+        return render(request, 'signup_page.html', {"errors": serializer.errors})

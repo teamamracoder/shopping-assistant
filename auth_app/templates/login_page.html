@@ -8,20 +8,48 @@
     <style>
         body {
             background-color: #f8f9fa;
+            display: flex;
+            justify-content: center;   
+            align-items: center;       
+            height: 100vh;             
+            margin: 0;                 
         }
-        .login-container {
-            max-width: 400px;
-            margin: 80px auto;
-            padding: 20px;
-            background: #fff;
-            border-radius: 10px;
-            box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
-        }
-        .form-control {
-            border-radius: 0.375rem 0 0 0.375rem;
-        }
-        .btn-right {
-            border-radius: 0 0.375rem 0.375rem 0;
+        .login-container { 
+            max-width: 420px; 
+            width: 100%;
+            margin: 80px auto; 
+            padding: 30px; 
+            background: #ffffff; 
+            border-radius: 15px; 
+            box-shadow: 0 6px 20px rgba(0,0,0,0.08); 
+        } 
+        .login-title { 
+            font-weight: 600; 
+            color: #333; 
+            text-align: center; 
+            margin-bottom: 25px; 
+            font-size: 26px; /* Increased heading size */ 
+        } 
+        .input-group .form-control { 
+            border-radius: 8px 0 0 8px; 
+        } 
+        .input-group .btn { 
+            border-radius: 0 8px 8px 0; 
+        } 
+        .btn-primary { 
+            background-color: #3399e6;  
+            border: none; 
+        } 
+        .btn-primary:hover { 
+            background-color: #267ac2; 
+        } 
+
+        .btn-success { 
+            background-color: #28b27e;  
+            border: none; 
+        } 
+        .btn-success:hover { 
+            background-color: #1f9466;  
         }
     </style>
 </head>
@@ -33,15 +61,16 @@
     <!-- Email Field -->
     <div class="input-group mb-3">
         <input type="email" id="email" class="form-control" placeholder="Enter email">
-        <button class="btn btn-primary btn-right" onclick="sendOTP()">Send OTP</button>
+        <button type="button" class="btn btn-primary btn-right" onclick="sendOTP()">Send OTP</button>
     </div>
 
     <!-- OTP Field -->
     <div class="input-group mb-3">
-        <!-- <input type="text" id="otp" class="form-control" placeholder="Enter OTP"> -->
         <input type="text" id="otp" class="form-control" placeholder="Enter OTP" maxlength="6" oninput="validateOTP()">
-        <buttonn id="verifyBtn" class="btn btn-success btn-right" onclick="verifyOTP()">Verify</button>
+        <button type="button" id="verifyBtn" class="btn btn-success btn-right" onclick="verifyOTP()" disabled>Verify</button>
     </div>
+
+
 
 </div>
 
@@ -71,36 +100,42 @@
         }
     }
 
-    async function verifyOTP() {
-        const email = document.getElementById('email').value;
-        const otp = document.getElementById('otp').value;
-
-        if (!email || !otp) {
-            alert('Please enter both email and OTP');
-            return;
-        }
-
-        try {
-            const response = await fetch('/auth/verify-otp/', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, otp })
-            });
-            const data = await response.json();
-
-            if (response.ok) {
-                console.log('Access Token:', data.data.access_token);
-                console.log('Refresh Token:', data.data.refresh_token);
-                alert('Login successful!');
-                window.location.href = "/control-panel/dashboard/";
-            } else {
-                alert(data.message || 'Invalid OTP');
-            }
-        } catch (error) {
-            alert('Error verifying OTP');
-            console.error(error);
-        }
-    }
+    async function verifyOTP() { 
+        const email = document.getElementById("email").value.trim(); 
+        const otp = document.getElementById("otp").value.trim(); 
+        if (!email || !otp) { 
+            alert("Please enter both Email and OTP"); 
+            return; 
+        } 
+        try { 
+            const response = await fetch("/auth/verify-otp/", { 
+                method: "POST", 
+                headers: { "Content-Type": "application/json", 
+            }, 
+            body: JSON.stringify({ email, otp }), 
+        }); 
+        const data = await response.json(); 
+        if (response.ok) { 
+            // ✅ Save tokens in localStorage 
+            localStorage.setItem("access_token", data.data.access_token); 
+            localStorage.setItem("refresh_token", data.data.refresh_token); 
+            alert("Login Successful ✅"); 
+            // clear fields before redirect 
+            document.getElementById("email").value = ""; 
+            document.getElementById("otp").value = ""; 
+            // redirect to dashboard 
+            window.location.href = "/control-panel/dashboard/"; 
+        } 
+        else { 
+            alert(data.message || "OTP verification failed ❌"
+            ); 
+        } 
+    } 
+    catch (error) { 
+        alert("Error verifying OTP"); 
+        console.error(error); 
+    } 
+}
 
 
     function validateOTP() {
@@ -109,7 +144,7 @@
 
         const otp = otpInput.value.trim();
 
-        // Allow only digits (optional)
+        // Allow only digits
         otpInput.value = otp.replace(/\D/g, '');
 
         // Enable button only when OTP is exactly 6 digits
@@ -119,6 +154,7 @@
             verifyBtn.disabled = true;
         }
     }
+
 
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
