@@ -98,4 +98,4 @@ class VerifyOTPView(APIView):
 
 class Login_Page(View):
     def get(self, request):
-        return render(request, 'templates/login.html')
+        return render(request, 'login_page.html')
