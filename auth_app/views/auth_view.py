@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.core.cache import cache
 import random
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.tokens import RefreshToken,TokenError
 from utils.response_utils import Res
 from auth_app.serializers.auth_serializer import SendOtpSerializer, SignupSerializer, VerifyOtpSerializer, VerifyOTPResponseSerializer, SendOTPResponseSerializer, UserAuthSerializer
 from constants.enums import Role
@@ -119,3 +119,17 @@ class SignupApiView(APIView):
                 status=status.HTTP_201_CREATED
             )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class LogoutApiView(APIView):
+    def post(self, request):
+        refresh_token = request.data.get("refresh_token")
+        if not refresh_token:
+            return Response({"message": "Refresh token required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            token = RefreshToken(refresh_token)
+            token.blacklist()  # Only works if blacklist app is enabled
+            return Response({"message": "Logout successful"}, status=status.HTTP_205_RESET_CONTENT)
+        except TokenError:
+            return Response({"message": "Invalid token"}, status=status.HTTP_400_BAD_REQUEST)
