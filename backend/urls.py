@@ -4,6 +4,7 @@ from django.urls import include, path, re_path
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
+from django.shortcuts import redirect
 
 schema_view = get_schema_view(
    openapi.Info(
@@ -19,12 +20,13 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
-    path("", lambda request: JsonResponse({"message": "Welcome"})),
+   #  path("", lambda request: JsonResponse({"message": "Welcome"})),
+    path("", lambda request: redirect("login_page")),  # name='login_page' from auth_app.urls
+    path("auth/", include("auth_app.urls")),
     path("admin/", admin.site.urls),
     path("api/v1/shopping-assistant/", include("shopping_assistant.urls")),
     path("api/v1/business-partner/", include("business_partner.urls")),
     path("control-panel/", include("control_panel.urls")),
-    path("auth/", include("auth_app.urls")),
 
     # Swagger & Redoc
     re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(), name='schema-json'),
