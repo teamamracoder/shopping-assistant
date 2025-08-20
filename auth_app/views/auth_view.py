@@ -87,14 +87,38 @@ class VerifyOTPView(APIView):
         refresh = RefreshToken.for_user(user)
         cache.delete(f'otp_{email}')  # Clear OTP after successful verification
         
-        return Res.success(
-            'Successsfully registered' if is_new_user else 'Login successfull',
-            {
-                'access_token': str(refresh.access_token),
-                'refresh_token': str(refresh),
-                'user': UserAuthSerializer(services.user_service.get_by_field(email=email)).data
-            }
-        )
+        # return Res.success(
+        #     'Successsfully registered' if is_new_user else 'Login successfull',
+        #     {
+        #         'access_token': str(refresh.access_token),
+        #         'refresh_token': str(refresh),
+        #         'user': UserAuthSerializer(services.user_service.get_by_field(email=email)).data
+        #     }
+        # )
+
+        # Prepare response data
+        response_data = {
+            'access_token': str(refresh.access_token),
+            'refresh_token': str(refresh),
+            'user': UserAuthSerializer(services.user_service.get_by_field(email=email)).data
+        }
+
+        message = 'Successfully registered' if is_new_user else 'Login successful'
+
+
+        # 🔐 Store auth info in session
+        request.session['auth'] = {
+            'access_token': response_data['access_token'],
+            'refresh_token': response_data['refresh_token'],
+            'user': response_data['user']
+        }
+        request.session.modified = True  # Optional, ensures session is saved
+
+
+        # 🔍 Log to console
+        # print(f"[VerifyOTPView] {message} - Response: {response_data}")
+
+        return Res.success(message, response_data)
 
 # Login View #
 class Login_Page(View):
