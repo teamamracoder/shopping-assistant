@@ -11,6 +11,8 @@ from django.forms import ValidationError
 from ..models import ProductCategoryModel
 from ..forms import ManageProductCategoryForm
 from services.product_category_service import ProductCategoryModelService
+from utils.common_utils import get_user_id
+from control_panel.models.user_model import UserModel
 
 
 category_service = ProductCategoryModelService()
@@ -32,9 +34,14 @@ class ManageProductCategoryCreateView(View):
         if form.is_valid():
             data = form.cleaned_data
             try:
-                if not isinstance(request.user, AnonymousUser):
-                    data['created_by'] = request.user
-                    data['updated_by'] = request.user
+                # if not isinstance(request.user, AnonymousUser):
+                #     data['created_by'] = get_user_id(request)
+                #     data['updated_by'] = request.user
+                user_id=get_user_id(request)
+                print("user_id",user_id)
+                user_instance = UserModel.objects.get(pk=user_id)
+                data['created_by'] = user_instance
+                data['updated_by'] = user_instance
                 category_service.create_category(data)
                 messages.success(request, "Category added successfully!")
                 return redirect('manage_product_category_list')
@@ -70,7 +77,7 @@ class ManageProductCategoryEditView(UpdateView):
     def form_invalid(self, form):
         categories = category_service.get_all_categories()
         return self.render_to_response(self.get_context_data(form=form, categories=categories))
-    
+
 
 # Delete View
 class ManageProductCategoryDeleteView(View):
@@ -86,7 +93,7 @@ class ManageProductCategoryDeleteView(View):
         except ValidationError as e:
             messages.error(request, str(e))
 
-        return redirect("manage_product_category_list")    
+        return redirect("manage_product_category_list")
 
 
 # Toggle Active Status
@@ -99,4 +106,4 @@ class ManageToggleProductCategoryActiveView(View):
         except ValidationError as e:
             messages.error(request, str(e))
 
-        return redirect("manage_product_category_list")  
+        return redirect("manage_product_category_list")

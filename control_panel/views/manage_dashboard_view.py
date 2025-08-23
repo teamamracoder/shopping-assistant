@@ -9,13 +9,13 @@ from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 from rest_framework.permissions import IsAuthenticated
 from constants import Role
 from decorators.validator import role_required
+from django.utils.decorators import method_decorator
+from utils.common_utils import get_user_id
 
 
 class ManageDashboardView(View):
-    @role_required(Role.ADMIN, Role.SERVICE_PROVIDER)
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value)
     def get(self, request):
-        user_session = request.session.get('auth')
-        print('dash res',user_session)
         context = {
             'total_users': UserModel.objects.count(),
             'total_stores': StoreModel.objects.count(),

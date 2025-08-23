@@ -1,6 +1,7 @@
 from functools import wraps
 
 from django.http import HttpResponseForbidden, JsonResponse
+from django.shortcuts import redirect
 from constants.enums import Role
 from utils.common_utils import print_log
 from utils.response_utils import Res
@@ -23,7 +24,7 @@ def validate_serializer(serializer_class, status_code: str = 'E-10001'):
                     http_status=status.HTTP_400_BAD_REQUEST,
                     data=serializer.errors  # Pass field-level errors as 'data'
                 )
-            
+
             # Attach the validated serializer to the request object
             request.serializer = serializer
             return func(self, request, *args, **kwargs)
@@ -42,48 +43,22 @@ def partial_serializer(serializer_class, partial=False):
         return _wrapped_view
     return decorator
 
-
-# def store_auth_in_session(func):
-#     @wraps(func)
-#     def wrapper(view, request, *args, **kwargs):
-#         response = func(view, request, *args, **kwargs)
-
-#         # If response is a success and contains user data
-#         if hasattr(response, 'data') and 'user' in response.data:
-#             request.session['auth'] = {
-#                 'access_token': response.data.get('access_token'),
-#                 'refresh_token': response.data.get('refresh_token'),
-#                 'user': response.data.get('user')
-#             }
-#             request.session.modified = True  # Mark session as modified
-#             request.session.save()
-#             # Optional: print for debug
-#             print(f"[Session] Stored user in session: {request.session['auth']}")
-
-#         return response
-
-#     return wrapper
-
-
-def role_required(*allowed_roles):
-    """
-    Decorator to restrict view access to users with specific roles.
-    Usage:
-        @role_required(Role.ADMIN, Role.SELLER)
-    """
-    allowed_values = [role.value for role in allowed_roles]
-
+def role_required(*roles):
     def decorator(view_func):
         @wraps(view_func)
-        def _wrapped_view(request, *args, **kwargs):
+        def _wrapped_view(*args, **kwargs):
+            if hasattr(args[0], 'request'):
+                request = args[0].request
+            elif hasattr(args[0], 'session'):
+                request = args[0]
+            else:
+                request = args[1]
+
             user = request.session.get('auth', {}).get('user')
-
-            if not user:
-                return HttpResponseForbidden("Unauthorized: No user in session.")
-
-            if user.get('role') not in allowed_values:
-                return HttpResponseForbidden("Access Denied: Insufficient permissions.")
-
-            return view_func(request, *args, **kwargs)
+            user_roles = user.get('roles', []) if user else []
+            if not any(role in roles for role in user_roles):
+                print("Access denied")
+                return redirect("login_page")
+            return view_func(*args, **kwargs)
         return _wrapped_view
     return decorator
