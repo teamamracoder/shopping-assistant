@@ -34,14 +34,9 @@ class ManageProductCategoryCreateView(View):
         if form.is_valid():
             data = form.cleaned_data
             try:
-                # if not isinstance(request.user, AnonymousUser):
-                #     data['created_by'] = get_user_id(request)
-                #     data['updated_by'] = request.user
-                user_id=get_user_id(request)
-                print("user_id",user_id)
-                user_instance = UserModel.objects.get(pk=user_id)
-                data['created_by'] = user_instance
-                data['updated_by'] = user_instance
+                if not isinstance(request.user, AnonymousUser):
+                    data['created_by'] = get_user_id(request)
+                    data['updated_by'] = request.user
                 category_service.create_category(data)
                 messages.success(request, "Category added successfully!")
                 return redirect('manage_product_category_list')
