@@ -3,7 +3,6 @@ from django.http import Http404, JsonResponse
 from django.views import View
 from django.shortcuts import get_object_or_404, render
 from django.core.exceptions import ValidationError
-from constants import Gender
 from services import services  
 from ..forms import ManageUserForm
 from control_panel.models import UserModel

@@ -23,7 +23,7 @@ class ManageServiceTypeCreateView(View):
         services = ServiceTypeModel.objects.all()
         form = ServiceTypeForm()
         return render(request, 'admin/manage_service_type_model.html', {'services': services,'form': form  })
-    
+
     def post(self, request):
         print("POST request received.")
         form = ServiceTypeForm(request.POST)
@@ -51,8 +51,8 @@ class ManageServiceTypeDeleteView(View):
         service_ins = service_helper.get_service_type_by_id(pk)
         service_helper.delete_service_type(service_ins)
         return redirect('manage_service_type_model_create')
-    
- #TOGGLE VIEW   
+
+ #TOGGLE VIEW
 class ManageToggleServiceTypeActiveView(View):
     def post(self, request, pk):
         service_type = service_helper.get_service_type_by_id(pk)

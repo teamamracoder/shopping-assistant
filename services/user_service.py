@@ -5,7 +5,7 @@ from django.db import IntegrityError
 from constants import Gender, Role
 
 class UserService:
-    
+
     def is_exist(self, email):
         return UserModel.objects.filter(email=email).exists()
 
@@ -15,7 +15,7 @@ class UserService:
         :return: Queryset of all UserModel instances.
         """
         return UserModel.objects.all()
-    
+
     def get_users_by_role(self, role):
         """
         Fetch users by specific role.
@@ -26,7 +26,7 @@ class UserService:
             return UserModel.objects.filter(roles__contains=[role])
         except Exception as e:
             raise ValidationError(f"Error fetching users for role {role}: {str(e)}")
-        
+
     def common_user_context(users, form=None):
         from constants import Gender, Role
         from control_panel.forms import ManageUserForm
@@ -41,7 +41,7 @@ class UserService:
             'choices_gender': choices_gender,
             'choices_role': choices_role
         }
-    
+
     def get(self, request):
         service = UserService()
         providers = service.get_users_by_role(Role.SERVICE_PROVIDER.value)
@@ -82,7 +82,7 @@ class UserService:
             raise ValidationError(f"A user with this email already exists: {str(e)}")
         except Exception as e:
             raise ValidationError(f"Error creating user: {str(e)}")
-            
+
     def create_user(self, validated_data):
         """
         Create a new user from validated data.
@@ -116,7 +116,7 @@ class UserService:
         except Exception as e:
             raise ValidationError(f"Error updating user: {str(e)}")
         except IntegrityError:
-            raise ValidationError("Email already exists, or another integrity issue occurred.") 
+            raise ValidationError("Email already exists, or another integrity issue occurred.")
 
     def user_delete(self, pk):
         user = UserModel.objects.get(id=pk)
@@ -130,7 +130,7 @@ class UserService:
             user.delete()
         except Exception as e:
             raise ValidationError(f"Error deleting user: {str(e)}")
-    
+
     def toggle_user_active(self, user):
         """
         Toggle the active status of a user.
@@ -153,7 +153,7 @@ class UserService:
         user.is_active = False
         user.save()
         return user
-    
+
     def user_exists(self, email):
         """
         Check if a user exists by email.
@@ -161,7 +161,7 @@ class UserService:
         :return: True if user exists, False otherwise.
         """
         return UserModel.objects.filter(email=email).exists()
-    
+
     def get_user_by_email(self, email):
         """
         Fetch a user by their email address.
@@ -178,5 +178,5 @@ class UserService:
             return UserModel.objects.filter(**fields).first()
         except UserModel.DoesNotExist:
             return None
-        
+
 user_service = UserService()
