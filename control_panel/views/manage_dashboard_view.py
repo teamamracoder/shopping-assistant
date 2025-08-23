@@ -4,16 +4,17 @@ from django.views import View
 from control_panel.models import StoreModel, ProductsModel, ServiceModel, UserModel  # import your actual models
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from auth_app.decorators import jwt_required, role_required
 from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
+from rest_framework.permissions import IsAuthenticated
+from constants import Role
+from decorators.validator import role_required
+from django.utils.decorators import method_decorator
+from utils.common_utils import get_user_id
 
 
 class ManageDashboardView(View):
-    @jwt_required
-    def get(self, request):
-        return Response({"message": f"Welcome {request.user.email}, you are authenticated!"})
-    
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value)
     def get(self, request):
         context = {
             'total_users': UserModel.objects.count(),
