@@ -17,12 +17,15 @@ from django.db import IntegrityError
 from ..models import UserModel
 from django.utils.http import urlencode
 from services import UserService
+from decorators.validator import role_required
+from django.utils.decorators import method_decorator
 
 
 service = UserService()
 
 #List (READ ALL)
 class ManageUserListView(View):
+     @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value)
      def get(self, request):
         users = service.get_all_users()  # call the service function
 
@@ -39,6 +42,7 @@ class ManageUserListView(View):
 
 # CREATE VIEW (not working properly)
 class ManageUserCreateView(View):
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value)
     def get(self, request):
         users = service.get_all_users()
         form = ManageUserForm()
@@ -47,6 +51,7 @@ class ManageUserCreateView(View):
         return render(request, "admin/manage_all_user.html", {'users': users, 'form': form, 'choices_gender': choices_gender, 'choices_role' : choices_role })
 
     def post(self, request):
+        # user = request.user
         form = ManageUserForm(request.POST)
         source_page = request.POST.get("source_page", "user")
         source_page_seller = request.POST.get("seller")
@@ -77,6 +82,8 @@ class ManageUserCreateView(View):
                     'pincode': form.cleaned_data['pincode'],
                     'roles': roles,
                     'country': form.cleaned_data['country'],
+                    # 'created_by': user,
+                    # 'updated_by': user,
                 }
 
                 service.create_user(validated_data)  #call service function

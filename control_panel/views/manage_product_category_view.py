@@ -35,7 +35,7 @@ class ManageProductCategoryCreateView(View):
             data = form.cleaned_data
             try:
                 if not isinstance(request.user, AnonymousUser):
-                    data['created_by'] = get_user_id(request)
+                    data['created_by'] = request.user
                     data['updated_by'] = request.user
                 category_service.create_category(data)
                 messages.success(request, "Category added successfully!")
