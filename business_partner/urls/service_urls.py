@@ -24,7 +24,7 @@ urlpatterns = [
     path('service-types/<int:pk>/', ServiceTypeDetailAPIView.as_view(), name='api_service_type_detail'),
 
     # Swagger docs 
-    re_path(r'^swagger/service/$', schema_view.with_ui('swagger', cache_timeout=0), name='app-swagger-ui'),
+    re_path(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='app-swagger-ui'),
 ]
 
 

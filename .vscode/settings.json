@@ -1,3 +1,7 @@
 {
-  "python.analysis.extraPaths": ["./control_panel/models"]
+  "python.analysis.extraPaths": [
+    "./control_panel/models"
+  ],
+  "python-envs.defaultEnvManager": "ms-python.python:system",
+  "python-envs.pythonProjects": []
 }
