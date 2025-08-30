@@ -1,5 +1,5 @@
 from django.urls import path
-from ..views import UserListCreateAPIView, UserDetailAPIView, MyCustomerListAPIView
+from business_partner.views import UserListCreateAPIView, UserDetailAPIView, MyCustomerListAPIView
 
 urlpatterns = [
     # User URLs

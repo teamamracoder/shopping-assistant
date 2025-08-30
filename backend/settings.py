@@ -15,6 +15,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'drf_spectacular',
 
     # apps
     'control_panel',
@@ -78,6 +79,24 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+# DRF + drf-spectacular settings
+REST_FRAMEWORK = {
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+# drf-spectacular settings
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Shopping Assistant API",
+    "DESCRIPTION": "API documentation for Shopping Assistant, Business Partner, and Control Panel services.",
+    "VERSION": "1.0.0",
+    
+     # Optional metadata
+    "LICENSE": {"name": "teamamracoder"},
+    "CONTACT": {"name": "Dev Team", "email": "support@shoppingassistant.com"},
+
+}
+
 
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
