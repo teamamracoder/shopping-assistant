@@ -17,6 +17,10 @@ env = environ.Env(
     PGSQL_PASSWORD=(str, ''),
     PGSQL_HOST=(str, ''),
     PGSQL_PORT=(str, ''),
+
+    #Email
+    EMAIL_HOST_USER=(str,''),
+    EMAIL_HOST_PASSWORD=(str,''),
 )
 
 env.read_env()
