@@ -16,11 +16,10 @@ from services import services
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from utils.response_utils import Res
+from django.views.generic import TemplateView
 from django.core.mail import send_mail
 
-
 class SendOTPView(APIView):
-
     @swagger_auto_schema(
         operation_summary="send otp",
         operation_description="Enter email and send otp",
@@ -33,27 +32,32 @@ class SendOTPView(APIView):
         if not email:
             return Res.error('Email is required', status=status.HTTP_400_BAD_REQUEST)
 
-        # Generate 6-digit OTP
-        otp = str(random.randint(100000, 999999))
+        # Check if user exists
+        is_existing_user = services.user_service.is_exist(email)
 
-        # Store OTP in cache (expires in 5 minutes)
+        if not is_existing_user:
+            # ❌ Do not send OTP
+            return Res.error(
+                "No account found with this email. Please sign up first.",
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # ✅ User exists → Generate OTP
+        otp = str(random.randint(100000, 999999))
         cache.set(f'otp_{email}', otp, timeout=300)
 
-        # In production: Send OTP via email here
-        print(f"OTP for {email}: {otp}")  # For development only
-
-         # ✅ Send OTP via email
+        # Send OTP (email)
+        print(f"OTP for {email}: {otp}")  # Dev log
         send_mail(
             subject="Your OTP Code",
-            message=f"Hello, You are trying to log in to the Shopping-Assistant Control Panel. Your One-Time Password (OTP) is:  {otp} ⚠️ This code will expire in 5 minutes.  If you did not request this, please ignore this email. Thank you, The Shopping-Assistant Team",
+            message=f"Hello, your login OTP is: {otp}. It will expire in 5 minutes.",
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[email],
             fail_silently=False,
         )
 
-        is_existing_user = services.user_service.is_exist(email)
+        return Res.success('OTP sent successfully', {"existing_user": True})
 
-        return Res.success('OTP sent successfully', {"existing_user": is_existing_user})
 
 
 class VerifyOTPView(APIView):
@@ -171,7 +175,7 @@ class LogoutApiView(APIView):
             return Response({"message": "Logout successful"}, status=status.HTTP_205_RESET_CONTENT)
         except TokenError:
             return Response({"message": "Invalid token"}, status=status.HTTP_400_BAD_REQUEST)
-        
+      
 
 class UnauthorizedView(TemplateView):
     template_name = "unauthorized.html"
