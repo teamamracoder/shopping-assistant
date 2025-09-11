@@ -13,12 +13,15 @@ from ..forms import ManageProductCategoryForm
 from services.product_category_service import ProductCategoryModelService
 from utils.common_utils import get_user_id
 from control_panel.models.user_model import UserModel
+from decorators.validator import role_required
+from constants import Role
 
 
 category_service = ProductCategoryModelService()
 
 # List View
 class ManageProductCategoryListView(View):
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value)
     def get(self, request):
         categories = category_service.get_all_categories()
         form = ManageProductCategoryForm()

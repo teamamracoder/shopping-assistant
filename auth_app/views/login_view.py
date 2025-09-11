@@ -163,4 +163,4 @@ class LogoutApiView(APIView):
         
 
 class UnauthorizedView(TemplateView):
-    template_name = "unauthorized.html"
+    template_name = "auth/unauthorized.html"
