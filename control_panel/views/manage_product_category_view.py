@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.contrib import messages
 from django.contrib.auth.models import AnonymousUser
+
+from utils.common_utils import get_user_id
 from ..models import ProductCategoryModel
 from ..forms import ManageProductCategoryForm
 from django.http import JsonResponse
@@ -38,8 +40,10 @@ class ManageProductCategoryCreateView(View):
             data = form.cleaned_data
             try:
                 if not isinstance(request.user, AnonymousUser):
-                    data['created_by'] = get_user_id(request)
+                    data['created_by'] =  request.user
                     data['updated_by'] = request.user
+                data['created_by'] =  get_user_id(request)
+                data['updated_by'] = get_user_id(request)
                 category_service.create_category(data)
                 messages.success(request, "Category added successfully!")
                 return redirect('manage_product_category_list')

@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.shortcuts import render
 from django.views import View
 from django.shortcuts import redirect
@@ -15,7 +16,8 @@ from services import services
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from utils.response_utils import Res
-from django.views.generic import TemplateView
+from django.core.mail import send_mail
+
 
 class SendOTPView(APIView):
 
@@ -39,6 +41,15 @@ class SendOTPView(APIView):
 
         # In production: Send OTP via email here
         print(f"OTP for {email}: {otp}")  # For development only
+
+         # ✅ Send OTP via email
+        send_mail(
+            subject="Your OTP Code",
+            message=f"Hello, You are trying to log in to the Shopping-Assistant Control Panel. Your One-Time Password (OTP) is:  {otp} ⚠️ This code will expire in 5 minutes.  If you did not request this, please ignore this email. Thank you, The Shopping-Assistant Team",
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[email],
+            fail_silently=False,
+        )
 
         is_existing_user = services.user_service.is_exist(email)
 
