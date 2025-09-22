@@ -29,7 +29,7 @@ class ManageProductCreateView(View):
         form = ManageProductForm()
         products = product_service.get_all_products()
         return render(request, "admin/manage_product.html", {"form": form, "products": products})
-
+    
     @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def post(self, request):
         form = ManageProductForm(request.POST, request.FILES)
@@ -82,6 +82,7 @@ class ManageProductCreateView(View):
 
 # Edit View
 class ManageProductEditView(View):
+
     @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def post(self, request, pk):
         product = product_service.get_product_by_id(pk)
