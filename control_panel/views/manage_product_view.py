@@ -9,6 +9,7 @@ from services.product_service import ProductModelService
 from django.core.exceptions import ValidationError
 from decorators.validator import role_required
 from constants import Role
+from control_panel.models import ProductsModel  
 
 product_service = ProductModelService()
 
@@ -31,36 +32,45 @@ class ManageProductCreateView(View):
 
     @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def post(self, request):
-        form = ManageProductForm(request.POST)
+        form = ManageProductForm(request.POST, request.FILES)
 
         if form.is_valid():
-            product_data = form.cleaned_data
+            product_data = form.cleaned_data.copy()
 
-            # Attach created_by and updated_by if user is authenticated
-            if not isinstance(request.user, AnonymousUser):
+            # Attach user info
+            if request.user.is_authenticated:
                 product_data['created_by'] = request.user
                 product_data['updated_by'] = request.user
 
-            # Handle file upload
-            image_urls = []
-            for f in request.FILES.getlist('product_images'):
-                save_dir = os.path.join(settings.MEDIA_ROOT, 'img/product')
-                os.makedirs(save_dir, exist_ok=True)
-                save_path = os.path.join(save_dir, f.name)
-                with open(save_path, 'wb+') as destination:
-                    for chunk in f.chunks():
-                        destination.write(chunk)
-                relative_url = f'media/img/product/{f.name}'
-                image_urls.append(relative_url)
-
-            product_data['image_urls'] = image_urls
+            # Initialize empty image_urls list
+            product_data['image_urls'] = []
 
             try:
-                product_service.create_product(product_data)
+                # Create product without images first using service
+                product = product_service.create_product(product_data)
+
+                # Handle image upload (single or multiple)
+                images = request.FILES.getlist('product_images')
+                if images:
+                    save_dir = os.path.join(settings.MEDIA_ROOT, 'img/product')
+                    os.makedirs(save_dir, exist_ok=True)
+
+                    for f in images:
+                        save_path = os.path.join(save_dir, f.name)
+                        with open(save_path, 'wb+') as destination:
+                            for chunk in f.chunks():
+                                destination.write(chunk)
+                        relative_url = f'media/img/product/{f.name}'
+                        product.image_urls.append(relative_url)
+
+                    # Save product after adding images
+                    product.save()
+
                 messages.success(request, "Product added successfully!", extra_tags='product')
                 return redirect("manage_product_list")
-            except ValidationError as e:
-                messages.error(request, str(e))
+
+            except Exception as e:
+                messages.error(request, f"Error: {str(e)}")
         else:
             for field, error in form.errors.items():
                 messages.error(request, f"{field.capitalize()}: {error}")
@@ -69,7 +79,6 @@ class ManageProductCreateView(View):
             "form": form,
             "products": product_service.get_all_products()
         })
-
 
 # Edit View
 class ManageProductEditView(View):
@@ -83,20 +92,24 @@ class ManageProductEditView(View):
         form = ManageProductForm(request.POST, request.FILES, instance=product)
 
         if form.is_valid():
-            updated_data = form.cleaned_data
+            updated_data = form.cleaned_data.copy()
 
-            # Handle image file upload if present
-            image_urls = product.image_urls or []
+            # Keep existing images
+            image_urls = product.image_urls if product.image_urls else []
 
-            for f in request.FILES.getlist('product_images'):
+            # Handle new image uploads
+            new_images = request.FILES.getlist('product_images')
+            if new_images:
                 save_dir = os.path.join(settings.MEDIA_ROOT, 'img/product')
                 os.makedirs(save_dir, exist_ok=True)
-                save_path = os.path.join(save_dir, f.name)
-                with open(save_path, 'wb+') as destination:
-                    for chunk in f.chunks():
-                        destination.write(chunk)
-                relative_url = f'media/img/product/{f.name}'
-                image_urls.append(relative_url)
+
+                for f in new_images:
+                    save_path = os.path.join(save_dir, f.name)
+                    with open(save_path, 'wb+') as destination:
+                        for chunk in f.chunks():
+                            destination.write(chunk)
+                    relative_url = f'media/img/product/{f.name}'
+                    image_urls.append(relative_url)
 
             updated_data['image_urls'] = image_urls
 
@@ -110,8 +123,9 @@ class ManageProductEditView(View):
                 return redirect("manage_product_list")
             except ValidationError as e:
                 messages.error(request, str(e))
+        else:
+            messages.error(request, "Please correct the errors below.")
 
-        messages.error(request, "Please correct the errors below.")
         return render(request, "admin/manage_product.html", {
             "form": form,
             "products": product_service.get_all_products()
