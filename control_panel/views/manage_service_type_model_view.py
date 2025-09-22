@@ -6,9 +6,12 @@ from ..models import ServiceTypeModel
 from ..forms import ServiceTypeForm
 from services import ServiceTypeModelService
 service_helper = ServiceTypeModelService()
+from constants import Role
+from decorators.validator import role_required
 
 # READ ALL
 class ManageServiceTypeListView(View):
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def get(self, request):
         services = service_helper.get_all_ServiceTypeModels()  # Call service method
         form = ServiceTypeForm()
@@ -19,16 +22,16 @@ class ManageServiceTypeListView(View):
 
 # CREATE
 class ManageServiceTypeCreateView(View):
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def get(self,request):
         services = ServiceTypeModel.objects.all()
         form = ServiceTypeForm()
         return render(request, 'admin/manage_service_type_model.html', {'services': services,'form': form  })
 
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def post(self, request):
-        print("POST request received.")
         form = ServiceTypeForm(request.POST)
         if form.is_valid():
-            print("Form is valid")
             service = ServiceTypeModelService()
             service.create_service_type(form, request.user)
         else:
@@ -37,6 +40,7 @@ class ManageServiceTypeCreateView(View):
 
 # UPDATE
 class ManageServiceTypeUpdateView(View):
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def post(self, request, pk):
         service_instance = service_helper.get_service_type_by_id(pk)
         form = ServiceTypeForm(request.POST, instance=service_instance)
@@ -47,6 +51,7 @@ class ManageServiceTypeUpdateView(View):
 
 # DELETE
 class ManageServiceTypeDeleteView(View):
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def post(self, request, pk):
         service_ins = service_helper.get_service_type_by_id(pk)
         service_helper.delete_service_type(service_ins)
@@ -54,6 +59,7 @@ class ManageServiceTypeDeleteView(View):
 
  #TOGGLE VIEW
 class ManageToggleServiceTypeActiveView(View):
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def post(self, request, pk):
         service_type = service_helper.get_service_type_by_id(pk)
         updated_service = service_helper.toggle_active_status(service_type)

@@ -23,7 +23,7 @@ category_service = ProductCategoryModelService()
 
 # List View
 class ManageProductCategoryListView(View):
-    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value)
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def get(self, request):
         categories = category_service.get_all_categories()
         form = ManageProductCategoryForm()
@@ -34,6 +34,7 @@ class ManageProductCategoryListView(View):
 
 # Create View
 class ManageProductCategoryCreateView(View):
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def post(self, request):
         form = ManageProductCategoryForm(request.POST)
         if form.is_valid():
@@ -83,6 +84,7 @@ class ManageProductCategoryEditView(UpdateView):
 
 # Delete View
 class ManageProductCategoryDeleteView(View):
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def post(self, request, pk, *args, **kwargs):
         category = category_service.get_category_by_id(pk)
         if not category:
@@ -100,6 +102,7 @@ class ManageProductCategoryDeleteView(View):
 
 # Toggle Active Status
 class ManageToggleProductCategoryActiveView(View):
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def post(self, request, pk, *args, **kwargs):
         try:
             category = category_service.toggle_category_status(pk, updated_by=request.user)

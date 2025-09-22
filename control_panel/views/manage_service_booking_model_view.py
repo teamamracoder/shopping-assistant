@@ -7,10 +7,13 @@ from ..forms import ManageServiceBookingForm
 from django.utils import timezone
 from services import ServiceBookingModelService
 service_book = ServiceBookingModelService()
+from decorators.validator import role_required
+from constants import Role
 
 
 #CREATE AND READ(ALL) VIEWS
 class ManageServiceBookingCreateView(View):
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def get(self, request):
         service_booking = service_book.get_all_bookings()
         form = ManageServiceBookingForm()
@@ -19,6 +22,7 @@ class ManageServiceBookingCreateView(View):
             'service_bookings': service_booking  # <-- pass the data to HTML
         })
 
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def post(self, request):
         form = ManageServiceBookingForm(request.POST)
         if form.is_valid():
@@ -40,6 +44,7 @@ class ManageServiceBookingCreateView(View):
 
 #UPDATE VIEW
 class ManageServiceBookingUpdateView(View):
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def post(self, request, pk):
         booking = service_book.get_booking_by_id(pk)
         form = ManageServiceBookingForm(request.POST, instance=booking)
@@ -61,6 +66,7 @@ class ManageServiceBookingUpdateView(View):
 
 #DELETE VIEW
 class ManageServiceBookingDeleteView(View):
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def post(self, request, pk):
         booking = service_book.get_booking_by_id(pk)
         service_book.delete_booking(booking)
@@ -68,6 +74,7 @@ class ManageServiceBookingDeleteView(View):
 
 #TOGGLE VIEW
 class ManageToggleServiceBookingActiveView(View):
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def post(self, request, pk):
         booking = service_book.get_booking_by_id(pk)
         service_book.toggle_active_status(booking)

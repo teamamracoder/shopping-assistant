@@ -25,8 +25,8 @@ service = UserService()
 
 #List (READ ALL)
 class ManageUserListView(View):
-     @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value)
-     def get(self, request):
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
+    def get(self, request):
         users = service.get_all_users()  # call the service function
 
         form = ManageUserForm()
@@ -42,7 +42,7 @@ class ManageUserListView(View):
 
 # CREATE VIEW (not working properly)
 class ManageUserCreateView(View):
-    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value)
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def get(self, request):
         users = service.get_all_users()
         form = ManageUserForm()
@@ -50,6 +50,7 @@ class ManageUserCreateView(View):
         choices_role = [{type.value : type.name} for type in Role]
         return render(request, "admin/manage_all_user.html", {'users': users, 'form': form, 'choices_gender': choices_gender, 'choices_role' : choices_role })
 
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def post(self, request):
         # user = request.user
         form = ManageUserForm(request.POST)
@@ -65,7 +66,9 @@ class ManageUserCreateView(View):
                     raise ValueError("No roles selected")
 
                 roles = [int(r) for r in roles_raw] if isinstance(roles_raw, list) else [int(roles_raw)]
-                print("Roles being saved:", roles)
+                auth_user = request.session.get('auth', {}).get('user')
+                if auth_user:
+                    created_by_id = auth_user['id']
 
                 validated_data = {
                     'first_name': form.cleaned_data['first_name'],
@@ -82,8 +85,8 @@ class ManageUserCreateView(View):
                     'pincode': form.cleaned_data['pincode'],
                     'roles': roles,
                     'country': form.cleaned_data['country'],
-                    # 'created_by': user,
-                    # 'updated_by': user,
+                    'created_by': created_by_id,
+                    'updated_by': created_by_id,
                 }
 
                 service.create_user(validated_data)  #call service function
@@ -132,9 +135,9 @@ class ManageUserCreateView(View):
 #             messages.error(request, f"Error deleting user: {str(e)}")
 #         return redirect("manage_user_list")
 class ManageUserDeleteView(View):
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def post(self, request, user_id):
         try:
-            print("+++++++++++++ ID = ", user_id)
             service.user_delete(user_id)  # call the service method
             messages.success(request, "User deleted successfully.")
         except ValidationError as e:
@@ -150,17 +153,20 @@ class ManageUserUpdateView(UpdateView):
     model = UserModel
     form_class = ManageUserForm
 
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def get_success_url(self):
         next_url = self.request.GET.get('next')
         if next_url:
             return next_url
         return reverse('manage_user_list')  # fallback
 
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['next'] = self.request.GET.get('next', '')
         return context
     
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def form_valid(self, form):
         try:
             validated_data = form.cleaned_data
@@ -177,6 +183,7 @@ class ManageUserUpdateView(UpdateView):
 
 # TOGGLE VIEW
 class ManageToggleUserActiveView(View):
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def post(self, request, pk, *args, **kwargs):
         # user = get_object_or_404(UserModel, pk=pk)
         user = service.get_user_by_id(pk=pk)
@@ -192,6 +199,7 @@ class ManageToggleUserActiveView(View):
 
 
 class ConsumerListView(View):
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def get(self, request):
         consumers = service.get_users_by_role(Role.END_USER.value)
         context = UserService.common_user_context(consumers)
@@ -200,6 +208,7 @@ class ConsumerListView(View):
 
 # view for Partner
 class ManagePartnerListView(View):
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def get(self, request):
         partners = service.get_users_by_role(Role.SELLER.value)
         context = UserService.common_user_context(partners)
@@ -207,6 +216,7 @@ class ManagePartnerListView(View):
     
 ## Service_Provider ##    
 class ServiceProviderListView(View):
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def get(self, request):
         # This is correct now (passing [1] instead of just 1)
         service_provider = UserModel.objects.filter(roles__contains=[Role.SERVICE_PROVIDER.value])

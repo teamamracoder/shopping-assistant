@@ -84,4 +84,7 @@ urlpatterns = [
 
 #User Profile URL
     path('profile/', ManageUserProfileView.as_view(), name='manage_user_profile'),
+
+# end user 
+    path('end_user_home/', EndUserHome.as_view(), name='end_user_home'),
 ]

@@ -15,7 +15,7 @@ class ProductListCreateAPIView(APIView):
     responses={200: openapi.Response(description="List of products")}
     )
     def get(self, request):
-        print(f"Requested path: {request.path}")
+        print(f"++++++Requested path: {request.path}")
         products = services.product_service.get_all_products()
         serializer = ProductSerializer(products, many=True)
         return Res.success("S-20001", serializer.data)

@@ -5,9 +5,12 @@ from django.views import View
 from django.contrib import messages
 from services import ServiceService
 service_helper = ServiceService()
+from decorators.validator import role_required
+from constants import Role
 
 # LIST VIEW (READ ALL)
 class ManageServiceModelListView(View):
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def get(self, request):
         form = ServiceModelForm()
         services_ins = service_helper.get_all_services()
@@ -20,10 +23,12 @@ class ManageServiceModelListView(View):
 
 # CREATE VIEW
 class ManageServiceModelCreateView(View):
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def get(self, request):
         form = ServiceModelForm()
         return render(request, 'admin/manage_service_model.html', {'form': form})
     
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def post(self, request):
         form = ServiceModelForm(request.POST)
         if form.is_valid():
@@ -37,12 +42,13 @@ class ManageServiceModelCreateView(View):
 
 # UPDATE VIEW
 class ManageServiceModelUpdateView(View):
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def get(self, request, pk):
-        print(f"Requrst for update id ========= {pk}")
         service = service_helper.get_service_by_id(pk=pk)
         form = ServiceModelForm(instance=service)
         return render(request, 'admin/manage_service_model.html', {'form': form, 'service': service})
-
+    
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def post(self, request, pk):
         service = service_helper.get_service_by_id(pk=pk)
         form = ServiceModelForm(request.POST, instance=service)
@@ -59,10 +65,12 @@ class ManageServiceModelUpdateView(View):
 
 # DELETE VIEW
 class ManageServiceModelDeleteView(View):
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def get(self, request, pk):
         service = service_helper.get_service_by_id(pk=pk)
         return render(request, 'admin/manage_service_model.html', {'service': service})
     
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def post(self, request, pk):
         service = service_helper.get_service_by_id(pk=pk)
         service_helper.delete_service(service)
@@ -70,6 +78,7 @@ class ManageServiceModelDeleteView(View):
     
 #TOGGLE VIEW
 class ManageToggleServiceModelActiveView(View): 
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def post(self, request, pk):
         service_ins = service_helper.get_service_by_id(pk=pk)
         updated_service = service_helper.toggle_active_status(service_ins)

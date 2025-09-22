@@ -7,11 +7,14 @@ from django.contrib.auth.models import AnonymousUser
 from control_panel.models import TemplateModel
 from control_panel.forms.manage_template_form import ManageTemplateForm
 from services.template_service import TemplateService
+from decorators.validator import role_required
+from constants import Role
 
 template_service =TemplateService()
 
 ## List ##
 class ManageTemplateListView(View):
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def get(self, request):
         templates = template_service.list_templates()  # ✅ Service call
         form = ManageTemplateForm()
@@ -23,6 +26,7 @@ class ManageTemplateListView(View):
 
 ## Create ##
 class ManageTemplateCreateView(View):
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def get(self, request):
         form = ManageTemplateForm()
         templates = TemplateModel.objects.all()
@@ -31,6 +35,7 @@ class ManageTemplateCreateView(View):
             "templates": templates
         })
 
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def post(self, request):
         form = ManageTemplateForm(request.POST, request.FILES)
         if form.is_valid():
@@ -53,6 +58,7 @@ class ManageTemplateEditView(UpdateView):
     template_name = 'temp/manage_template_update.html'
     success_url = reverse_lazy('manage_template_list')
 
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def form_valid(self, form):
         # ✅ Use service method to update template
         template_service.update_template(form, self.request.user, self.request.FILES)
@@ -62,6 +68,7 @@ class ManageTemplateEditView(UpdateView):
 
 ## Delete ##
 class ManageTemplateDeleteView(View):
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def post(self, request, pk):
         template_service.delete_template(pk)
         messages.success(request, "Template deleted successfully!")
@@ -70,6 +77,7 @@ class ManageTemplateDeleteView(View):
  
 ## Toggle Active/Inactive ##
 class ManageToggletemplatesActiveView(View):
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def post(self, request, pk):
         template = template_service.toggle_active_status(pk)
         status = "activated" if template.is_active else "deactivated"

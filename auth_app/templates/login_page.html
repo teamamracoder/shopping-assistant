@@ -196,6 +196,7 @@ function showToast(message, type = "success") {
             if (response.ok) {
                 showToast("Login Successful ✅", "success");
                 setTimeout(() => window.location.href = "/control-panel/dashboard/", 2000);
+                // setTimeout(() => window.location.href = "/control-panel/end_user_home/", 2000);
             } else {
                 showToast(data.message || "OTP verification failed", "error");
             }

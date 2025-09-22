@@ -10,11 +10,13 @@ from django.views.generic import UpdateView
 from django.forms import ValidationError
 from ..models import StoreCategoryModel
 from services.store_category_service import StoreCategoryService
-
+from decorators.validator import role_required
+from constants import Role
 store_category_service = StoreCategoryService()
 
 ##Store Category List ##
 class ManageStoreCategoryListView(View):
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def get(self, request):
         store_categories = store_category_service.get_all_store_categories()
         form = ManageStoreCategoryForm()
@@ -26,6 +28,7 @@ class ManageStoreCategoryListView(View):
 
 ## Create View ##
 class ManageStoreCategoryCreateView(View):
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def post(self, request):
         form = ManageStoreCategoryForm(request.POST)
         if form.is_valid():
@@ -55,6 +58,7 @@ class ManageStoreCategoryEditView(UpdateView):
     form_class = ManageStoreCategoryForm
     success_url = reverse_lazy('manage_store_category_list')
 
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def form_valid(self, form):
         store_category = self.get_object()
         data = form.cleaned_data
@@ -66,7 +70,8 @@ class ManageStoreCategoryEditView(UpdateView):
         except ValidationError as e:
             messages.error(self.request, str(e))
         return super().form_valid(form)
-
+    
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def form_invalid(self, form):
         store_categories = store_category_service.get_all_store_categories()
         return self.render_to_response(self.get_context_data(form=form, store_categories=store_categories))
@@ -74,6 +79,7 @@ class ManageStoreCategoryEditView(UpdateView):
 
 ## Delete View ##
 class ManageStoreCategoryDeleteView(View):
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def post(self, request, pk, *args, **kwargs):
         store_category = store_category_service.get_store_category_by_id(pk)
         if not store_category:
@@ -91,6 +97,7 @@ class ManageStoreCategoryDeleteView(View):
 
 ## Toggle Active Status ##
 class ManageToggleStoreCategoryActiveView(View):
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def post(self, request, pk):
         try:
             category = store_category_service.toggle_store_category_status(pk, updated_by=request.user)

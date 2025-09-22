@@ -7,14 +7,16 @@ from django.contrib.auth.models import AnonymousUser
 from ..forms import ManageStoreForm
 from services.store_service import storeModelService
 from django.core.exceptions import ValidationError
+from decorators.validator import role_required
+from constants import Role
 
 store_service = storeModelService()
 
 ## Store List View ##
 class ManageStoreListView(View):
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def get(self, request):
         stores = store_service.get_all_stores()
-        print(stores)
         form = ManageStoreForm()
         return render(request, 'admin/manage_store.html', {"stores": stores, "form": form,
         })
@@ -22,11 +24,13 @@ class ManageStoreListView(View):
 
 ## Create View ##
 class ManageStoreCreateView(View):
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def get(self, request): 
         form = ManageStoreForm()
         stores = store_service.get_all_stores()
         return render(request, "admin/manage_store.html", {"form": form, "stores": stores})
 
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def post(self, request):
         form = ManageStoreForm(request.POST)
 
@@ -71,6 +75,7 @@ class ManageStoreCreateView(View):
 
 ## Edit View ##
 class ManageStoreEditView(View):
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def post(self, request, pk):
         store = store_service.get_store_by_id(pk)
         if not store:
@@ -116,6 +121,7 @@ class ManageStoreEditView(View):
 
 ## Delete View ##
 class ManageStoreDeleteView(View):
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def post(self, request, pk, *args, **kwargs):
         store = store_service.get_store_by_id(pk)
         if not store:
@@ -133,6 +139,7 @@ class ManageStoreDeleteView(View):
 
 ## Toggle Active/Inactive ##
 class ManageToggleStoreActiveView(View):
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def post(self, request, pk, *args, **kwargs):
         try:
             store = store_service.toggle_store_status(pk, updated_by=request.user)

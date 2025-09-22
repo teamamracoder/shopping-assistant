@@ -7,25 +7,29 @@ from django.contrib.auth.models import AnonymousUser
 from ..forms import ManageProductForm
 from services.product_service import ProductModelService
 from django.core.exceptions import ValidationError
+from decorators.validator import role_required
+from constants import Role
 
 product_service = ProductModelService()
 
 # List View
 class ManageProductListView(View):
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def get(self, request):
         products = product_service.get_all_products()
-        print(products)
         form = ManageProductForm()
         return render(request, 'admin/manage_product.html', {"products": products, "form": form})
 
 
 # Create View
 class ManageProductCreateView(View):
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def get(self, request): 
         form = ManageProductForm()
         products = product_service.get_all_products()
         return render(request, "admin/manage_product.html", {"form": form, "products": products})
 
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def post(self, request):
         form = ManageProductForm(request.POST)
 
@@ -69,6 +73,7 @@ class ManageProductCreateView(View):
 
 # Edit View
 class ManageProductEditView(View):
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def post(self, request, pk):
         product = product_service.get_product_by_id(pk)
         if not product:
@@ -115,6 +120,7 @@ class ManageProductEditView(View):
 
 # Delete View
 class ManageProductDeleteView(View):
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def post(self, request, pk, *args, **kwargs):
         product = product_service.get_product_by_id(pk)
         if not product:
@@ -132,6 +138,7 @@ class ManageProductDeleteView(View):
 
 # Toggle Active/Inactive View
 class ManageToggleProductActiveView(View):
+    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def post(self, request, pk, *args, **kwargs):
         try:
             product = product_service.toggle_product_status(pk, updated_by=request.user)
