@@ -135,7 +135,7 @@
 
                         <div class="row">
                             <div class="form-group col-md-6 mb-3">
-                                {{ form.sub_category.label_tag }}
+                                {{ form.sub_category.label_tag }}<span class="text-danger">*</span>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-tag"></i></span>
                                     {{ form.sub_category }}
@@ -180,6 +180,7 @@
                                 <label for="product_images">Upload Product Images</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-images"></i></span>
+                                    <!-- <input type="file" id="product_images" name="product_images" multiple class="form-control"> -->
                                     <input type="file" id="product_images" name="product_images" multiple class="form-control">
                                 </div>
                             </div>
@@ -416,6 +417,9 @@
                 category: {
                     required: true
                 },
+                sub_category: {
+                    required: true
+                },
             },
             messages: {
                 name: {
@@ -442,6 +446,9 @@
                 },
                 category: {
                     required: "Please select the product category"
+                },          
+                sub_category: {
+                    required: "Please select the product sub category"
                 },          
             },
             errorElement: "span",

@@ -14,4 +14,4 @@ class ServiceTypeModel(models.Model):
         db_table = 'service_types'    
 
     def __str__(self):
-        return f"ID: {self.id}, Created at: {self.created_at}, Active: {self.is_active}"
+        return f"Name: {self.service_name}"

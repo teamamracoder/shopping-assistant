@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.shortcuts import render
 from django.views import View
 from django.shortcuts import redirect
@@ -17,9 +16,9 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from utils.response_utils import Res
 from django.views.generic import TemplateView
-from django.core.mail import send_mail
 
 class SendOTPView(APIView):
+
     @swagger_auto_schema(
         operation_summary="send otp",
         operation_description="Enter email and send otp",
@@ -32,32 +31,18 @@ class SendOTPView(APIView):
         if not email:
             return Res.error('Email is required', status=status.HTTP_400_BAD_REQUEST)
 
-        # Check if user exists
-        is_existing_user = services.user_service.is_exist(email)
-
-        if not is_existing_user:
-            # ❌ Do not send OTP
-            return Res.error(
-                "No account found with this email. Please sign up first.",
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        # ✅ User exists → Generate OTP
+        # Generate 6-digit OTP
         otp = str(random.randint(100000, 999999))
+
+        # Store OTP in cache (expires in 5 minutes)
         cache.set(f'otp_{email}', otp, timeout=300)
 
-        # Send OTP (email)
-        print(f"OTP for {email}: {otp}")  # Dev log
-        send_mail(
-            subject="Your OTP Code",
-            message=f"Hello, your login OTP is: {otp}. It will expire in 5 minutes.",
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[email],
-            fail_silently=False,
-        )
+        # In production: Send OTP via email here
+        print(f"OTP for {email}: {otp}")  # For development only
 
-        return Res.success('OTP sent successfully', {"existing_user": True})
+        is_existing_user = services.user_service.is_exist(email)
 
+        return Res.success('OTP sent successfully', {"existing_user": is_existing_user})
 
 
 class VerifyOTPView(APIView):
@@ -175,7 +160,7 @@ class LogoutApiView(APIView):
             return Response({"message": "Logout successful"}, status=status.HTTP_205_RESET_CONTENT)
         except TokenError:
             return Response({"message": "Invalid token"}, status=status.HTTP_400_BAD_REQUEST)
-      
+        
 
 class UnauthorizedView(TemplateView):
-    template_name = "unauthorized.html"
+    template_name = "auth/unauthorized.html"

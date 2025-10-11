@@ -48,6 +48,7 @@
 </script>
 
 <style>
+
   /* Floating Button Styling */
   .floating-btn {
     position: fixed;
@@ -121,19 +122,20 @@
   .custom-modal-xxl {
     max-width: 95%;
   }
-
-  /* Modal Header */
-  .modal-header {
-    background-color: #cecfd1;
-    color: white;
-    border-bottom: 2px solid #c0c0c0;
-    padding: 15px;
-  }
-
-  /* Modal Title */
   .modal-title {
-    font-weight: bold;
-  }
+        font-weight: bold;
+        flex-grow: 1;
+        text-align: center;
+    }
+
+  .input-group-text {
+        background-color: #c9dff1;
+        color: white;
+    }
+
+    .input-group i::before {
+        background-color: #205aa6;
+    }
 
   /* Modal Body */
   .modal-body {
@@ -204,8 +206,8 @@
   aria-labelledby="editModalLabel{{ service_type.id }}" aria-hidden="true">
   <div class="modal-dialog modal-xl custom-modal-xxl">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="editModalLabel{{ service_type.id }}">
+      <div class="modal-header bg-primary-subtle">
+        <h5 class="modal-title fs-6" id="editModalLabel{{ service_type.id }}">
           Edit Store
         </h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>

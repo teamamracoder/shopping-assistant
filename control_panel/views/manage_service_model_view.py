@@ -22,6 +22,7 @@ class ManageServiceModelListView(View):
 class ManageServiceModelCreateView(View):
     def get(self, request):
         form = ServiceModelForm()
+        print("form")
         return render(request, 'admin/manage_service_model.html', {'form': form})
     
     def post(self, request):

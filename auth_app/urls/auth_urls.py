@@ -1,6 +1,6 @@
 from django.urls import path
 from auth_app.views import *
-from auth_app.views.auth_view import LogoutApiView, SendOTPView, VerifyOTPView, Login_Page,  SignupApiView, SignupView
+from auth_app.views.auth_view import LogoutApiView, SendOTPView, VerifyOTPView, Login_Page,  SignupApiView, SignupView, UnauthorizedView
 
 urlpatterns = [
     path('send-otp/', SendOTPView.as_view(), name='send_otp'),
@@ -11,5 +11,8 @@ urlpatterns = [
     path('signup/', SignupView.as_view(), name='signup_page'),
     path('signup-api/', SignupApiView.as_view(), name='signup_api'),
     path('logout/', LogoutApiView.as_view(), name='logout_api'),
+
+    path('unauthorized/', UnauthorizedView.as_view(), name='unauthorized_page'),
+
 
 ]
