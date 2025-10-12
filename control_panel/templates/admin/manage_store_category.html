@@ -194,11 +194,11 @@
             button.addEventListener('click', function () {
                 const isActive = this.dataset.status === 'True';
                 Swal.fire({
-                    title: 'Change Visibility?',
-                    text: isActive ? "Deactivate this category?" : "Activate this category?",
+                    title: 'Are you sure?',
+                    text: "Do you want to change this store category's visibility?",
                     icon: 'question',
                     showCancelButton: true,
-                    confirmButtonText: isActive ? "Deactivate" : "Activate",
+                    confirmButtonText: 'Yes',
                     cancelButtonText: "Cancel"
                 }).then((result) => {
                     if (result.isConfirmed) {
