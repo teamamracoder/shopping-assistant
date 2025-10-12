@@ -381,10 +381,10 @@
             });
         }
 
-        // DELETE confirmation
+        // DELETE with SweetAlert
         document.querySelectorAll('.delete-btn').forEach(button => {
             button.addEventListener('click', function () {
-                const formUrl = this.getAttribute('data-url');
+                const url = this.dataset.url;
                 Swal.fire({
                     title: 'Are you sure?',
                     text: "This will permanently delete the store.",
@@ -393,11 +393,11 @@
                     confirmButtonColor: '#d33',
                     cancelButtonColor: '#3085d6',
                     confirmButtonText: 'Yes, delete it!'
-                }).then((result) => {
+                }).then(result => {
                     if (result.isConfirmed) {
                         const form = document.createElement('form');
                         form.method = 'POST';
-                        form.action = formUrl;
+                        form.action = url;
                         form.innerHTML = `<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">`;
                         document.body.appendChild(form);
                         form.submit();
@@ -406,9 +406,9 @@
             });
         });
 
-        // TOGGLE status
+        // TOGGLE active/inactive
         document.querySelectorAll('.toggle-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
+            btn.addEventListener('click', function () {
                 Swal.fire({
                     title: 'Are you sure?',
                     text: "Do you want to change this store's visibility?",
@@ -420,7 +420,6 @@
                 });
             });
         });
-
         // jQuery Validation
         $(document).ready(function () {
             $("#addStoreForm").validate({
@@ -540,4 +539,22 @@
         });
     });
 </script>
+<!-- SweetAlert for Django messages -->
+{% if messages %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    {% for message in messages %}
+        {% if 'store' in message.tags %}
+        Swal.fire({
+            icon: '{% if message.tags == "success store" or message.tags == "store success" %}success{% elif "error" in message.tags or "danger" in message.tags %}error{% else %}info{% endif %}',
+            title: "Good job..!",
+            text: '{{ message|escapejs }}',
+            timer: 3000,
+            showConfirmButton: false
+        });
+        {% endif %}
+    {% endfor %}
+});
+</script>
+{% endif %}
 {% endblock %}

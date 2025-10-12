@@ -241,9 +241,9 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     {% for message in messages %}
-        {% if 'product' in message.tags %}
+        {% if 'store_category' in message.tags %}
         Swal.fire({
-            icon: '{% if message.tags == "success product" or message.tags == "product success" %}success{% elif "error" in message.tags or "danger" in message.tags %}error{% else %}info{% endif %}',
+            icon: '{% if message.tags == "success store_category" or message.tags == "store_category success" %}success{% elif "error" in message.tags or "danger" in message.tags %}error{% else %}info{% endif %}',
             title: "Good job..!",
             text: '{{ message|escapejs }}',
             timer: 3000,
@@ -254,5 +254,6 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 {% endif %}
+
 
 {% endblock %}

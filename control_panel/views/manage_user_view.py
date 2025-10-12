@@ -87,7 +87,7 @@ class ManageUserCreateView(View):
                 }
 
                 service.create_user(validated_data)  #call service function
-                messages.success(request, 'User created successfully.')               
+                messages.success(request, 'User created successfully!')               
                
             except Exception as e:
                 import traceback
@@ -95,7 +95,8 @@ class ManageUserCreateView(View):
                 messages.error(request, f"Error: {str(e)}")
         else:
             print("Form errors:", form.errors)
-
+            messages.error(request, "Please correct the errors in the form.")
+            
         if source_page_seller == "seller":
            return redirect("partner_list")
 
@@ -131,6 +132,7 @@ class ManageUserCreateView(View):
 #         except ValidationError as e:
 #             messages.error(request, f"Error deleting user: {str(e)}")
 #         return redirect("manage_user_list")
+
 class ManageUserDeleteView(View):
     def post(self, request, user_id):
         try:

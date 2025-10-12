@@ -115,7 +115,7 @@
     {{ form.service_provider.label_tag }}<span class="text-danger">*</span>
     <div class="input-group">
       <span class="input-group-text">
-        <i class="bi bi-person-fill-gear text-primary"></i>
+        <i class="bi bi-person-fill-gear"></i>
       </span>
       {{ form.service_provider }}
     </div>
@@ -126,7 +126,7 @@
     {{ form.user.label_tag }}<span class="text-danger">*</span>
     <div class="input-group">
       <span class="input-group-text">
-        <i class="bi bi-person-fill text-primary"></i>
+        <i class="bi bi-person-fill"></i>
       </span>
       {{ form.user }}
     </div>
@@ -137,7 +137,7 @@
     {{ form.booking_charge.label_tag }}<span class="text-danger">*</span>
     <div class="input-group">
       <span class="input-group-text">
-        <i class="bi bi-cash-coin text-primary"></i>
+        <i class="bi bi-cash-coin"></i>
       </span>
       {{ form.booking_charge }}
     </div>
@@ -148,7 +148,7 @@
     {{ form.booking_time.label_tag }}<span class="text-danger">*</span>
     <div class="input-group">
       <span class="input-group-text">
-        <i class="bi bi-clock-fill text-primary"></i>
+        <i class="bi bi-clock-fill"></i>
       </span>
       {{ form.booking_time }}
     </div>
@@ -209,28 +209,18 @@
                   <i class="bi bi-pencil-square"></i>
                 </a>
 
-                {% if booking.id %}
-                <form method="post" action="{% url 'manage_service_booking_delete' booking.id %}"
-                  style="display:inline;">
+                <form method="post" action="{% url 'manage_service_booking_delete' booking.id %}" style="display:inline;">
                   {% csrf_token %}
-                  <button type="submit" class="btn text-danger btn-sm"
-                    onclick="return confirm('Are you sure you want to delete this service booking ?');">
+                  <button type="button" class="btn text-danger btn-sm delete-btn">
                     <i class="bi bi-trash"></i>
                   </button>
                 </form>
-                {% else %}
-                <button class="btn btn-danger btn-sm" disabled>
-                  <i class="bi bi-trash"></i>
-                </button>
-                {% endif %}
 
-                <form method="post" action="{% url 'manage_service_booking_active' booking.id %}"
-                  style="display:inline;">
+                <form method="post" action="{% url 'manage_service_booking_active' booking.id %}" style="display:inline;">
                   {% csrf_token %}
-                  <button type="submit"
-                    class="btn btn-sm {% if booking.is_active %}text-success{% else %}text-muted{% endif %}"
-                    title="Toggle visibility"
-                    onclick="return confirm('Are you sure you want to toggle this user\'s visibility?');">
+                  <button type="button"
+                    class="btn btn-sm toggle-btn {% if booking.is_active %}text-success{% else %}text-muted{% endif %}"
+                    title="Toggle visibility">
                     {% if booking.is_active %}
                     <i class="bi bi-eye text-primary fs-6"></i>
                     {% else %}
@@ -238,6 +228,7 @@
                     {% endif %}
                   </button>
                 </form>
+
               </td>
             </tr>
 
@@ -298,6 +289,61 @@
   });
 </script>
 
+<!-- SweetAlert for Delete and Toggle -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // DELETE BUTTONS
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
+            const form = btn.closest('form');
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "This will permanently delete this service booking.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!'
+            }).then(result => {
+                if (result.isConfirmed) form.submit();
+            });
+        });
+    });
+
+    // TOGGLE BUTTONS
+    document.querySelectorAll('.toggle-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
+            const form = btn.closest('form');
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "Do you want to change this booking's visibility?",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Yes',
+            }).then(result => {
+                if (result.isConfirmed) form.submit();
+            });
+        });
+    });
+});
+</script>
+
+<!-- SweetAlert for Django Messages -->
+{% if messages %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    {% for message in messages %}
+        Swal.fire({
+            icon: '{% if "success" in message.tags %}success{% elif "error" in message.tags %}error{% else %}info{% endif %}',
+            title: "{% if 'success' in message.tags %}Success!{% elif 'error' in message.tags %}Error!{% else %}Notice{% endif %}",
+            text: '{{ message|escapejs }}',
+            showConfirmButton: false,
+            timer: 3000
+        });
+    {% endfor %}
+});
+</script>
+{% endif %}
 
 
 {% endblock %}

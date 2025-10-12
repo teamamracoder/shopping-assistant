@@ -31,6 +31,7 @@ class ManageServiceModelCreateView(View):
             service_data = form.cleaned_data
             try:
                 service_helper.create_service(service_data)
+                messages.success(request, "Service added successfully!", extra_tags="service")
                 return redirect('manage_service_list')
             except Exception as e:
                 form.add_error(None, f"Error saving service: {str(e)}")
@@ -52,6 +53,7 @@ class ManageServiceModelUpdateView(View):
             validated_data = form.cleaned_data
             try:
                 service_helper.update_service(service, validated_data)
+                messages.success(request, "Service updated successfully!", extra_tags="service")
                 return redirect('manage_service_list')
             except Exception as e:
                 form.add_error(None, f"Error updating service: {str(e)}")
@@ -67,6 +69,7 @@ class ManageServiceModelDeleteView(View):
     def post(self, request, pk):
         service = service_helper.get_service_by_id(pk=pk)
         service_helper.delete_service(service)
+        messages.success(request, "Service deleted successfully!", extra_tags="service")
         return redirect('manage_service_list')
     
 #TOGGLE VIEW
@@ -75,6 +78,6 @@ class ManageToggleServiceModelActiveView(View):
         service_ins = service_helper.get_service_by_id(pk=pk)
         updated_service = service_helper.toggle_active_status(service_ins)
         status = "activated" if updated_service.is_active else "deactivated"
-        messages.success(request, f"ServiceModel '{updated_service.is_active}' has been {status}.")    
+        messages.success(request, f"Service '{updated_service.service_type}' has been {status}.", extra_tags="service")
         return redirect('manage_service_list')
     

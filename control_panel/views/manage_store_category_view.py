@@ -35,12 +35,12 @@ class ManageStoreCategoryCreateView(View):
                     data['created_by'] = request.user
                     data['updated_by'] = request.user
                 store_category_service.create_store_category(data)
-                messages.success(request, "Store category added successfully!")
+                messages.success(request, "Store category added successfully!", extra_tags='store_category')
                 return redirect('manage_store_category_list')
             except ValidationError as e:
                 messages.error(request, str(e))
         else:
-            messages.success(request, "Store Category added successfully!")
+            messages.success(request, "Store Category added successfully!", extra_tags='store_category')
 
         store_categories = store_category_service.get_all_store_categories()
         return render(request, 'admin/manage_store_category.html', {
@@ -62,7 +62,7 @@ class ManageStoreCategoryEditView(UpdateView):
             data['updated_by'] = self.request.user        
         try:
             store_category_service.update_store_category(store_category, data)
-            messages.success(self.request, "Store category updated successfully!")
+            messages.success(self.request, "Store category updated successfully!", extra_tags='store_category')
         except ValidationError as e:
             messages.error(self.request, str(e))
         return super().form_valid(form)
@@ -82,7 +82,7 @@ class ManageStoreCategoryDeleteView(View):
 
         try:
             store_category_service.delete_store_category(store_category)
-            messages.success(request, "Store category deleted successfully!")
+            messages.success(request, "Store category deleted successfully!", extra_tags='store_category')
         except ValidationError as e:
             messages.error(request, str(e))
 
@@ -95,8 +95,9 @@ class ManageToggleStoreCategoryActiveView(View):
         try:
             category = store_category_service.toggle_store_category_status(pk, updated_by=request.user)
             status = "activated" if category.is_active else "deactivated"
-            messages.success(request, f"Category '{category.name}' has been {status}.")
+            # Add a custom tag for SweetAlert
+            messages.success(request, f"Category '{category.name}' has been {status}.", extra_tags='store_category')
         except ValidationError as e:
-            messages.error(request, str(e))
+            messages.error(request, str(e), extra_tags='store_category')
 
         return redirect("manage_store_category_list")

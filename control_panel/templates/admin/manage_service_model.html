@@ -32,14 +32,15 @@
         background-color: darkblue;
     }
 
-    /*Modal Widht*/
-   
+    /*Modal Widht*/   
     @media (min-width: 1200px) {
         .modal-dialog {
             max-width: 90%;
         }
     }
-
+    .row .form-group {
+        font-weight: bold;
+    }
     .modal-title {
         flex-grow: 1;
         text-align: center;
@@ -83,7 +84,7 @@
                                 {{ form.service_type.label_tag }}<span class="text-danger">*</span>
                                 <div class="input-group">
                                     <span class="input-group-text">
-                                        <i class="bi bi-gear text-primary"></i>
+                                        <i class="bi bi-gear"></i>
                                     </span>
                                     {{ form.service_type }}
                                 </div>
@@ -94,7 +95,7 @@
                                 {{ form.service_provider.label_tag }}<span class="text-danger">*</span>
                                 <div class="input-group">
                                     <span class="input-group-text">
-                                        <i class="bi bi-person-circle text-primary"></i>
+                                        <i class="bi bi-person-circle"></i>
                                     </span>
                                     {{ form.service_provider }}
                                 </div>
@@ -107,7 +108,7 @@
                                 {{ form.services_charge.label_tag }}
                                 <div class="input-group">
                                 <span class="input-group-text">
-                                    <i class="bi bi-currency-rupee text-primary"></i>
+                                    <i class="bi bi-currency-rupee"></i>
                                 </span>
                                 {{ form.services_charge }}
                                 </div>
@@ -117,7 +118,7 @@
                                 {{ form.description.label_tag }}
                                 <div class="input-group">
                                     <span class="input-group-text">
-                                        <i class="bi bi-card-text text-primary"></i>
+                                        <i class="bi bi-card-text"></i>
                                     </span>
                                     {{ form.description }}
                                 </div>
@@ -182,7 +183,7 @@
                                     data-action-url="{% url 'manage_service_model_update' services_model.id %}">
                                     <i class="bi bi-pencil-square"></i>
                                 </a>
-                                {% if services_model.id %}
+                                <!-- {% if services_model.id %}
                                 <form method="post" action="{% url 'manage_delete_service_model' services_model.id %}"
                                     style="display:inline;">
                                     {% csrf_token %}
@@ -210,7 +211,26 @@
                                         <i class="bi bi-eye-slash text-danger fs-6"></i>
                                         {% endif %}
                                     </button>
-                                </form>
+                                </form> -->
+
+                                <!-- Delete Service -->
+                                <button type="button" class="btn text-danger btn-sm delete-service-btn"
+                                        data-url="{% url 'manage_delete_service_model' services_model.id %}">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+
+                                <!-- Toggle Service -->
+                                <button type="button"
+                                        class="btn btn-sm toggle-service-btn {% if services_model.is_active %}text-success{% else %}text-muted{% endif %}"
+                                        data-url="{% url 'manage_toggle_service_active' services_model.id %}"
+                                        data-status="{{ services_model.is_active }}">
+                                    {% if services_model.is_active %}
+                                        <i class="bi bi-eye text-primary fs-6"></i>
+                                    {% else %}
+                                        <i class="bi bi-eye-slash text-danger fs-6"></i>
+                                    {% endif %}
+                                </button>
+
                             </td>
                         </tr>
                         {% endfor %}
@@ -249,7 +269,52 @@
             modalLabel.textContent = "Add Service";
         });
     </script>
+    <script>
+        document.querySelectorAll('.delete-service-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                const formUrl = this.getAttribute('data-url');
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "This will permanently delete the service.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = formUrl;
+                        form.innerHTML = `<input type="hidden" name="csrfmiddlewaretoken" value='{{ csrf_token }}'>`;
+                        document.body.appendChild(form);
+                        form.submit();
+                    }
+                });
+            });
+        });
 
+        document.querySelectorAll('.toggle-service-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "Do you want to change this service's visibility?",
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes',
+                }).then(result => {
+                    if (result.isConfirmed) {
+                        const form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = btn.getAttribute('data-url');
+                        form.innerHTML = `<input type="hidden" name="csrfmiddlewaretoken" value='{{ csrf_token }}'>`;
+                        document.body.appendChild(form);
+                        form.submit();
+                    }
+                });
+            });
+        });
+    </script>
     <script>
         $(document).ready(function () {
             $('#addProductForm').validate({
@@ -301,5 +366,22 @@
         });
     </script>
 
+{% if messages %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    {% for message in messages %}
+        {% if 'service' in message.tags %}
+        Swal.fire({
+            icon: '{% if message.tags == "success service" or message.tags == "service success" %}success{% elif "error" in message.tags or "danger" in message.tags %}error{% else %}info{% endif %}',
+            title: "Good Job!",
+            text: '{{ message|escapejs }}',
+            showConfirmButton: false,
+            timer: 3000
+        });
+        {% endif %}
+    {% endfor %}
+});
+</script>
+{% endif %}
 
     {% endblock %}

@@ -34,7 +34,7 @@ class ManageStoreCreateView(View):
             store_data = form.cleaned_data
 
             # Owner and user info
-            store_data['owner_id'] = 39  # Default owner_id or use request.user.id if appropriate
+            store_data['owner_id'] = 40  # Default owner_id or use request.user.id if appropriate
             if not isinstance(request.user, AnonymousUser):
                 store_data['created_by'] = request.user
                 store_data['updated_by'] = request.user
@@ -55,7 +55,7 @@ class ManageStoreCreateView(View):
 
             try:
                 store_service.create_store(store_data)
-                messages.success(request, "Store added successfully!")
+                messages.success(request, "Store added successfully!", extra_tags='store')
                 return redirect("manage_store_list")
             except ValidationError as e:
                 messages.error(request, str(e))
@@ -102,7 +102,7 @@ class ManageStoreEditView(View):
 
             try:
                 store_service.update_store(store, updated_data)
-                messages.success(request, "Store updated successfully!")
+                messages.success(request, "Store updated successfully!", extra_tags='store')
                 return redirect("manage_store_list")
             except ValidationError as e:
                 messages.error(request, str(e))
@@ -124,7 +124,7 @@ class ManageStoreDeleteView(View):
 
         try:
             store_service.delete_store(store)
-            messages.success(request, "Store deleted successfully!")
+            messages.success(request, "Store deleted successfully!", extra_tags='store')
         except ValidationError as e:
             messages.error(request, str(e))
 
@@ -136,9 +136,11 @@ class ManageToggleStoreActiveView(View):
     def post(self, request, pk, *args, **kwargs):
         try:
             store = store_service.toggle_store_status(pk, updated_by=request.user)
-            status = "activated" if store.is_active else "deactivated"
-            messages.success(request, f"Store '{store.store_name}' has been {status}.")
+            if store.is_active:
+                messages.success(request, f"Store '{store.store_name}' has been activated successfully!", extra_tags="store")
+            else:
+                messages.success(request, f"Store '{store.store_name}' has been deactivated successfully!", extra_tags="store")
         except ValidationError as e:
-            messages.error(request, str(e))
+            messages.error(request, str(e), extra_tags="store")
 
         return redirect("manage_store_list")

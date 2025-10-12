@@ -23,17 +23,26 @@ class ManageServiceTypeCreateView(View):
         services = ServiceTypeModel.objects.all()
         form = ServiceTypeForm()
         return render(request, 'admin/manage_service_type_model.html', {'services': services,'form': form  })
-
+    
     def post(self, request):
-        print("POST request received.")
         form = ServiceTypeForm(request.POST)
         if form.is_valid():
-            print("Form is valid")
-            service = ServiceTypeModelService()
-            service.create_service_type(form, request.user)
+            service_helper.create_service_type(form, request.user)
+            messages.success(request, "Service Type added successfully!")
         else:
-            print("Form errors:", form.errors)
+            messages.error(request, f"Error: {form.errors}")
         return redirect('manage_service_type_model_list')
+
+    # def post(self, request):
+    #     print("POST request received.")
+    #     form = ServiceTypeForm(request.POST)
+    #     if form.is_valid():
+    #         print("Form is valid")
+    #         service = ServiceTypeModelService()
+    #         service.create_service_type(form, request.user)
+    #     else:
+    #         print("Form errors:", form.errors)
+    #     return redirect('manage_service_type_model_list')
 
 # UPDATE
 class ManageServiceTypeUpdateView(View):
@@ -41,16 +50,30 @@ class ManageServiceTypeUpdateView(View):
         service_instance = service_helper.get_service_type_by_id(pk)
         form = ServiceTypeForm(request.POST, instance=service_instance)
         if form.is_valid():
-            service = ServiceTypeModelService()
-            service.update_service_type(form)
+            service_helper.update_service_type(form)
+            messages.success(request, "Service Type updated successfully!")
+        else:
+            messages.error(request, f"Error: {form.errors}")
         return redirect('manage_service_type_model_list')
+    # def post(self, request, pk):
+    #     service_instance = service_helper.get_service_type_by_id(pk)
+    #     form = ServiceTypeForm(request.POST, instance=service_instance)
+    #     if form.is_valid():
+    #         service = ServiceTypeModelService()
+    #         service.update_service_type(form)
+    #     return redirect('manage_service_type_model_list')
 
 # DELETE
 class ManageServiceTypeDeleteView(View):
     def post(self, request, pk):
         service_ins = service_helper.get_service_type_by_id(pk)
         service_helper.delete_service_type(service_ins)
-        return redirect('manage_service_type_model_create')
+        messages.success(request, "Service Type deleted successfully!")
+        return redirect('manage_service_type_model_list')    
+    # def post(self, request, pk):
+    #     service_ins = service_helper.get_service_type_by_id(pk)
+    #     service_helper.delete_service_type(service_ins)
+    #     return redirect('manage_service_type_model_create')
 
  #TOGGLE VIEW
 class ManageToggleServiceTypeActiveView(View):
@@ -58,5 +81,11 @@ class ManageToggleServiceTypeActiveView(View):
         service_type = service_helper.get_service_type_by_id(pk)
         updated_service = service_helper.toggle_active_status(service_type)
         status = "activated" if updated_service.is_active else "deactivated"
-        messages.success(request, f"Service Type '{updated_service}' has been {status}.")
-        return redirect('manage_service_type_model_list')
+        messages.success(request, f"Service Type '{updated_service.service_name}' has been {status}.")
+        return redirect('manage_service_type_model_list')    
+    # def post(self, request, pk):
+    #     service_type = service_helper.get_service_type_by_id(pk)
+    #     updated_service = service_helper.toggle_active_status(service_type)
+    #     status = "activated" if updated_service.is_active else "deactivated"
+    #     messages.success(request, f"Service Type '{updated_service}' has been {status}.")
+    #     return redirect('manage_service_type_model_list')

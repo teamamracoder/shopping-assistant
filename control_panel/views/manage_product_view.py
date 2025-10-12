@@ -76,10 +76,6 @@ class ManageProductCreateView(View):
             "products": product_service.get_all_products()
         })
 
-
-
-
-
 # Edit View
 class ManageProductEditView(View):
 
@@ -119,7 +115,7 @@ class ManageProductEditView(View):
 
             try:
                 product_service.update_product(product, updated_data)
-                messages.success(request, "Product updated successfully!")
+                messages.success(request, "Product updated successfully!", extra_tags="product")
                 return redirect("manage_product_list")
             except ValidationError as e:
                 messages.error(request, str(e))
@@ -142,7 +138,7 @@ class ManageProductDeleteView(View):
 
         try:
             product_service.delete_product(product)
-            messages.success(request, "Product deleted successfully!")
+            messages.success(request, "Product deleted successfully!", extra_tags="product")
         except ValidationError as e:
             messages.error(request, str(e))
 
@@ -154,9 +150,12 @@ class ManageToggleProductActiveView(View):
     def post(self, request, pk, *args, **kwargs):
         try:
             product = product_service.toggle_product_status(pk, updated_by=request.user)
-            status = "activated" if product.is_active else "deactivated"
-            messages.success(request, f"Product '{product.name}' has been {status}.")
+            if product.is_active:
+                messages.success(request, f"Product '{product.name}' has been activated successfully!", extra_tags="product")
+            else:
+                messages.success(request, f"Product '{product.name}' has been deactivated successfully!", extra_tags="product")
         except ValidationError as e:
-            messages.error(request, str(e))
+            messages.error(request, str(e), extra_tags="product")
 
         return redirect("manage_product_list")
+
