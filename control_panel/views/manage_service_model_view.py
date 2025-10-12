@@ -26,6 +26,7 @@ class ManageServiceModelCreateView(View):
     @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def get(self, request):
         form = ServiceModelForm()
+        print("form")
         return render(request, 'admin/manage_service_model.html', {'form': form})
     
     @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
