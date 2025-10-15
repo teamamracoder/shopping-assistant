@@ -33,10 +33,15 @@ class ServiceBookingModelService:
         instance.is_active = not instance.is_active
         instance.save()
 
-    def get_booking_by_id(self, pk):
-        try:
-            return ServiceBookingModel.objects.get(pk=pk)
-        except ServiceBookingModel.DoesNotExist:
-            return None
+    def toggle_active_status(self, instance):
+        """
+        Toggle the 'is_active' status and return the updated instance.
+        """
+        if instance is None:
+            return None  # safety guard
+
+        instance.is_active = not instance.is_active
+        instance.save()
+        return instance  # ✅ return the updated booking
 
 

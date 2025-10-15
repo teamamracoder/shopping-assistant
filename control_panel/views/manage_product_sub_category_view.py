@@ -6,8 +6,8 @@ from django.urls import reverse_lazy
 from django.forms import ValidationError
 from ..forms import ManageProductSubCategoryForm
 from services.product_sub_category_service import ProductSubCategoryModelService
-from decorators.validator import role_required
-from constants import Role
+from utils.common_utils import get_user_id
+
 
 subcategory_service = ProductSubCategoryModelService()
 
@@ -36,16 +36,25 @@ class ManageProductSubCategoryCreateView(View):
 
     @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def post(self, request):
+        print("[DEBUG] Current user:", get_user_id(request))
         form = ManageProductSubCategoryForm(request.POST)
         if form.is_valid():
+            subcategory = form.save(commit=False)  # get instance without saving
+
+            # Assign created_by and updated_by
+            user_id = get_user_id(request)
+            subcategory.created_by = user_id
+            subcategory.updated_by = user_id
+
             try:
-                subcategory_service.create_sub_category(form.cleaned_data)
-                messages.success(request, "Subcategory added successfully!")
+                subcategory.save()
+                messages.success(request, "Subcategory added successfully!", extra_tags="subcategory")
                 return redirect("manage_product_sub_category_list")
             except ValidationError as e:
                 messages.error(request, str(e))
         else:
-            messages.error(request, "Please correct the errors below.")
+            for field, error in form.errors.items():
+                messages.error(request, f"{field.capitalize()}: {error}")
 
         subcategories = subcategory_service.get_all_sub_categories()
         return render(request, "admin/manage_product_sub_category.html", {
@@ -54,33 +63,42 @@ class ManageProductSubCategoryCreateView(View):
         })
 
 
+
 # Edit View
 class ManageProductSubCategoryEditView(View):
     @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def post(self, request, *args, **kwargs):
         subcategory_id = kwargs.get('pk') or request.POST.get('subcategory_id')
-        instance = None
+        if not subcategory_id:
+            messages.error(request, "Subcategory ID is missing.")
+            return redirect('manage_product_sub_category_list')
 
-        if subcategory_id:
-            instance = subcategory_service.get_sub_category_by_id(subcategory_id)
-            if not instance:
-                messages.error(request, "Subcategory not found.")
-                return redirect('manage_product_sub_category_list')
+        instance = subcategory_service.get_sub_category_by_id(subcategory_id)
+        if not instance:
+            messages.error(request, "Subcategory not found.")
+            return redirect('manage_product_sub_category_list')
 
         form = ManageProductSubCategoryForm(request.POST, instance=instance)
         if form.is_valid():
+            subcategory = form.save(commit=False)
+
+            # Assign updated_by
+            subcategory.updated_by = get_user_id(request)
+
             try:
-                subcategory_service.update_sub_category(instance, form.cleaned_data)
-                messages.success(request, "Subcategory updated successfully!")
+                subcategory.save()
+                messages.success(request, "Subcategory updated successfully!", extra_tags="subcategory")
                 return redirect('manage_product_sub_category_list')
             except ValidationError as e:
                 messages.error(request, str(e))
         else:
-            messages.error(request, "Please correct the errors below.")
+            for field, error in form.errors.items():
+                messages.error(request, f"{field.capitalize()}: {error}")
 
+        subcategories = subcategory_service.get_all_sub_categories()
         return render(request, 'admin/manage_product_sub_category.html', {
             'form': form,
-            'subcategories': subcategory_service.get_all_sub_categories()
+            'subcategories': subcategories
         })
 
 

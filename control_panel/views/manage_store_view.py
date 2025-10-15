@@ -9,6 +9,7 @@ from services.store_service import storeModelService
 from django.core.exceptions import ValidationError
 from decorators.validator import role_required
 from constants import Role
+from utils.common_utils import get_user_id
 
 store_service = storeModelService()
 
@@ -32,18 +33,18 @@ class ManageStoreCreateView(View):
 
     @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def post(self, request):
-        form = ManageStoreForm(request.POST)
+        print("[DEBUG] Current user:", get_user_id(request))
+        # print("[DEBUG] Is authenticated:", request.user.is_authenticated)
 
+        form = ManageStoreForm(request.POST, request.FILES)
         if form.is_valid():
-            store_data = form.cleaned_data
+            store = form.save(commit=False)  
 
-            # Owner and user info
-            store_data['owner_id'] = 39  # Default owner_id or use request.user.id if appropriate
-            if not isinstance(request.user, AnonymousUser):
-                store_data['created_by'] = request.user
-                store_data['updated_by'] = request.user
+            # if request.user.is_authenticated:
+            store.created_by = get_user_id(request)
+            store.updated_by = get_user_id(request)
 
-            # File uploads
+            # Handle images
             store_image_urls = []
             for f in request.FILES.getlist('store_images'):
                 save_dir = os.path.join(settings.MEDIA_ROOT, 'img/store')
@@ -55,11 +56,11 @@ class ManageStoreCreateView(View):
                 relative_url = f'media/img/store/{f.name}'
                 store_image_urls.append(relative_url)
 
-            store_data['store_image_urls'] = store_image_urls
+            store.store_image_urls = store_image_urls
 
             try:
-                store_service.create_store(store_data)
-                messages.success(request, "Store added successfully!")
+                store.save()
+                messages.success(request, "Store added successfully!", extra_tags='store')
                 return redirect("manage_store_list")
             except ValidationError as e:
                 messages.error(request, str(e))
@@ -76,7 +77,9 @@ class ManageStoreCreateView(View):
 ## Edit View ##
 class ManageStoreEditView(View):
     @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
+    
     def post(self, request, pk):
+        print("[DEBUG] Current user:", get_user_id(request))
         store = store_service.get_store_by_id(pk)
         if not store:
             messages.error(request, "Store not found.")
@@ -85,38 +88,34 @@ class ManageStoreEditView(View):
         form = ManageStoreForm(request.POST, request.FILES, instance=store)
 
         if form.is_valid():
-            updated_data = form.cleaned_data
+            store = form.save(commit=False)
 
-            # Handle image uploads
-            store_image_urls = store.store_image_urls or []
+            # if request.user.is_authenticated:
+            store.updated_by = get_user_id(request)
 
-            for f in request.FILES.getlist('store_images'):
-                save_dir = os.path.join(settings.MEDIA_ROOT, 'img/store')
-                os.makedirs(save_dir, exist_ok=True)
-                save_path = os.path.join(save_dir, f.name)
-                with open(save_path, 'wb+') as destination:
-                    for chunk in f.chunks():
-                        destination.write(chunk)
-                relative_url = f'media/img/store/{f.name}'
-                store_image_urls.append(relative_url)
+            # image handle
+            if request.FILES.getlist('store_images'):
+                store_image_urls = []
+                for f in request.FILES.getlist('store_images'):
+                    save_dir = os.path.join(settings.MEDIA_ROOT, 'img/store')
+                    os.makedirs(save_dir, exist_ok=True)
+                    save_path = os.path.join(save_dir, f.name)
+                    with open(save_path, 'wb+') as destination:
+                        for chunk in f.chunks():
+                            destination.write(chunk)
+                    relative_url = f'media/img/store/{f.name}'
+                    store_image_urls.append(relative_url)
+                store.store_image_urls = store_image_urls
 
-            updated_data['store_image_urls'] = store_image_urls
-
-            if not isinstance(request.user, AnonymousUser):
-                updated_data['updated_by'] = request.user
-
-            try:
-                store_service.update_store(store, updated_data)
-                messages.success(request, "Store updated successfully!")
-                return redirect("manage_store_list")
-            except ValidationError as e:
-                messages.error(request, str(e))
+            store.save()
+            messages.success(request, "Store updated successfully!", extra_tags='store')
+            return redirect("manage_store_list")
 
         messages.error(request, "Please correct the errors below.")
         return render(request, "admin/manage_store.html", {
-        "form": form,
-        "stores": store_service.get_all_stores(),
-    })
+            "form": form,
+            "stores": store_service.get_all_stores(),
+        })
 
 
 ## Delete View ##
@@ -130,7 +129,7 @@ class ManageStoreDeleteView(View):
 
         try:
             store_service.delete_store(store)
-            messages.success(request, "Store deleted successfully!")
+            messages.success(request, "Store deleted successfully!", extra_tags='store')
         except ValidationError as e:
             messages.error(request, str(e))
 
@@ -141,11 +140,17 @@ class ManageStoreDeleteView(View):
 class ManageToggleStoreActiveView(View):
     @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def post(self, request, pk, *args, **kwargs):
+        
+        print("[DEBUG] Current user:", request.user)
+        print("[DEBUG] Is authenticated:", request.user.is_authenticated)
+        
         try:
             store = store_service.toggle_store_status(pk, updated_by=request.user)
-            status = "activated" if store.is_active else "deactivated"
-            messages.success(request, f"Store '{store.store_name}' has been {status}.")
+            if store.is_active:
+                messages.success(request, f"Store '{store.store_name}' has been activated successfully!", extra_tags="store")
+            else:
+                messages.success(request, f"Store '{store.store_name}' has been deactivated successfully!", extra_tags="store")
         except ValidationError as e:
-            messages.error(request, str(e))
+            messages.error(request, str(e), extra_tags="store")
 
         return redirect("manage_store_list")

@@ -153,12 +153,13 @@
             });
         });
 
-        // Delete confirmation
+        // SweetAlert DELETE for categories
         document.querySelectorAll('.delete-category-btn').forEach(button => {
             button.addEventListener('click', function () {
+                const formUrl = this.getAttribute('data-url');
                 Swal.fire({
                     title: 'Are you sure?',
-                    text: "This category will be deleted!",
+                    text: "This will permanently delete the category.",
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#d33',
@@ -168,8 +169,11 @@
                     if (result.isConfirmed) {
                         const form = document.createElement('form');
                         form.method = 'POST';
-                        form.action = this.dataset.url;
-                        form.innerHTML = `<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">`;
+                        form.action = formUrl;
+
+                        const csrfToken = '{{ csrf_token }}';
+                        form.innerHTML = `<input type="hidden" name="csrfmiddlewaretoken" value="${csrfToken}">`;
+
                         document.body.appendChild(form);
                         form.submit();
                     }
@@ -177,29 +181,30 @@
             });
         });
 
-        // Toggle visibility
-        document.querySelectorAll('.toggle-category-btn').forEach(button => {
-            button.addEventListener('click', function () {
-                const isActive = this.dataset.status === 'True';
+        // SweetAlert TOGGLE for categories
+        document.querySelectorAll('.toggle-category-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
                 Swal.fire({
-                    title: 'Change Visibility?',
-                    text: isActive ? "Deactivate this category?" : "Activate this category?",
+                    title: 'Are you sure?',
+                    text: "Do you want to change this category's visibility?",
                     icon: 'question',
                     showCancelButton: true,
-                    confirmButtonText: isActive ? "Deactivate" : "Activate",
-                    cancelButtonText: "Cancel"
-                }).then((result) => {
+                    confirmButtonText: 'Yes',
+                }).then(result => {
                     if (result.isConfirmed) {
+                        // dynamically create form to submit POST with CSRF
                         const form = document.createElement('form');
                         form.method = 'POST';
-                        form.action = this.dataset.url;
-                        form.innerHTML = `<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">`;
+                        form.action = btn.getAttribute('data-url');
+                        const csrfToken = '{{ csrf_token }}';
+                        form.innerHTML = `<input type="hidden" name="csrfmiddlewaretoken" value="${csrfToken}">`;
                         document.body.appendChild(form);
                         form.submit();
                     }
                 });
             });
         });
+
 
         // Form Validation
         $('#addCategoryForm').validate({
@@ -230,18 +235,20 @@
 
 {% if messages %}
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        {% for message in messages %}
-            Swal.fire({
-                icon: '{% if message.tags == "success" %}success{% elif message.tags == "error" or message.tags == "danger" %}error{% else %}info{% endif %}',
-                title: "Success",
-                text: '{{ message|escapejs }}',
-                timer: 3000,
-                showConfirmButton: false,
-                timerProgressBar: true
-            });
-        {% endfor %}
-    });
+document.addEventListener('DOMContentLoaded', function () {
+    {% for message in messages %}
+        {% if 'category' in message.tags %}
+        Swal.fire({
+            icon: '{% if message.tags == "success category" or message.tags == "category success" %}success{% elif "error" in message.tags or "danger" in message.tags %}error{% else %}info{% endif %}',
+            title: "Good job..!",
+            text: '{{ message|escapejs }}',
+            showConfirmButton: false,
+            timer: 3000
+        });
+        {% endif %}
+    {% endfor %}
+});
 </script>
 {% endif %}
+
 {% endblock %}

@@ -19,6 +19,7 @@ from django.utils.http import urlencode
 from services import UserService
 from decorators.validator import role_required
 from django.utils.decorators import method_decorator
+from utils.common_utils import get_user_id
 
 
 service = UserService()
@@ -52,6 +53,7 @@ class ManageUserCreateView(View):
 
     @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def post(self, request):
+        print("[DEBUG] Current user:", get_user_id(request))
         # user = request.user
         form = ManageUserForm(request.POST)
         source_page = request.POST.get("source_page", "user")
@@ -66,9 +68,10 @@ class ManageUserCreateView(View):
                     raise ValueError("No roles selected")
 
                 roles = [int(r) for r in roles_raw] if isinstance(roles_raw, list) else [int(roles_raw)]
-                auth_user = request.session.get('auth', {}).get('user')
-                if auth_user:
-                    created_by_id = auth_user['id']
+                print("Roles being saved:", roles)
+
+                current_user_id = get_user_id(request)  # or request.user.id if using Django auth
+
 
                 validated_data = {
                     'first_name': form.cleaned_data['first_name'],
@@ -84,13 +87,13 @@ class ManageUserCreateView(View):
                     'state': form.cleaned_data['state'],
                     'pincode': form.cleaned_data['pincode'],
                     'roles': roles,
-                    'country': form.cleaned_data['country'],
-                    'created_by': created_by_id,
-                    'updated_by': created_by_id,
-                }
+                    'country': form.cleaned_data['country'],                          
+                    'created_by': current_user_id,   # <--correct
+                    'updated_by': current_user_id,   # <-- correct
+                } 
 
                 service.create_user(validated_data)  #call service function
-                messages.success(request, 'User created successfully.')               
+                messages.success(request, 'User created successfully!')               
                
             except Exception as e:
                 import traceback
@@ -98,7 +101,8 @@ class ManageUserCreateView(View):
                 messages.error(request, f"Error: {str(e)}")
         else:
             print("Form errors:", form.errors)
-
+            messages.error(request, "Please correct the errors in the form.")
+            
         if source_page_seller == "seller":
            return redirect("partner_list")
 
@@ -134,6 +138,7 @@ class ManageUserCreateView(View):
 #         except ValidationError as e:
 #             messages.error(request, f"Error deleting user: {str(e)}")
 #         return redirect("manage_user_list")
+
 class ManageUserDeleteView(View):
     @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def post(self, request, user_id):
@@ -170,15 +175,17 @@ class ManageUserUpdateView(UpdateView):
     def form_valid(self, form):
         try:
             validated_data = form.cleaned_data
-            service.update_user(self.object, validated_data)  #use service layer
+            validated_data['updated_by'] = get_user_id(self.request)  # <-- correct
+            service.update_user(self.object, validated_data)
             messages.success(self.request, "User updated successfully.")
         except ValidationError as ve:
-            form.add_error(None, ve.message)  # attach error to the form
+            form.add_error(None, ve.message)
             return self.form_invalid(form)
         except Exception as e:
             form.add_error(None, f"Unexpected error: {str(e)}")
             return self.form_invalid(form)
         return super().form_valid(form)
+
 
 
 # TOGGLE VIEW

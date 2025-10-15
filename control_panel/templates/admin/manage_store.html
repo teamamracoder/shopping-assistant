@@ -211,9 +211,8 @@
                             <td>{{ store.open_time }}</td>
                             <td>{{ store.close_time }}</td>
                             <td>{{ store.pin_code }}</td>
-                            <td>{{ store.owner }}</td>
+                            <td>{{ store.owner.first_name }} {{ store.owner.last_name }}</td>
                             <td>
-
                                 <!-- Edit -->
                                 <a href="#" class="text-primary edit-btn"
                                     data-id="{{ store.id }}"
@@ -342,19 +341,34 @@
                 document.getElementById('id_close_time').value = data.closeTime;
                 document.getElementById('id_owner').value = data.owner;
 
-                // Image preview
+                // Image preview fix
                 previewContainer.innerHTML = '';
-                const imageUrls = data.storeImageUrls.split(',');
+
+                let imageUrls = [];
+                try {
+                    imageUrls = JSON.parse(data.storeImageUrls.replace(/'/g, '"'));
+                } catch (e) {
+                    imageUrls = data.storeImageUrls
+                        .replace(/[\[\]'"]/g, '')
+                        .split(',')
+                        .map(u => u.trim())
+                        .filter(u => u.length > 0);
+                }
+
                 imageUrls.forEach(url => {
+                    // Ensure leading slash and remove duplicate 'media/media' if any
+                    if (!url.startsWith('/')) url = '/' + url;
+                    url = url.replace(/\/+/, '/'); // remove extra slashes if double
+
                     const img = document.createElement('img');
-                    img.src = url.trim();
+                    img.src = url;  // ✅ proper absolute path
                     img.style.width = '100px';
                     img.style.height = '100px';
                     img.style.objectFit = 'cover';
                     img.style.borderRadius = '5px';
+                    img.style.border = '1px solid #ccc';
                     previewContainer.appendChild(img);
                 });
-
                 addStoreModal.show();
             });
         });
@@ -381,10 +395,10 @@
             });
         }
 
-        // DELETE confirmation
+        // DELETE with SweetAlert
         document.querySelectorAll('.delete-btn').forEach(button => {
             button.addEventListener('click', function () {
-                const formUrl = this.getAttribute('data-url');
+                const url = this.dataset.url;
                 Swal.fire({
                     title: 'Are you sure?',
                     text: "This will permanently delete the store.",
@@ -393,11 +407,11 @@
                     confirmButtonColor: '#d33',
                     cancelButtonColor: '#3085d6',
                     confirmButtonText: 'Yes, delete it!'
-                }).then((result) => {
+                }).then(result => {
                     if (result.isConfirmed) {
                         const form = document.createElement('form');
                         form.method = 'POST';
-                        form.action = formUrl;
+                        form.action = url;
                         form.innerHTML = `<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">`;
                         document.body.appendChild(form);
                         form.submit();
@@ -406,9 +420,9 @@
             });
         });
 
-        // TOGGLE status
+        // TOGGLE active/inactive
         document.querySelectorAll('.toggle-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
+            btn.addEventListener('click', function () {
                 Swal.fire({
                     title: 'Are you sure?',
                     text: "Do you want to change this store's visibility?",
@@ -420,7 +434,6 @@
                 });
             });
         });
-
         // jQuery Validation
         $(document).ready(function () {
             $("#addStoreForm").validate({
@@ -540,4 +553,22 @@
         });
     });
 </script>
+<!-- SweetAlert for Django messages -->
+{% if messages %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    {% for message in messages %}
+        {% if 'store' in message.tags %}
+        Swal.fire({
+            icon: '{% if message.tags == "success store" or message.tags == "store success" %}success{% elif "error" in message.tags or "danger" in message.tags %}error{% else %}info{% endif %}',
+            title: "Good job..!",
+            text: '{{ message|escapejs }}',
+            timer: 3000,
+            showConfirmButton: false
+        });
+        {% endif %}
+    {% endfor %}
+});
+</script>
+{% endif %}
 {% endblock %}

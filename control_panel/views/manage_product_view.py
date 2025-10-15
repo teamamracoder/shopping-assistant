@@ -10,6 +10,7 @@ from django.core.exceptions import ValidationError
 from decorators.validator import role_required
 from constants import Role
 from control_panel.models import ProductsModel  
+from utils.common_utils import get_user_id
 
 product_service = ProductModelService()
 
@@ -32,15 +33,16 @@ class ManageProductCreateView(View):
     
     @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def post(self, request):
+        print("[DEBUG] Current user:", get_user_id(request))
+
         form = ManageProductForm(request.POST, request.FILES)
 
         if form.is_valid():
             product_data = form.cleaned_data.copy()
 
             # Attach user info
-            if request.user.is_authenticated:
-                product_data['created_by'] = request.user
-                product_data['updated_by'] = request.user
+            product_data['created_by'] = get_user_id(request)
+            product_data['updated_by'] = get_user_id(request)
 
             # Initialize empty image_urls list
             product_data['image_urls'] = []
@@ -83,8 +85,8 @@ class ManageProductCreateView(View):
 # Edit View
 class ManageProductEditView(View):
 
-    @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
-    def post(self, request, pk):
+    def post(self, request, pk):        
+        print("[DEBUG] Current user:", get_user_id(request))        
         product = product_service.get_product_by_id(pk)
         if not product:
             messages.error(request, "Product not found.")
@@ -94,6 +96,9 @@ class ManageProductEditView(View):
 
         if form.is_valid():
             updated_data = form.cleaned_data.copy()
+
+            # if request.user.is_authenticated:
+            updated_data['updated_by'] = get_user_id(request)
 
             # Keep existing images
             image_urls = product.image_urls if product.image_urls else []
@@ -120,7 +125,7 @@ class ManageProductEditView(View):
 
             try:
                 product_service.update_product(product, updated_data)
-                messages.success(request, "Product updated successfully!")
+                messages.success(request, "Product updated successfully!", extra_tags="product")
                 return redirect("manage_product_list")
             except ValidationError as e:
                 messages.error(request, str(e))
@@ -144,7 +149,7 @@ class ManageProductDeleteView(View):
 
         try:
             product_service.delete_product(product)
-            messages.success(request, "Product deleted successfully!")
+            messages.success(request, "Product deleted successfully!", extra_tags="product")
         except ValidationError as e:
             messages.error(request, str(e))
 
@@ -157,9 +162,12 @@ class ManageToggleProductActiveView(View):
     def post(self, request, pk, *args, **kwargs):
         try:
             product = product_service.toggle_product_status(pk, updated_by=request.user)
-            status = "activated" if product.is_active else "deactivated"
-            messages.success(request, f"Product '{product.name}' has been {status}.")
+            if product.is_active:
+                messages.success(request, f"Product '{product.name}' has been activated successfully!", extra_tags="product")
+            else:
+                messages.success(request, f"Product '{product.name}' has been deactivated successfully!", extra_tags="product")
         except ValidationError as e:
-            messages.error(request, str(e))
+            messages.error(request, str(e), extra_tags="product")
 
         return redirect("manage_product_list")
+

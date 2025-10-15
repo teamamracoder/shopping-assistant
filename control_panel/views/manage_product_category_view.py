@@ -40,25 +40,27 @@ class ManageProductCategoryCreateView(View):
         if form.is_valid():
             data = form.cleaned_data
             try:
-                if not isinstance(request.user, AnonymousUser):
-                    data['created_by'] =  request.user
-                    data['updated_by'] = request.user
-                data['created_by'] =  get_user_id(request)
-                data['updated_by'] = get_user_id(request)
+                # Set created_by and updated_by using get_user_id
+                user_id = get_user_id(request)
+                data['created_by'] = user_id
+                data['updated_by'] = user_id
+
                 category_service.create_category(data)
-                messages.success(request, "Category added successfully!")
+                messages.success(request, "Category added successfully!", extra_tags="category")
                 return redirect('manage_product_category_list')
+
             except ValidationError as e:
                 messages.error(request, str(e))
         else:
-            messages.success(request, "Category added successfully!")
+            messages.error(request, "Please correct the errors in the form.", extra_tags="category")
 
         categories = category_service.get_all_categories()
         return render(request, "admin/manage_product_category.html", {
             "form": form,
             "categories": categories
         })
-
+    
+    
 # Update View
 class ManageProductCategoryEditView(UpdateView):
     model = ProductCategoryModel
@@ -66,16 +68,29 @@ class ManageProductCategoryEditView(UpdateView):
     success_url = reverse_lazy('manage_product_category_list')
 
     def form_valid(self, form):
-        category = self.get_object()
-        data = form.cleaned_data
-        if not isinstance(self.request.user, AnonymousUser):
-            data['updated_by'] = self.request.user
+        product_category = form.save(commit=False)  # get instance but don't save yet
+
+        product_category.updated_by = get_user_id(self.request)
+
         try:
-            category_service.update_category(category, data)
-            messages.success(self.request, "Category updated successfully!")
+            product_category.save()  # save the instance
+            messages.success(self.request, "product category updated successfully!", extra_tags='product_category')
         except ValidationError as e:
             messages.error(self.request, str(e))
+            return self.form_invalid(form)
+
         return super().form_valid(form)
+
+        # category = self.get_object()
+        # data = form.cleaned_data
+        # if not isinstance(self.request.user, AnonymousUser):
+        #     data['updated_by'] = self.request.user
+        # try:
+        #     category_service.update_category(category, data)
+        #     messages.success(self.request, "Category updated successfully!", extra_tags="category")
+        # except ValidationError as e:
+        #     messages.error(self.request, str(e))
+        # return super().form_valid(form)
 
     def form_invalid(self, form):
         categories = category_service.get_all_categories()
@@ -93,7 +108,7 @@ class ManageProductCategoryDeleteView(View):
 
         try:
             category_service.delete_category(category)
-            messages.success(request, "Product category deleted successfully!")
+            messages.success(request, "Product category deleted successfully!", extra_tags="category")
         except ValidationError as e:
             messages.error(request, str(e))
 
@@ -106,9 +121,11 @@ class ManageToggleProductCategoryActiveView(View):
     def post(self, request, pk, *args, **kwargs):
         try:
             category = category_service.toggle_category_status(pk, updated_by=request.user)
-            status_text = "activated" if category.is_active else "deactivated"
-            messages.success(request, f"Category '{category.name}' has been {status_text}.")
+            if category.is_active:
+                messages.success(request, f"Category '{category.name}' has been activated successfully!", extra_tags="category")
+            else:
+                messages.success(request, f"Category '{category.name}' has been deactivated successfully!", extra_tags="category")
         except ValidationError as e:
-            messages.error(request, str(e))
+            messages.error(request, str(e), extra_tags="category")
 
         return redirect("manage_product_category_list")
