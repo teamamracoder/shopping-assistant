@@ -211,9 +211,8 @@
                             <td>{{ store.open_time }}</td>
                             <td>{{ store.close_time }}</td>
                             <td>{{ store.pin_code }}</td>
-                            <td>{{ store.owner }}</td>
+                            <td>{{ store.owner.first_name }} {{ store.owner.last_name }}</td>
                             <td>
-
                                 <!-- Edit -->
                                 <a href="#" class="text-primary edit-btn"
                                     data-id="{{ store.id }}"
@@ -342,19 +341,34 @@
                 document.getElementById('id_close_time').value = data.closeTime;
                 document.getElementById('id_owner').value = data.owner;
 
-                // Image preview
+                // Image preview fix
                 previewContainer.innerHTML = '';
-                const imageUrls = data.storeImageUrls.split(',');
+
+                let imageUrls = [];
+                try {
+                    imageUrls = JSON.parse(data.storeImageUrls.replace(/'/g, '"'));
+                } catch (e) {
+                    imageUrls = data.storeImageUrls
+                        .replace(/[\[\]'"]/g, '')
+                        .split(',')
+                        .map(u => u.trim())
+                        .filter(u => u.length > 0);
+                }
+
                 imageUrls.forEach(url => {
+                    // Ensure leading slash and remove duplicate 'media/media' if any
+                    if (!url.startsWith('/')) url = '/' + url;
+                    url = url.replace(/\/+/, '/'); // remove extra slashes if double
+
                     const img = document.createElement('img');
-                    img.src = url.trim();
+                    img.src = url;  // ✅ proper absolute path
                     img.style.width = '100px';
                     img.style.height = '100px';
                     img.style.objectFit = 'cover';
                     img.style.borderRadius = '5px';
+                    img.style.border = '1px solid #ccc';
                     previewContainer.appendChild(img);
                 });
-
                 addStoreModal.show();
             });
         });

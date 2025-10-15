@@ -5,6 +5,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from ..models import ServiceTypeModel
 from ..forms import ServiceTypeForm
 from services import ServiceTypeModelService
+from utils.common_utils import get_user_id
+
 service_helper = ServiceTypeModelService()
 
 # READ ALL
@@ -17,21 +19,33 @@ class ManageServiceTypeListView(View):
             'form': form
         })
 
-# CREATE
+## create view ##
 class ManageServiceTypeCreateView(View):
-    def get(self,request):
+    def get(self, request):
         services = ServiceTypeModel.objects.all()
         form = ServiceTypeForm()
-        return render(request, 'admin/manage_service_type_model.html', {'services': services,'form': form  })
-    
+        return render(request, 'admin/manage_service_type_model.html', {'services': services, 'form': form})
+
     def post(self, request):
         form = ServiceTypeForm(request.POST)
         if form.is_valid():
-            service_helper.create_service_type(form, request.user)
-            messages.success(request, "Service Type added successfully!")
+            service_instance = form.save(commit=False)
+
+            # Set created_by and updated_by
+            service_instance.created_by = get_user_id(request)
+            service_instance.updated_by = get_user_id(request)
+
+            try:
+                service_instance.save()
+                messages.success(request, "Service Type added successfully!")
+            except Exception as e:
+                messages.error(request, f"Error saving Service Type: {str(e)}")
         else:
-            messages.error(request, f"Error: {form.errors}")
+            for field, error in form.errors.items():
+                messages.error(request, f"{field.capitalize()}: {error}")
+
         return redirect('manage_service_type_model_list')
+
 
     # def post(self, request):
     #     print("POST request received.")
@@ -44,17 +58,42 @@ class ManageServiceTypeCreateView(View):
     #         print("Form errors:", form.errors)
     #     return redirect('manage_service_type_model_list')
 
-# UPDATE
+
+## update view ##
 class ManageServiceTypeUpdateView(View):
+    def get(self, request, pk):
+        service_instance = service_helper.get_service_type_by_id(pk)
+        if not service_instance:
+            messages.error(request, "Service Type not found.")
+            return redirect('manage_service_type_model_list')
+
+        form = ServiceTypeForm(instance=service_instance)
+        return render(request, 'admin/manage_service_type_model.html', {'form': form, 'service': service_instance})
+
     def post(self, request, pk):
         service_instance = service_helper.get_service_type_by_id(pk)
+        if not service_instance:
+            messages.error(request, "Service Type not found.")
+            return redirect('manage_service_type_model_list')
+
         form = ServiceTypeForm(request.POST, instance=service_instance)
         if form.is_valid():
-            service_helper.update_service_type(form)
-            messages.success(request, "Service Type updated successfully!")
+            service_instance = form.save(commit=False)
+
+            # Update updated_by
+            service_instance.updated_by = get_user_id(request)
+
+            try:
+                service_instance.save()
+                messages.success(request, "Service Type updated successfully!")
+            except Exception as e:
+                messages.error(request, f"Error updating Service Type: {str(e)}")
         else:
-            messages.error(request, f"Error: {form.errors}")
+            for field, error in form.errors.items():
+                messages.error(request, f"{field.capitalize()}: {error}")
+
         return redirect('manage_service_type_model_list')
+
     # def post(self, request, pk):
     #     service_instance = service_helper.get_service_type_by_id(pk)
     #     form = ServiceTypeForm(request.POST, instance=service_instance)
@@ -62,6 +101,7 @@ class ManageServiceTypeUpdateView(View):
     #         service = ServiceTypeModelService()
     #         service.update_service_type(form)
     #     return redirect('manage_service_type_model_list')
+
 
 # DELETE
 class ManageServiceTypeDeleteView(View):

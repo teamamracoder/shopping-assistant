@@ -8,6 +8,7 @@ from ..forms import ManageProductForm
 from services.product_service import ProductModelService
 from django.core.exceptions import ValidationError
 from control_panel.models import ProductsModel  
+from utils.common_utils import get_user_id
 
 product_service = ProductModelService()
 
@@ -28,15 +29,16 @@ class ManageProductCreateView(View):
         return render(request, "admin/manage_product.html", {"form": form, "products": products})
     
     def post(self, request):
+        print("[DEBUG] Current user:", get_user_id(request))
+
         form = ManageProductForm(request.POST, request.FILES)
 
         if form.is_valid():
             product_data = form.cleaned_data.copy()
 
             # Attach user info
-            if request.user.is_authenticated:
-                product_data['created_by'] = request.user
-                product_data['updated_by'] = request.user
+            product_data['created_by'] = get_user_id(request)
+            product_data['updated_by'] = get_user_id(request)
 
             # Initialize empty image_urls list
             product_data['image_urls'] = []
@@ -79,7 +81,8 @@ class ManageProductCreateView(View):
 # Edit View
 class ManageProductEditView(View):
 
-    def post(self, request, pk):
+    def post(self, request, pk):        
+        print("[DEBUG] Current user:", get_user_id(request))        
         product = product_service.get_product_by_id(pk)
         if not product:
             messages.error(request, "Product not found.")
@@ -89,6 +92,9 @@ class ManageProductEditView(View):
 
         if form.is_valid():
             updated_data = form.cleaned_data.copy()
+
+            # if request.user.is_authenticated:
+            updated_data['updated_by'] = get_user_id(request)
 
             # Keep existing images
             image_urls = product.image_urls if product.image_urls else []

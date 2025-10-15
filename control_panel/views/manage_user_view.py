@@ -19,6 +19,7 @@ from django.utils.http import urlencode
 from services import UserService
 from decorators.validator import role_required
 from django.utils.decorators import method_decorator
+from utils.common_utils import get_user_id
 
 
 service = UserService()
@@ -51,6 +52,7 @@ class ManageUserCreateView(View):
         return render(request, "admin/manage_all_user.html", {'users': users, 'form': form, 'choices_gender': choices_gender, 'choices_role' : choices_role })
 
     def post(self, request):
+        print("[DEBUG] Current user:", get_user_id(request))
         # user = request.user
         form = ManageUserForm(request.POST)
         source_page = request.POST.get("source_page", "user")
@@ -67,6 +69,9 @@ class ManageUserCreateView(View):
                 roles = [int(r) for r in roles_raw] if isinstance(roles_raw, list) else [int(roles_raw)]
                 print("Roles being saved:", roles)
 
+                current_user_id = get_user_id(request)  # or request.user.id if using Django auth
+
+
                 validated_data = {
                     'first_name': form.cleaned_data['first_name'],
                     'last_name': form.cleaned_data['last_name'],
@@ -81,10 +86,10 @@ class ManageUserCreateView(View):
                     'state': form.cleaned_data['state'],
                     'pincode': form.cleaned_data['pincode'],
                     'roles': roles,
-                    'country': form.cleaned_data['country'],
-                    # 'created_by': user,
-                    # 'updated_by': user,
-                }
+                    'country': form.cleaned_data['country'],                          
+                    'created_by': current_user_id,   # <--correct
+                    'updated_by': current_user_id,   # <-- correct
+                } 
 
                 service.create_user(validated_data)  #call service function
                 messages.success(request, 'User created successfully!')               
@@ -166,15 +171,17 @@ class ManageUserUpdateView(UpdateView):
     def form_valid(self, form):
         try:
             validated_data = form.cleaned_data
-            service.update_user(self.object, validated_data)  #use service layer
+            validated_data['updated_by'] = get_user_id(self.request)  # <-- correct
+            service.update_user(self.object, validated_data)
             messages.success(self.request, "User updated successfully.")
         except ValidationError as ve:
-            form.add_error(None, ve.message)  # attach error to the form
+            form.add_error(None, ve.message)
             return self.form_invalid(form)
         except Exception as e:
             form.add_error(None, f"Unexpected error: {str(e)}")
             return self.form_invalid(form)
         return super().form_valid(form)
+
 
 
 # TOGGLE VIEW

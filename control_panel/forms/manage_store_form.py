@@ -1,10 +1,19 @@
 from django import forms
 from ..models import StoreModel
+from control_panel.models import UserModel, StoreCategoryModel
 
 class ManageStoreForm(forms.ModelForm):
+    owner = forms.ModelChoiceField(
+        queryset=UserModel.objects.all(),
+        widget=forms.Select(attrs={
+            'class': 'form-control',
+            'id': 'id_owner',
+        }),
+        empty_label="Select Owner",
+        label="Owner"
+    )
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
         self.fields['store_category'].empty_label = "Select"
 
     class Meta:

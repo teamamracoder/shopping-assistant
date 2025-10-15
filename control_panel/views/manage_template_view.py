@@ -7,6 +7,7 @@ from django.contrib.auth.models import AnonymousUser
 from control_panel.models import TemplateModel
 from control_panel.forms.manage_template_form import ManageTemplateForm
 from services.template_service import TemplateService
+from utils.common_utils import get_user_id
 
 template_service =TemplateService()
 
@@ -21,7 +22,6 @@ class ManageTemplateListView(View):
         })
 
 
-## Create ##
 class ManageTemplateCreateView(View):
     def get(self, request):
         form = ManageTemplateForm()
@@ -34,7 +34,8 @@ class ManageTemplateCreateView(View):
     def post(self, request):
         form = ManageTemplateForm(request.POST, request.FILES)
         if form.is_valid():
-            template_service.create_template(form, request.user, request.FILES)
+            user_id = get_user_id(request)
+            template_service.create_template(form, user_id, request.FILES)
             messages.success(request, "Email Template added successfully!")
             return redirect("manage_template_list")
 
@@ -54,8 +55,9 @@ class ManageTemplateEditView(UpdateView):
     success_url = reverse_lazy('manage_template_list')
 
     def form_valid(self, form):
-        # ✅ Use service method to update template
-        template_service.update_template(form, self.request.user, self.request.FILES)
+        # ✅ Use get_user_id for updated_by
+        user_id = get_user_id(self.request)
+        template_service.update_template(form, user_id, self.request.FILES)
         messages.success(self.request, "Template updated successfully.")
         return super().form_valid(form)
 
