@@ -76,12 +76,16 @@ class ManageStoreCategoryEditView(UpdateView):
     @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def form_valid(self, form):
         store_category = form.save(commit=False)  # get instance but don't save yet
+       
+        original = StoreCategoryModel.objects.get(pk=self.object.pk)
+        store_category.created_by = original.created_by
 
         # Assign updated_by
         store_category.updated_by = get_user_id(self.request)
 
         try:
             store_category.save()  # save the instance
+            store_category.updated_by = get_user_id(self.request)
             messages.success(self.request, "Store category updated successfully!", extra_tags='store_category')
         except ValidationError as e:
             messages.error(self.request, str(e))

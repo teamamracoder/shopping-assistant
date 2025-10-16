@@ -82,10 +82,14 @@ class ManageServiceTypeUpdateView(View):
             messages.error(request, "Service Type not found.")
             return redirect('manage_service_type_model_list')
 
+        old_created_by = service_instance.created_by  # ✅ Preserve created_by
         form = ServiceTypeForm(request.POST, instance=service_instance)
+
         if form.is_valid():
             service_instance = form.save(commit=False)
 
+            # Preserve created_by
+            service_instance.created_by = old_created_by
             # Update updated_by
             service_instance.updated_by = get_user_id(request)
 
@@ -99,6 +103,7 @@ class ManageServiceTypeUpdateView(View):
                 messages.error(request, f"{field.capitalize()}: {error}")
 
         return redirect('manage_service_type_model_list')
+
 
     # def post(self, request, pk):
     #     service_instance = service_helper.get_service_type_by_id(pk)

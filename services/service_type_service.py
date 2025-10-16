@@ -28,15 +28,23 @@ class ServiceTypeModelService:
         except ServiceTypeModel.DoesNotExist:
             return None
 
-    def update_service_type(self, form):
-        form.save()
-        """
-        Update an existing service type with new validated data.
-        :param service_type: ServiceTypeModel instance to be updated.
-        :param validated_data: A dictionary of data to update the service type with.
-        :return: Updated ServiceTypeModel instance.
-        :raises ValidationError: If the updated data fails validation.
-        """
+    # def update_service_type(self, form):
+    #     form.save()
+    #     """
+    #     Update an existing service type with new validated data.
+    #     :param service_type: ServiceTypeModel instance to be updated.
+    #     :param validated_data: A dictionary of data to update the service type with.
+    #     :return: Updated ServiceTypeModel instance.
+    #     :raises ValidationError: If the updated data fails validation.
+    #     """
+
+    def update_service_type(self, form, user):
+        instance = form.save(commit=False)
+        instance.created_by = instance.created_by or user  # preserve
+        instance.updated_by = user
+        instance.save()
+        return instance
+
         
     def delete_service_type(self, service_type):
         """
