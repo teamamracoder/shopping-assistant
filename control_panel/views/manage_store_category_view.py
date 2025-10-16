@@ -11,7 +11,8 @@ from django.forms import ValidationError
 from ..models import StoreCategoryModel
 from services.store_category_service import StoreCategoryService
 from decorators.validator import role_required
-from constants import Rolefrom utils.common_utils import get_user_id
+from constants import Role
+from utils.common_utils import get_user_id
 
 
 store_category_service = StoreCategoryService()
