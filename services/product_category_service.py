@@ -18,16 +18,36 @@ class ProductCategoryModelService:
         except IntegrityError:
             raise ValidationError("Category creation failed due to integrity issues.")
 
+    # def update_category(self, category, validated_data):
+    #     try:
+    #         category.name = validated_data.get('name', category.name)
+    #         category.description = validated_data.get('description', category.description)
+    #         category.is_active = validated_data.get('is_active', category.is_active)
+    #         category.updated_by = validated_data.get('updated_by', category.updated_by)
+    #         category.save()
+    #         return category
+    #     except IntegrityError:
+    #         raise ValidationError("Category update failed due to integrity issues.")
+
     def update_category(self, category, validated_data):
         try:
+            # Preserve created_by
+            original_created_by = category.created_by
+
             category.name = validated_data.get('name', category.name)
             category.description = validated_data.get('description', category.description)
             category.is_active = validated_data.get('is_active', category.is_active)
             category.updated_by = validated_data.get('updated_by', category.updated_by)
-            category.save()
+
+            # Restore created_by to ensure it doesn’t get nullified
+            category.created_by = original_created_by
+
+            # Save only specific fields to avoid unintended overwrites
+            category.save(update_fields=['name', 'description', 'is_active', 'updated_by', 'created_by'])
             return category
         except IntegrityError:
             raise ValidationError("Category update failed due to integrity issues.")
+
 
     def delete_category(self, category):
         try:

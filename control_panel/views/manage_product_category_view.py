@@ -69,6 +69,11 @@ class ManageProductCategoryEditView(UpdateView):
     def form_valid(self, form):
         product_category = form.save(commit=False)  # get instance but don't save yet
 
+        # Preserve the original created_by
+        original = ProductCategoryModel.objects.get(pk=self.object.pk)
+        product_category.created_by = original.created_by
+
+        # Set updated_by
         product_category.updated_by = get_user_id(self.request)
 
         try:

@@ -37,15 +37,30 @@ class StoreCategoryService:
     #     return store_category
 
     
+    # def update_store_category(self, category, validated_data):
+    #     try:
+    #         category.name = validated_data.get('name', category.name)           
+    #         category.is_active = validated_data.get('is_active', category.is_active)
+    #         category.updated_by = validated_data.get('updated_by', category.updated_by)
+    #         category.save()
+    #         return category
+    #     except IntegrityError:
+    #         raise ValidationError("Store Category update failed due to integrity issues.")
+
     def update_store_category(self, category, validated_data):
         try:
-            category.name = validated_data.get('name', category.name)           
+            category.name = validated_data.get('name', category.name)
             category.is_active = validated_data.get('is_active', category.is_active)
             category.updated_by = validated_data.get('updated_by', category.updated_by)
-            category.save()
+
+            # ⚠️ created_by একদমই পরিবর্তন করা হবে না
+            # created_by যেন null না হয়, তাই একে untouched রাখা হচ্ছে
+
+            category.save(update_fields=['name', 'is_active', 'updated_by'])
             return category
         except IntegrityError:
             raise ValidationError("Store Category update failed due to integrity issues.")
+
 
 
     # def delete_store_category(self, store_category):

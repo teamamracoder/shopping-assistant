@@ -102,14 +102,13 @@ class ManageServiceBookingUpdateView(View):
 
         form = ManageServiceBookingForm(request.POST, instance=booking_instance)
         if form.is_valid():
-            booking_instance = form.save(commit=False)
-
-            # Update updated_by using get_user_id
-            booking_instance.updated_by = get_user_id(request)
-            booking_instance.updated_at = timezone.now()
-
             try:
-                booking_instance.save()
+                # ✅ Use service layer update method
+                service_book.update_booking(
+                    booking_instance,
+                    form.cleaned_data,
+                    get_user_id(request)
+                )
                 messages.success(request, "Service Booking updated successfully!")
             except Exception as e:
                 messages.error(request, f"Error updating booking: {str(e)}")

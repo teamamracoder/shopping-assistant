@@ -15,13 +15,33 @@ class  ProductSubCategoryModelService:
     def create_sub_category(self, validated_data):
         return ProductSubCategoryModel.objects.create(**validated_data)
 
+    # def update_sub_category(self, instance, validated_data):
+    #     instance.category_id = validated_data.get('category', instance.category_id)
+    #     instance.name = validated_data.get('name', instance.name)
+    #     instance.description = validated_data.get('description', instance.description)
+    #     instance.is_active = validated_data.get('is_active', instance.is_active)
+    #     instance.save()
+    #     return instance
     def update_sub_category(self, instance, validated_data):
-        instance.category_id = validated_data.get('category', instance.category_id)
-        instance.name = validated_data.get('name', instance.name)
-        instance.description = validated_data.get('description', instance.description)
-        instance.is_active = validated_data.get('is_active', instance.is_active)
-        instance.save()
-        return instance
+        try:
+            # Preserve original created_by
+            original_created_by = instance.created_by
+
+            instance.category_id = validated_data.get('category', instance.category_id)
+            instance.name = validated_data.get('name', instance.name)
+            instance.description = validated_data.get('description', instance.description)
+            instance.is_active = validated_data.get('is_active', instance.is_active)
+            instance.updated_by = validated_data.get('updated_by', instance.updated_by)
+
+            # Restore created_by
+            instance.created_by = original_created_by
+
+            instance.save(update_fields=['category', 'name', 'description', 'is_active', 'updated_by', 'created_by'])
+            return instance
+        except IntegrityError:
+            raise ValidationError("Subcategory update failed due to integrity issues.")
+
+
 
     def delete_sub_category(self, instance):
         instance.delete()

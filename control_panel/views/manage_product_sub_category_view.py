@@ -62,6 +62,7 @@ class ManageProductSubCategoryCreateView(View):
 
 
 # Edit View
+# Edit View
 class ManageProductSubCategoryEditView(View):
     def post(self, request, *args, **kwargs):
         subcategory_id = kwargs.get('pk') or request.POST.get('subcategory_id')
@@ -78,11 +79,15 @@ class ManageProductSubCategoryEditView(View):
         if form.is_valid():
             subcategory = form.save(commit=False)
 
-            # Assign updated_by
+            # ✅ Preserve the original created_by
+            original = subcategory_service.get_sub_category_by_id(subcategory_id)
+            subcategory.created_by = original.created_by
+
+            # ✅ Update only updated_by
             subcategory.updated_by = get_user_id(request)
 
             try:
-                subcategory.save()
+                subcategory.save(update_fields=['category', 'name', 'description', 'is_active', 'updated_by', 'created_by'])
                 messages.success(request, "Subcategory updated successfully!", extra_tags="subcategory")
                 return redirect('manage_product_sub_category_list')
             except ValidationError as e:
