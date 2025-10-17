@@ -127,26 +127,35 @@ class ManageUserCreateView(View):
                 'choices_role': choices_role
             })
         
-        
-#DELETE VIEW
-# class ManageUserDeleteView(View):
-#     def post(self, request, user_id):
-#         try:
-#             print("+++++++++++++ ID = ",user_id)
-#             service.user_delete(user_id)  #call the service method
-#             messages.success(request, "User deleted successfully.")
-#         except ValidationError as e:
-#             messages.error(request, f"Error deleting user: {str(e)}")
-#         return redirect("manage_user_list")
 
 class ManageUserDeleteView(View):
     @role_required(Role.ADMIN.value, Role.SERVICE_PROVIDER.value, Role.SELLER.value)
     def post(self, request, user_id):
-        try:
-            service.user_delete(user_id)  # call the service method
-            messages.success(request, "User deleted successfully.")
-        except ValidationError as e:
-            messages.error(request, f"Error deleting user: {str(e)}")
+        
+        source_page = request.POST.get("source_page")
+        
+        if source_page == 'consumer_soft_delete':
+            user = service.get_user_by_id(user_id)
+            user.roles = [r for r in user.roles if r != Role.END_USER.value]
+            user.save()
+            
+        elif source_page == 'business_partner_soft_delete':
+            
+            user = service.get_user_by_id(user_id)
+            user.roles = [r for r in user.roles if r != Role.SELLER.value]
+            user.save()
+            
+        elif source_page == 'service_provider_soft_delete':
+            user = service.get_user_by_id(user_id)
+            user.roles = [r for r in user.roles if r != Role.SERVICE_PROVIDER.value]
+            user.save()
+        else:
+            
+            try:
+                service.user_delete(user_id)  # call the service method
+                messages.success(request, "User deleted successfully.")
+            except ValidationError as e:
+                messages.error(request, f"Error deleting user: {str(e)}")
 
         # Get the previous page URL (fallback to user list if missing)
         referer = request.META.get("HTTP_REFERER", reverse("manage_user_list"))
